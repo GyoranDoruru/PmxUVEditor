@@ -26,7 +26,7 @@ namespace MyUVEditor
             this.mesh = null;
             try
             {
-                this.mypmx = new MyPMX(this._host,this.message);
+                this.mypmx = new MyPMX(this.host,this.message);
                 this.ConvertMyPMXtoMesh();
             }
             catch (Direct3D9Exception ex)

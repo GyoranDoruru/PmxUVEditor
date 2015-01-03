@@ -1,0 +1,11 @@
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\Starter.exe
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\Starter.pdb
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\PEPlugin.dll
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\PMXImporter.dll
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\UVEditor0_139_10_2.dll
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\PMXImporter.pdb
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\UVEditor0_139_10_2.pdb
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\PEPlugin.xml
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Debug\ResolveAssemblyReference.cache
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Debug\Starter.exe
+F:\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Debug\Starter.pdb

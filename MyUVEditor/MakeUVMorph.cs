@@ -12,22 +12,18 @@ namespace MyUVEditor
 {
     class MakeUVMorph
     {
-        IPEPluginHost host;
-        Form1 form;
         Dictionary<int,Vector3> basePos = new Dictionary<int,Vector3>();
         Dictionary<int, Vector3> morphedPos = new Dictionary<int, Vector3>();
         public int[] GetMorphTargetIndex() { return this.basePos.Keys.ToArray();}
         
-        public MakeUVMorph(IPEPluginHost host,Form1 form)
+        public MakeUVMorph(IPEConnector connector, Form1 form)
         {
-            this.host = host;
-            this.form = form;
-            ReSetUVList();
+            ReSetUVList(connector, form);
         }
 
-        public void ReSetUVList()
+        public void ReSetUVList(IPEConnector connector,Form1 form)
         {
-            var pmx = host.Connector.Pmx.GetCurrentState();
+            var pmx = connector.Pmx.GetCurrentState();
             List<string> names = new List<string>();
             for (int i = 0; i < pmx.Morph.Count;i++ )
                 {
@@ -36,13 +32,13 @@ namespace MyUVEditor
                         names.Add(i.ToString()+":"+pmx.Morph[i].Name);
                     }
                 }
-            this.form.ListUpUVMorph(names.ToArray());
+            form.ListUpUVMorph(names.ToArray());
         }
 
-        public void MakeMorph(MyPMX mypmx,VertexSelect vs)
+        public void MakeMorph(IPEConnector connector,MyPMX mypmx,VertexSelect vs,Form1 form)
         {
-            float diff = this.form.Morphdiffernce;
-            IPXPmx pmx = host.Connector.Pmx.GetCurrentState();
+            float diff = form.Morphdiffernce;
+            IPXPmx pmx = connector.Pmx.GetCurrentState();
             if (mypmx.VertexArray.Count() != pmx.Vertex.Count)
             {
                 MessageBox.Show("本体とプラグインのモデル頂点数が異なるのでこの操作はキャンセルされました。");
@@ -57,13 +53,13 @@ namespace MyUVEditor
                 Vector3 basePosI = new Vector3( pmx.Vertex[i].UV.U,pmx.Vertex[i].UV.V,0);
                 if (Math.Abs(basePosI.X - morphPosI.X) > diff || Math.Abs(basePosI.Y - morphPosI.Y) > diff) { basePos.Add(i, basePosI); morphedPos.Add(i, morphPosI); }
             }
-            this.form.SetMorphedCount(basePos.Count);
+            form.SetMorphedCount(basePos.Count);
             vs.selectedVertexIndex = this.GetMorphTargetIndex();
         }
 
-        public void ReadMorph(MyPMX mypmx,VertexSelect vs)
+        public void ReadMorph(IPEConnector connector, MyPMX mypmx, VertexSelect vs,Form1 form)
         {
-            IPXPmx pmx = host.Connector.Pmx.GetCurrentState();
+            IPXPmx pmx = connector.Pmx.GetCurrentState();
             if (mypmx.VertexArray.Count() != pmx.Vertex.Count)
             {
                 MessageBox.Show("本体とプラグインのモデル頂点数が異なるのでこの操作はキャンセルされました。");
@@ -72,7 +68,7 @@ namespace MyUVEditor
 
             basePos.Clear();
             morphedPos.Clear();
-            int morphindex = this.form.SelectedUVMorph();
+            int morphindex = form.SelectedUVMorph();
             if (morphindex < 0) { MessageBox.Show("UVモーフが選べません"); return; }
             var uvMorph = pmx.Morph[morphindex];
             foreach (IPXUVMorphOffset offset in uvMorph.Offsets)
@@ -88,7 +84,7 @@ namespace MyUVEditor
                 }
                 catch { MessageBox.Show(index.ToString()); throw; }
             }
-            this.form.SetMorphedCount(basePos.Count);
+            form.SetMorphedCount(basePos.Count);
             vs.selectedVertexIndex = this.GetMorphTargetIndex();
         }
 
@@ -103,13 +99,13 @@ namespace MyUVEditor
             }
         }
 
-        public void AddMorph()
+        public void AddMorph(IPEPluginHost host,Form1 form)
         {
             if (basePos.Count < 1) { MessageBox.Show("モデル形状に変化がありません"); return; }
             IPXMorph nmorph = host.Builder.Pmx.Morph();
             nmorph.Kind = MorphKind.UV;
-            nmorph.Name = this.form.MorphName;
-            nmorph.Panel = this.form.MorphPanel;
+            nmorph.Name = form.MorphName;
+            nmorph.Panel = form.MorphPanel;
             var pmx = host.Connector.Pmx.GetCurrentState();
             foreach (var i in basePos.Keys)
             {
@@ -124,7 +120,7 @@ namespace MyUVEditor
             host.Connector.Form.UpdateList(PEPlugin.Pmd.UpdateObject.All);
             host.Connector.View.PMDView.UpdateModel();
             host.Connector.View.PMDView.UpdateView();
-            ReSetUVList();
+            ReSetUVList(host.Connector,form);
             MessageBox.Show(nmorph.Name + "を追加しました");
         }
     }

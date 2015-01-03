@@ -29,24 +29,27 @@ namespace MyUVEditor
         private Camera camera;
         public Camera Camera { get { return this.camera; } }
 
-        private IPEPluginHost _host;
+        private IPEPluginHost host;
         /// <summary>デバイスロスト判定用</summary>
         private bool deviceLost = false;
 
 
         /// <summary>UVモーフ関連</summary>
-        private MakeUVMorph uvmorphes; 
+        private MakeUVMorph uvmorphes;
+
+        private MaterialManager mmanage;
 
         /// <summary>
         /// コンストラクタ
         /// </summary>
         /// <param name="host"></param>
         /// <param name="ver"></param>
-        public MyGame(IPEPluginHost host, string ver)
+        public MyGame(IPEPluginHost _host, string ver)
         {
-            this._host = host;
+            this.host = _host;
             this.form = new Form1(ver);
-            this.uvmorphes = new MakeUVMorph(host, this.form);
+            this.uvmorphes = new MakeUVMorph(_host.Connector, this.form);
+            this.mmanage = new MaterialManager();
         }
 
         /// <summary>
@@ -126,14 +129,14 @@ namespace MyUVEditor
 
             form.ReceiveSelectedButton.Click += (o, args) =>
             {
-                this.vS.selectedVertexIndex = this.mypmx.ReceiveSelected(vS.SelectedMaterial);
+                this.vS.selectedVertexIndex = this.mypmx.ReceiveSelected(host.Connector,vS.SelectedMaterial);
                 ResetSelectedBuffer();
                 this.Render();
             };
 
             form.SendSelectedButton.Click += (o, args) =>
             {
-                this.mypmx.SendSelected(this.vS.selectedVertexIndex);
+                this.mypmx.SendSelected(host.Connector, this.vS.selectedVertexIndex);
             };
 
             form.ReceiveModelButton.Click += (o, args) =>
@@ -141,19 +144,19 @@ namespace MyUVEditor
                 this.ResourceDispose();
                 this.mesh.Dispose();
                 this.form.SelectedMaterial.Items.Clear();
-                this.mypmx.ReceiveModel();
+                this.mypmx.ReceiveModel(host.Connector);
                 this.ConvertMyPMXtoMesh();
                 this.SetTextures();
                 this.vS.selectedVertexIndex = new int[0];
                 ResetSelectedBuffer();
-                this.uvmorphes.ReSetUVList();
+                this.uvmorphes.ReSetUVList(host.Connector,form);
                 this.Render();
 
             };
 
             form.SendModelButton.Click += (o, args) =>
             {
-                this.mypmx.SendModel();
+                this.mypmx.SendModel(host.Connector);
             };
 
             form.MoveButton.Click += (o, args) => { DrivingMode.Move.GetInstance().ButtonClicked(this, this.form.MoveValue); };
@@ -162,7 +165,7 @@ namespace MyUVEditor
 
             form.ReadMorph.Click += (o, args) =>
             {
-                this.uvmorphes.ReadMorph(this.mypmx,this.vS);
+                this.uvmorphes.ReadMorph(host.Connector, this.mypmx, this.vS, form);
                 this.form.MorphSlider.Value = this.form.MorphSlider.Maximum;
                 ResetMeshVertex();
                 ResetSelectedBuffer();
@@ -170,13 +173,13 @@ namespace MyUVEditor
             };
             form.SetMorph.Click += (o, args) =>
             {
-                this.uvmorphes.MakeMorph(this.mypmx,this.vS);
+                this.uvmorphes.MakeMorph(host.Connector, this.mypmx, this.vS, form);
                 this.form.MorphSlider.Value = this.form.MorphSlider.Maximum;
                 ResetMeshVertex();
                 ResetSelectedBuffer();
                 Render();
             };
-            form.AddMorph.Click += (o, args) => { this.uvmorphes.AddMorph(); };
+            form.AddMorph.Click += (o, args) => { this.uvmorphes.AddMorph(host, form); };
             form.MorphSlider.Scroll += (o, args) =>
             {
                 float ratio = ((float)form.MorphSlider.Value) / form.MorphSlider.Maximum;
@@ -234,7 +237,6 @@ namespace MyUVEditor
                     }
                 }
             }
-
             this.camera = new Camera(this.device);
             //高さと幅設定
             this.camera.SetViewPortSize(form);
@@ -299,6 +301,7 @@ namespace MyUVEditor
             if (deviceLost)
             {
                 message.LabelReflesh("デバイスロスト");
+                Console.WriteLine("デバイスロスト");
                 if (device.TestCooperativeLevel() == ResultCode.DeviceNotReset)
                 {
                     device.Reset(pp);
@@ -319,24 +322,17 @@ namespace MyUVEditor
                 device.SetTransform(TransformState.Projection, this.camera.TransformProjection(this.textureinfoes[vS.SelectedMaterial].Aspect));
 
                 //描画を開始
-                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, new Color4(0.3f, 0.3f, 0.3f), 1.0f, 0);
+                device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, mmanage.BGColor, 1.0f, 0);
                 device.BeginScene();
 
                 //Xファイル
-                device.Material = new Material()
-                {
-                    Diffuse = new Color4(Color.White),
-                    Ambient = new Color4(Color.Black)
-                };
+                device.Material = mmanage.ForXFile;
                 device.SetRenderState(RenderState.Lighting, true);
                 device.SetRenderState(RenderState.FillMode, FillMode.Wireframe);
-                 mesh.DrawSubset(vS.SelectedMaterial);
+                mesh.DrawSubset(vS.SelectedMaterial);
 
                 //背景表示
-                device.Material = new Material()
-                {
-                    Ambient = new Color4(Color.White)
-                };
+                device.Material = mmanage.ForTexBackGround;
                 device.SetTexture(0, textures[vS.SelectedMaterial]);
                 device.SetRenderState(RenderState.FillMode, FillMode.Solid);
                 device.SetStreamSource(0, texvertex, 0, CustomVertex.PositionTextured.Stride);
@@ -345,11 +341,7 @@ namespace MyUVEditor
 
                 
                 //頂点表示
-                device.Material = new Material()
-                {
-                    Diffuse = new Color4(Color.Black),
-                    Ambient = new Color4(Color.Black)
-                };
+                device.Material = mmanage.ForVertexPoint;
                 device.SetRenderState(RenderState.FillMode, FillMode.Point);
                 device.SetRenderState(RenderState.PointSpriteEnable, true);
                 device.SetRenderState(RenderState.PointSize, 6f);
@@ -359,11 +351,7 @@ namespace MyUVEditor
                 //選択頂点表示
                 if (vS.selectedVertexIndex.Length > 0)
                 {
-                    device.Material = new Material()
-                    {
-                        Diffuse = new Color4(Color.Red),
-                        Ambient = new Color4(Color.Red)
-                    };
+                    device.Material = mmanage.ForSelectedPoint;
                     device.SetRenderState(RenderState.FillMode, FillMode.Solid);
                     device.SetRenderState(RenderState.PointSpriteEnable, true);
                     device.SetStreamSource(0, selectedbuffer, 0, CustomVertex.PositionOnly.Stride);
@@ -374,13 +362,11 @@ namespace MyUVEditor
                 }
 
                 //選択領域表示
-                if ((this.drivingMode.Type() ==DrawingMode.ADD)||(this.drivingMode.Type() ==DrawingMode.REMOVE)||(this.drivingMode.Type() ==DrawingMode.SELECT))
+                if ((this.drivingMode.Type() ==DrawingMode.ADD)
+                    ||(this.drivingMode.Type() ==DrawingMode.REMOVE)
+                    ||(this.drivingMode.Type() ==DrawingMode.SELECT))
                 {
-                    device.Material = new Material()
-                    {
-                        Diffuse = new Color4(0.2f, 1.0f, 1.0f, 1.0f),
-                        Ambient = new Color4(0.2f, 1.0f, 1.0f, 1.0f)
-                    };
+                    device.Material = mmanage.ForSelectedArea;
                     device.SetRenderState(RenderState.FillMode, FillMode.Solid);
                     device.VertexFormat = CustomVertex.PositionColored.FVF;
                     device.DrawUserPrimitives(PrimitiveType.TriangleStrip, 2, this.vS.SelectPoly);
@@ -389,7 +375,7 @@ namespace MyUVEditor
                 if (this.vS.IsNearUsed)
                 {
                     CustomVertex.PositionOnly[] nearva = { mypmx.VertexArray[this.vS.NearUsedIndex] };
-                    device.Material = new Material() { Diffuse = Color.Yellow, Ambient = Color.Yellow };
+                    device.Material = mmanage.ForNearVertex;
                     device.DrawUserPrimitives(PrimitiveType.PointList, 1, nearva);                        
                 }
                 device.EndScene();

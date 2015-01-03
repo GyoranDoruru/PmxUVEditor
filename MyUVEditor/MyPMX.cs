@@ -11,7 +11,6 @@ namespace MyUVEditor
 {
     public class MyPMX
     {
-        IPEPluginHost host;
         public IPXPmx pmx;
         public CustomVertex.PositionOnly[] VertexArray;
         public int[] IndexArray;
@@ -20,9 +19,8 @@ namespace MyUVEditor
         public AttributeRange[] AttributeRanges;
         MessageForm message = new MessageForm();
 
-        public MyPMX(IPEPluginHost _host,MessageForm _message)
+        public MyPMX(IPEPluginHost host,MessageForm _message)
         {
-            this.host = _host;
             this.message = _message;
             this.pmx = host.Connector.Pmx.GetCurrentState();
             this.SetMyPmx();
@@ -159,29 +157,29 @@ namespace MyUVEditor
 
  
         #region ボタンイベント用
-        public void SendModel()
+        public void SendModel(IPEConnector connector)
         {
             for (int i = 0; i < VertexArray.Length; i++)
             {
                 pmx.Vertex[i].UV = new PEPlugin.SDX.V2(VertexArray[i].Position.X, VertexArray[i].Position.Y);
             }
             //更新
-            host.Connector.Pmx.Update(pmx);
-            host.Connector.Form.UpdateList(PEPlugin.Pmd.UpdateObject.Vertex);  // 重い場合は引数を変更して個別に更新
-            host.Connector.View.PMDView.UpdateModel();         // Viewの更新が不要な場合はコメントアウト
-            host.Connector.View.PMDView.UpdateView();
+            connector.Pmx.Update(pmx);
+            connector.Form.UpdateList(PEPlugin.Pmd.UpdateObject.Vertex);  // 重い場合は引数を変更して個別に更新
+            connector.View.PMDView.UpdateModel();         // Viewの更新が不要な場合はコメントアウト
+            connector.View.PMDView.UpdateView();
         }
 
-        public void ReceiveModel()
+        public void ReceiveModel(IPEConnector connector)
         {
-            this.pmx = host.Connector.Pmx.GetCurrentState();
+            this.pmx = connector.Pmx.GetCurrentState();
             this.SetMyPmx();
             message.Visible = false;
         }        
 
-        public int[] ReceiveSelected(int matidx)
+        public int[] ReceiveSelected(IPEConnector connector,int matidx)
         {
-            List<int> tmpselected = new List<int>(host.Connector.View.PMDView.GetSelectedVertexIndices());
+            List<int> tmpselected = new List<int>(connector.View.PMDView.GetSelectedVertexIndices());
             List<int> resultselected = new List<int>();
             foreach (int i in tmpselected)
             {
@@ -190,10 +188,10 @@ namespace MyUVEditor
             resultselected.Sort();
             return resultselected.ToArray();
         }
-        public void SendSelected(int[] sendArray)
+        public void SendSelected(IPEConnector connector, int[] sendArray)
         {
-            host.Connector.View.PMDView.SetSelectedVertexIndices(sendArray);
-            host.Connector.View.PMDView.UpdateView();
+            connector.View.PMDView.SetSelectedVertexIndices(sendArray);
+            connector.View.PMDView.UpdateView();
         }
 
         #endregion
