@@ -1,0 +1,11 @@
+*.dll
+*.exe
+*.xml
+*.pdb
+*.force
+*.manifest
+*.exe.config
+MyUVEditor/obj/
+PMXImporter/obj/
+PMXViewer/obj/
+TestPlugin/obj/
