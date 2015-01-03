@@ -6,6 +6,6 @@
 *.manifest
 *.exe.config
 MyUVEditor/obj/
-PMXImporter/obj/
-PMXViewer/obj/
-TestPlugin/obj/
+Starter/obj/
+UVEStarter/obj/
+WindowsFormsApplication1/obj/
