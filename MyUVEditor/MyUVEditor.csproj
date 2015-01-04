@@ -49,6 +49,7 @@
   <ItemGroup>
     <Compile Include="Camera.cs" />
     <Compile Include="CustomVertex.cs" />
+    <Compile Include="DeviceManager.cs" />
     <Compile Include="DrawingMode.cs" />
     <Compile Include="DrivingMode\Add.cs" />
     <Compile Include="DrivingMode\CameraMove.cs" />
@@ -66,6 +67,12 @@
     </Compile>
     <Compile Include="DXView.Designer.cs">
       <DependentUpon>DXView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="DXViewForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DXViewForm.Designer.cs">
+      <DependentUpon>DXViewForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -94,6 +101,9 @@
     <Compile Include="VertexSelect.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DXViewForm.resx">
+      <DependentUpon>DXViewForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

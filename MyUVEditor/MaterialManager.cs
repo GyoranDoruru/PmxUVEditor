@@ -4,7 +4,7 @@ using SlimDX.Direct3D9;
 
 namespace MyUVEditor
 {
-    class MaterialManager
+    public class MaterialManager
     {
         private Color4 XF = Color.Black;
         private Color4 BG = Color.White;
