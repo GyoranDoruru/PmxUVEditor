@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using SlimDX;
 using SlimDX.Direct3D9;
+using PEPlugin.Pmx;
 
 namespace MyUVEditor
 {
@@ -146,6 +147,68 @@ namespace MyUVEditor
                 set { this.Normal.Z = value; }
             }
 
+        }
+    }
+
+    struct PMXVertex
+    {
+        Vector3 Pos;
+        Vector3 Norm;
+        Vector2 UV;
+        Vector4 UVA1;
+        Vector4 UVA2;
+        Vector4 UVA3;
+        Vector4 UVA4;
+        public PMXVertex(IPXVertex v)
+        {
+            Pos = v.Position.ToVector3();
+            Norm = v.Normal.ToVector3();
+            UV = v.UV.ToVector2();
+            UVA1 = v.UVA1.ToVector4();
+            UVA2 = v.UVA2.ToVector4();
+            UVA3 = v.UVA3.ToVector4();
+            UVA4 = v.UVA4.ToVector4();
+        }
+        public static VertexElement[] GetElements()
+        {
+            short offset = 0;
+            VertexElement[] result = new VertexElement[7];
+            result[0] = new VertexElement
+            {
+                Offset = offset,
+                Type = DeclarationType.Float3,
+                Usage = DeclarationUsage.Position
+            };
+            offset += (short)Marshal.SizeOf(typeof(Vector3));
+
+            result[1] = new VertexElement
+            {
+                Offset = offset,
+                Type = DeclarationType.Float3,
+                Usage = DeclarationUsage.Normal
+            };
+            offset += (short)Marshal.SizeOf(typeof(Vector3));
+            
+            result[2] = new VertexElement
+            {
+                Offset = offset,
+                Type = DeclarationType.Float2,
+                Usage = DeclarationUsage.TextureCoordinate
+            };
+            offset += (short)Marshal.SizeOf(typeof(Vector2));
+
+            for (byte i = 1; i < 5; i++)
+            {
+                result[2+i] = new VertexElement
+                {
+                    Offset = offset,
+                    Type = DeclarationType.Float4,
+                    Usage = DeclarationUsage.TextureCoordinate,
+                    UsageIndex = i
+                };
+                offset += (short)Marshal.SizeOf(typeof(Vector2));                
+            }
+            return result;
         }
     }
 }

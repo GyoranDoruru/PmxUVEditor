@@ -21,7 +21,7 @@ namespace MyUVEditor.DrivingMode
         {
             MouseEvent me = sender.Mouse;
             bool a = KeyBoardEvent.GetInstance().IsShift;
-            sender.Camera.MoveTarget(me.MouseAfterMoveP, me.MouseBeforeMoveP, KeyBoardEvent.GetInstance().IsShift);
+            sender.Camera.MoveTarget(sender.Device, me.MouseAfterMoveP, me.MouseBeforeMoveP, KeyBoardEvent.GetInstance().IsShift);
         }
 
         public override void MouseUpped(MyGame sender, MouseEventArgs e)

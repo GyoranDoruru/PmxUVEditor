@@ -20,7 +20,6 @@ D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\PMXImpor
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\UVEditor0_139_10_2.dll
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\PMXImporter.pdb
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\UVEditor0_139_10_2.pdb
-D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\PEPlugin.xml
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Starter.csprojResolveAssemblyReference.cache
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Starter.Form1.resources
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Starter.csproj.GenerateResource.Cache

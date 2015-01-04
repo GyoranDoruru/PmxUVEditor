@@ -8,10 +8,12 @@ using System.Collections.Generic;
 
 namespace MyUVEditor
 {
-    public partial class  MyGame : IDisposable
+    public partial class MyGame : IDisposable
     {
         /// <summary>フォーム</summary>
         public Form1 form;
+        /// <summary>モデル表示用フォーム</summary>
+        public DXView subform;
         /// <summary>進捗ウィンドウ</summary>
         public MessageForm message = new MessageForm();
         /// <summary>Direct3Dオブジェクト</summary>
@@ -20,8 +22,10 @@ namespace MyUVEditor
         private Device device;
         public Device Device { get { return this.device; } }
         /// <summary>PresentParameters</summary>
-        private PresentParameters pp;
+        private PresentParameters[] pps;
 
+        //SwapChain mainSwap;
+        //SwapChain subSwap;
         /// <summary>メッシュ</summary>
         private Mesh mesh;
 
@@ -48,6 +52,7 @@ namespace MyUVEditor
         {
             this.host = _host;
             this.form = new Form1(ver);
+            this.subform = new DXView();
             this.uvmorphes = new MakeUVMorph(_host.Connector, this.form);
             this.mmanage = new MaterialManager();
         }
@@ -71,14 +76,13 @@ namespace MyUVEditor
 
             form.ResizeEnd += (o, args) =>
             {
-                this.camera.SetViewPortSize(form);
-                pp.BackBufferWidth = form.ViewPanel.Width;
-                pp.BackBufferHeight = form.ViewPanel.Height;
-                device.Reset(pp);
+                pps[0].BackBufferWidth = form.ViewPanel.Width;
+                pps[0].BackBufferHeight = form.ViewPanel.Height;
                 Viewport vp = device.Viewport;
                 vp.Height = form.ViewPanel.Height;
                 vp.Width = form.ViewPanel.Width;
                 device.Viewport = vp;
+                device.Reset(pps);
                 this.SetTextures();
                 this.OnResourceLoad();
                 this.Render();
@@ -122,14 +126,14 @@ namespace MyUVEditor
                 vS.selectedVertexIndex = tmpselectedlist.ToArray();
                 ResetSelectedBuffer();
                 this.Render();
-                };
+            };
 
             CreateMouseEvent(form.ViewPanel);
             KeyBoardEvent.GetInstance().CreateInputEvent(form.ViewPanel);
 
             form.ReceiveSelectedButton.Click += (o, args) =>
             {
-                this.vS.selectedVertexIndex = this.mypmx.ReceiveSelected(host.Connector,vS.SelectedMaterial);
+                this.vS.selectedVertexIndex = this.mypmx.ReceiveSelected(host.Connector, vS.SelectedMaterial);
                 ResetSelectedBuffer();
                 this.Render();
             };
@@ -149,7 +153,7 @@ namespace MyUVEditor
                 this.SetTextures();
                 this.vS.selectedVertexIndex = new int[0];
                 ResetSelectedBuffer();
-                this.uvmorphes.ReSetUVList(host.Connector,form);
+                this.uvmorphes.ReSetUVList(host.Connector, form);
                 this.Render();
 
             };
@@ -161,7 +165,7 @@ namespace MyUVEditor
 
             form.MoveButton.Click += (o, args) => { DrivingMode.Move.GetInstance().ButtonClicked(this, this.form.MoveValue); };
             form.ScaleButton.Click += (o, args) => { DrivingMode.Scale.GetInstance().ButtonClicked(this, this.form.ScaleValue, this.form.CenterValue); };
-            form.RotButton.Click += (o, args) => { DrivingMode.Rotate.GetInstance().ButtonClicked(this,this.form.RotValue,this.form.CenterValue);};
+            form.RotButton.Click += (o, args) => { DrivingMode.Rotate.GetInstance().ButtonClicked(this, this.form.RotValue, this.form.CenterValue); };
 
             form.ReadMorph.Click += (o, args) =>
             {
@@ -193,53 +197,71 @@ namespace MyUVEditor
             message.LabelReflesh("DirectX関連の設定中");
 
             //Direct3Dパラメータの設定
-            pp = new PresentParameters()
+            pps = new PresentParameters[]
             {
-                BackBufferFormat = Format.X8R8G8B8,
-                BackBufferCount = 1,
-                BackBufferWidth = form.ViewPanel.Width,
-                BackBufferHeight = form.ViewPanel.Height,
-                Multisample = MultisampleType.None,
-                SwapEffect = SwapEffect.Discard,
-                EnableAutoDepthStencil = true,
-                AutoDepthStencilFormat = Format.D16,
-                PresentFlags = PresentFlags.DiscardDepthStencil,
-                PresentationInterval = PresentInterval.Default,
-                Windowed = true,
-                DeviceWindowHandle = form.ViewPanel.Handle
+                new PresentParameters
+                {
+                    BackBufferFormat = Format.X8R8G8B8,
+                    BackBufferCount = 1,
+                    BackBufferWidth = form.ViewPanel.Width,
+                    BackBufferHeight = form.ViewPanel.Height,
+                    Multisample = MultisampleType.None,
+                    SwapEffect = SwapEffect.Discard,
+                    EnableAutoDepthStencil = true,
+                    AutoDepthStencilFormat = Format.D16,
+                    PresentFlags = PresentFlags.DiscardDepthStencil,
+                    PresentationInterval = PresentInterval.Default,
+                    Windowed = true,
+                    DeviceWindowHandle = form.ViewPanel.Handle
+                },
+                new PresentParameters
+                {
+                    BackBufferFormat = Format.X8R8G8B8,
+                    BackBufferCount = 1,
+                    BackBufferWidth = subform.ClientSize.Width,
+                    BackBufferHeight = subform.ClientSize.Height,
+                    Multisample = MultisampleType.None,
+                    SwapEffect = SwapEffect.Discard,
+                    EnableAutoDepthStencil = true,
+                    AutoDepthStencilFormat = Format.D16,
+                    PresentFlags = PresentFlags.DiscardDepthStencil,
+                    PresentationInterval = PresentInterval.Default,
+                    Windowed = true,
+                    DeviceWindowHandle = subform.Handle
+                }
             };
-
             //Direct3Dオブジェクト・デバイスを作成
             direct3D = new Direct3D();
             try
             {
-                device = new Device(direct3D, 0, DeviceType.Hardware, form.Handle, CreateFlags.HardwareVertexProcessing, pp);
+                device = new Device(direct3D, 0, DeviceType.Hardware, form.Handle, CreateFlags.HardwareVertexProcessing, pps);
                 this.form.SetDriveState("松");
             }
             catch (Direct3D9Exception ex1)
             {
                 try
                 {
-                    device = new Device(direct3D, 0, DeviceType.Hardware, form.Handle, CreateFlags.SoftwareVertexProcessing, pp);
-                    this.form.SetDriveState("竹\r\n"+ex1.Source+"\r\n"+ex1.Message);
+                    device = new Device(direct3D, 0, DeviceType.Hardware, form.Handle, CreateFlags.SoftwareVertexProcessing, pps);
+                    this.form.SetDriveState("竹\r\n" + ex1.Source + "\r\n" + ex1.Message);
                 }
                 catch (Direct3D9Exception ex2)
                 {
                     try
                     {
-                        device = new Device(direct3D, 0, DeviceType.Reference, form.Handle, CreateFlags.SoftwareVertexProcessing, pp);
+                        device = new Device(direct3D, 0, DeviceType.Reference, form.Handle, CreateFlags.SoftwareVertexProcessing, pps);
                         this.form.SetDriveState("梅\r\n" + ex2.Source + "\r\n" + ex2.Message);
                     }
                     catch (Direct3D9Exception ex3)
                     {
-                        MessageBox.Show(ex3.Message +"\r\nデバイスの作成に失敗しました。", "DirectX Initialization failed", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                        MessageBox.Show(ex3.Message + "\r\nデバイスの作成に失敗しました。", "DirectX Initialization failed", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                         form.Close();
                     }
                 }
             }
-            this.camera = new Camera(this.device);
+            //mainSwap = device.GetSwapChain(0);
+            //subSwap = new SwapChain(device, pps[1]);
+            this.camera = new Camera();
             //高さと幅設定
-            this.camera.SetViewPortSize(form);
 
             //Xファイルからmeshとtextures登録
             this.SetBuffersTextures();
@@ -256,6 +278,7 @@ namespace MyUVEditor
             this.Render();
             message.Visible = false;
             form.Show();
+            subform.Show();
         }
 
         /// <summary>
@@ -275,7 +298,7 @@ namespace MyUVEditor
             device.EnableLight(0, true);
 
             //射影変換
-            device.SetTransform(TransformState.Projection, this.camera.TransformProjection(1));
+            device.SetTransform(TransformState.Projection, this.camera.TransformProjection(device,1));
             //ビュー
             device.SetTransform(TransformState.View, camera.TransformView());
 
@@ -286,7 +309,7 @@ namespace MyUVEditor
             this.device.SetRenderState(RenderState.CullMode, Cull.None);
 
             //アルファブレンド
-            this.device.SetRenderState(RenderState.SourceBlend , Blend.SourceAlpha);
+            this.device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
             this.device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
             device.SetRenderState(RenderState.AlphaBlendEnable, true);
         }
@@ -304,7 +327,7 @@ namespace MyUVEditor
                 Console.WriteLine("デバイスロスト");
                 if (device.TestCooperativeLevel() == ResultCode.DeviceNotReset)
                 {
-                    device.Reset(pp);
+                    device.Reset(pps);
                     deviceLost = false;
                     OnResourceLoad();
                     Render();
@@ -317,9 +340,19 @@ namespace MyUVEditor
 
             try
             {
-                if (KeyBoardEvent.GetInstance().OnKeys[(int)Keys.Enter]) { this.camera.ResetCamera(this.device); MessageBox.Show("called"); }
+            //    if (mainSwap.Disposed)
+            //    {
+            //        mainSwap = new SwapChain(device, pps[0]);
+            //    }
+            //    using (Surface surface = mainSwap.GetBackBuffer(0))
+            //    {
+            //        // デバイスのレンダリングターゲットの設定
+            //        this.device.SetRenderTarget(0, surface);
+            //    }
+
+                if (KeyBoardEvent.GetInstance().OnKeys[(int)Keys.Enter]) { this.camera.ResetCamera(); MessageBox.Show("called"); }
                 device.SetTransform(TransformState.View, this.camera.TransformView());
-                device.SetTransform(TransformState.Projection, this.camera.TransformProjection(this.textureinfoes[vS.SelectedMaterial].Aspect));
+                device.SetTransform(TransformState.Projection, this.camera.TransformProjection(device,this.textureinfoes[vS.SelectedMaterial].Aspect));
 
                 //描画を開始
                 device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, mmanage.BGColor, 1.0f, 0);
@@ -328,7 +361,7 @@ namespace MyUVEditor
                 //Xファイル
                 device.Material = mmanage.ForXFile;
                 device.SetRenderState(RenderState.Lighting, true);
-                device.SetRenderState(RenderState.FillMode, FillMode.Wireframe);
+                device.SetRenderState(RenderState.FillMode,FillMode.Wireframe);
                 mesh.DrawSubset(vS.SelectedMaterial);
 
                 //背景表示
@@ -339,7 +372,7 @@ namespace MyUVEditor
                 device.VertexFormat = CustomVertex.PositionTextured.FVF;
                 device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
 
-                
+
                 //頂点表示
                 device.Material = mmanage.ForVertexPoint;
                 device.SetRenderState(RenderState.FillMode, FillMode.Point);
@@ -362,9 +395,9 @@ namespace MyUVEditor
                 }
 
                 //選択領域表示
-                if ((this.drivingMode.Type() ==DrawingMode.ADD)
-                    ||(this.drivingMode.Type() ==DrawingMode.REMOVE)
-                    ||(this.drivingMode.Type() ==DrawingMode.SELECT))
+                if ((this.drivingMode.Type() == DrawingMode.ADD)
+                    || (this.drivingMode.Type() == DrawingMode.REMOVE)
+                    || (this.drivingMode.Type() == DrawingMode.SELECT))
                 {
                     device.Material = mmanage.ForSelectedArea;
                     device.SetRenderState(RenderState.FillMode, FillMode.Solid);
@@ -376,10 +409,11 @@ namespace MyUVEditor
                 {
                     CustomVertex.PositionOnly[] nearva = { mypmx.VertexArray[this.vS.NearUsedIndex] };
                     device.Material = mmanage.ForNearVertex;
-                    device.DrawUserPrimitives(PrimitiveType.PointList, 1, nearva);                        
+                    device.DrawUserPrimitives(PrimitiveType.PointList, 1, nearva);
                 }
                 device.EndScene();
                 device.Present();
+                //mainSwap.Present(Present.None);
             }
 
             catch (Direct3D9Exception e)
@@ -408,8 +442,8 @@ namespace MyUVEditor
             if (mesh != null) mesh.Dispose();
             if (texvertex != null) texvertex.Dispose();
             device.Dispose();
-            if (form != null)form.Dispose();
-            if (message != null)message.Dispose();
+            if (form != null) form.Dispose();
+            if (message != null) message.Dispose();
         }
 
         public void ResourceDispose()

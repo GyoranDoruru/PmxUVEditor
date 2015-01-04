@@ -52,30 +52,38 @@ namespace MyUVEditor
             this.selectPoly[3].Position.Y = vec.Y;
         }
 
-        public int GetNearSelected(MyPMX target, Camera camera, Point p)
+        public int GetNearSelected(Device device, MyPMX target, Camera camera, Point p)
         {
             for (int i = 0; i < this.selectedVertexIndex.Length; i++)
             {
-                if (camera.PointIsNear(p, target.VertexArray[this.selectedVertexIndex[i]].Position))
+                if (camera.PointIsNear(device, p, target.VertexArray[this.selectedVertexIndex[i]].Position))
                 {
                     return this.selectedVertexIndex[i];
                 }
             }
             return -1;
         }
-        public int GetNearUsed(MyPMX target,Camera camera, Point p)
+        public int GetNearUsed(Device device,MyPMX target, Camera camera, Point p)
         {
-            for (int i = 0; i < target.VertexArray.Length; i++)
+            try
             {
-                bool used = target.IsUsedinMat[this.SelectedMaterial, i];
-                if (used && camera.PointIsNear(p, target.VertexArray[i].Position))
+                for (int i = 0; i < target.VertexArray.Length; i++)
                 {
-                    this.nearUsedIndex = i;
-                    return i;
+                    bool used = target.IsUsedinMat[this.SelectedMaterial, i];
+                    if (used && camera.PointIsNear(device, p, target.VertexArray[i].Position))
+                    {
+                        this.nearUsedIndex = i;
+                        return i;
+                    }
                 }
+                this.nearUsedIndex = -1;
+                return -1;
             }
-            this.nearUsedIndex = -1;
-            return -1;
+            catch (SlimDXException ex)
+            {
+                Console.WriteLine(ex);
+                return -1;
+            }
         }
 
     }

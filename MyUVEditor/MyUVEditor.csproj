@@ -61,6 +61,12 @@
     <Compile Include="DrivingMode\Rotate.cs" />
     <Compile Include="DrivingMode\Scale.cs" />
     <Compile Include="DrivingMode\Select.cs" />
+    <Compile Include="DXView.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="DXView.Designer.cs">
+      <DependentUpon>DXView.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -81,6 +87,7 @@
     <Compile Include="MyGamePT.cs" />
     <Compile Include="MyPlugin.cs" />
     <Compile Include="MyPMX.cs" />
+    <Compile Include="PMXMesh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Shader.cs" />
     <Compile Include="TextureInfo.cs" />

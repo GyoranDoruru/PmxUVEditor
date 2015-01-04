@@ -46,7 +46,12 @@ namespace MyUVEditor
             message.StatusBar.Value = 0;
             message.StatusBar.Maximum = 6;
             this.mesh = null;
-            this.mesh = new Mesh(device, this.mypmx.IndexArray.Length / 3, this.mypmx.VertexArray.Length, MeshFlags.Use32Bit | MeshFlags.Managed, CustomVertex.PositionOnly.FVF);
+            this.mesh = new Mesh(
+                device,
+                this.mypmx.IndexArray.Length / 3,
+                this.mypmx.VertexArray.Length,
+                MeshFlags.Use32Bit | MeshFlags.Managed,
+                CustomVertex.PositionOnly.FVF);
             message.StatusBar.Value = 1;
             using (DataStream data = this.mesh.LockIndexBuffer(LockFlags.None))
             {
