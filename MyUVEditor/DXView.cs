@@ -60,6 +60,11 @@ namespace MyUVEditor
             InitResource(device, pp);
         }
 
+        /// <summary>
+        /// サブウィンドウ用リソース初期化
+        /// </summary>
+        /// <param name="device"></param>
+        /// <param name="pp"></param>
         public void InitResource(Device device, PresentParameters pp)
         {
             if (pp == null)
@@ -72,7 +77,10 @@ namespace MyUVEditor
                 pp.AutoDepthStencilFormat, MultisampleType.None, 0, true);
 
         }
-
+        /// <summary>
+        /// メインウィンドウ用リソース初期化
+        /// </summary>
+        /// <param name="swapChain"></param>
         public void InitResource(SwapChain swapChain)
         {
             this.swapChain = swapChain;

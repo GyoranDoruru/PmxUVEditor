@@ -10,7 +10,7 @@ using SlimDX;
 using SlimDX.Direct3D9;
 namespace MyUVEditor
 {
-    partial class DXViewForm : Form
+    public partial class DXViewForm : Form
     {
         public DXView ViewPort { get { return this.dxView1; } }
         public DXViewForm()

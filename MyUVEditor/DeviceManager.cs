@@ -5,10 +5,11 @@ using System.Text;
 using SlimDX;
 using SlimDX.Direct3D9;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace MyUVEditor
 {
-    class DeviceManager:IDisposable
+    public class DeviceManager : IDisposable
     {
         static public PresentParameters GetPresentParameters(Control c)
         {
@@ -29,7 +30,7 @@ namespace MyUVEditor
             };
 
         }
-        
+
         public Device Device { get; private set; }
         public string DriveState { get; private set; }
         public DXViewForm mainForm { get; private set; }
@@ -42,8 +43,10 @@ namespace MyUVEditor
             CreateDevice(mainForm);
             mainForm.ViewPort.InitResource(Device.GetSwapChain(0));
             subForm.ViewPort.InitResource(Device, null);
+            mainForm.Show();
+            subForm.Show();
         }
-        public void CreateDevice(DXViewForm form)
+        private void CreateDevice(DXViewForm form)
         {
             Direct3D direct3D = new Direct3D();
             PresentParameters pp = GetPresentParameters(form.ViewPort);
@@ -79,22 +82,52 @@ namespace MyUVEditor
         {
             Result hr;
             hr = mainForm.ViewPort.Render(mm);
+            LoopForResetDevice(hr);
             hr = subForm.ViewPort.Render(mm);
+            LoopForResetDevice(hr);
         }
         public void Dispose()
         {
+            PresentParameters pp1, pp2;
+            DisposeResource(out pp1, out pp2);
             if (Device != null && !Device.Disposed)
             {
                 Device.Dispose();
             }
         }
 
-        public void CheckDevice(Result hr)
+        public void LoopForResetDevice(Result hr)
         {
+            if (hr.IsSuccess)
+                return;
+            if (hr != ResultCode.DeviceLost)
+                throw new SlimDXException(hr);
+
+            PresentParameters ppMain;
+            PresentParameters ppSub;
+            DisposeResource(out ppMain, out ppSub);
+            while (hr == ResultCode.DeviceLost)
+            {
+                Thread.Sleep(100);
+                hr = Device.Reset(ppMain);
+            }
+
             if (hr.IsFailure)
             {
-                hr==ResultCode.DeviceLost;
+                throw new SlimDXException(hr);
             }
+            else
+            {
+                mainForm.ViewPort.InitResource(Device.GetSwapChain(0));
+                subForm.ViewPort.InitResource(Device, ppSub);
+            }
+        }
+
+        public void DisposeResource(out PresentParameters mainPP, out PresentParameters subPP)
+        {
+            Device device;
+            mainForm.ViewPort.DisposeResource(out device, out mainPP);
+            subForm.ViewPort.DisposeResource(out device, out subPP);
         }
     }
 }
