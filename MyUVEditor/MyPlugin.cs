@@ -21,8 +21,9 @@ namespace MyUVEditor
         {
             try
             {
-                game = new MyGame(args.Host,ver);
-                game.Run();
+                //game = new MyGame(args.Host,ver);
+                //game.Run();
+                ParentForm PF = new ParentForm(args.Host.Connector.Pmx.GetCurrentState());
                 //_thread = new Thread(new ThreadStart(game.Run));
                 //_thread.Start();
             }
