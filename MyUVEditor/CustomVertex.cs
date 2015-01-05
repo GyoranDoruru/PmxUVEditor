@@ -150,29 +150,30 @@ namespace MyUVEditor
         }
     }
 
+    [StructLayout(LayoutKind.Sequential)]
     struct PMXVertex
     {
         Vector3 Pos;
         Vector3 Norm;
         Vector2 UV;
-        Vector4 UVA1;
-        Vector4 UVA2;
-        Vector4 UVA3;
-        Vector4 UVA4;
+        //Vector4 UVA1;
+        //Vector4 UVA2;
+        //Vector4 UVA3;
+        //Vector4 UVA4;
         public PMXVertex(IPXVertex v)
         {
             Pos = v.Position.ToVector3();
             Norm = v.Normal.ToVector3();
             UV = v.UV.ToVector2();
-            UVA1 = v.UVA1.ToVector4();
-            UVA2 = v.UVA2.ToVector4();
-            UVA3 = v.UVA3.ToVector4();
-            UVA4 = v.UVA4.ToVector4();
+            //UVA1 = v.UVA1.ToVector4();
+            //UVA2 = v.UVA2.ToVector4();
+            //UVA3 = v.UVA3.ToVector4();
+            //UVA4 = v.UVA4.ToVector4();
         }
         public static VertexElement[] GetElements()
         {
             short offset = 0;
-            VertexElement[] result = new VertexElement[7];
+            VertexElement[] result = new VertexElement[3];
             result[0] = new VertexElement
             {
                 Offset = offset,
@@ -197,18 +198,19 @@ namespace MyUVEditor
             };
             offset += (short)Marshal.SizeOf(typeof(Vector2));
 
-            for (byte i = 1; i < 5; i++)
-            {
-                result[2+i] = new VertexElement
-                {
-                    Offset = offset,
-                    Type = DeclarationType.Float4,
-                    Usage = DeclarationUsage.TextureCoordinate,
-                    UsageIndex = i
-                };
-                offset += (short)Marshal.SizeOf(typeof(Vector2));                
-            }
+            //for (byte i = 1; i < 5; i++)
+            //{
+            //    result[2+i] = new VertexElement
+            //    {
+            //        Offset = offset,
+            //        Type = DeclarationType.Float4,
+            //        Usage = DeclarationUsage.TextureCoordinate,
+            //        UsageIndex = i
+            //    };
+            //    offset += (short)Marshal.SizeOf(typeof(Vector2));                
+            //}
             return result;
         }
+        public static readonly VertexFormat Format = VertexFormat.Position | VertexFormat.Normal | VertexFormat.Texture1;
     }
 }

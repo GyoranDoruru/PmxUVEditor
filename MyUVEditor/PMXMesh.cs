@@ -6,28 +6,43 @@ using SlimDX;
 using SlimDX.Direct3D9;
 using PEPlugin.Pmx;
 
+//using PNTVertex = MyUVEditor.CustomVertex.PositionNormalTextured;
+using PNTVertex = MyUVEditor.PMXVertex;
+
 namespace MyUVEditor
 {
-    class PMXMesh : Mesh
+    public class PMXMesh : Mesh
     {
         private IPXPmx Pmx;
         private int[] IndexArray;
-        private PMXVertex[] VertexArray;
+        //private PMXVertex[] VertexArray;
+        private PNTVertex[] VertexArray;
         private AttributeRange[] ARangeArray;
         private HashSet<int>[] VIndices;
         private ExtendedMaterial[] ExMaterialArray;
+        public MaterialManager MatManager { get; private set; }
 
         static public PMXMesh GetPMXMesh(Device device, IPXPmx pmx)
         {
-            int faceCount = 0;
-            foreach (var m in pmx.Material)
-                faceCount += m.Faces.Count;
-            return new PMXMesh(pmx, device, faceCount);
+            try
+            {
+                int faceCount = 0;
+                foreach (var m in pmx.Material)
+                    faceCount += m.Faces.Count;
+                return new PMXMesh(pmx, device, faceCount);
+            }
+            catch (SlimDXException e)
+            {
+                Console.WriteLine(e);
+                throw e;
+            }
         }
 
         private PMXMesh(IPXPmx pmx, Device device, int faceCount)
-            : base(device, faceCount, pmx.Vertex.Count, MeshFlags.Use32Bit | MeshFlags.Managed, PMXVertex.GetElements())
+            : base(device, faceCount, pmx.Vertex.Count, MeshFlags.Use32Bit | MeshFlags.Managed, PNTVertex.Format)
+//            : base(device, faceCount, pmx.Vertex.Count, MeshFlags.Use32Bit | MeshFlags.Managed, PNTVertex.GetElements())
         {
+            MatManager = new MaterialManager();
             Pmx = pmx;
             InitVertexArray();
             InitVertexArray();
@@ -76,6 +91,7 @@ namespace MyUVEditor
                     VIndices[midx].Add(vIndex);
                     count++;
                 }
+                midx++;
             }
 
 
@@ -83,10 +99,10 @@ namespace MyUVEditor
         
         private void InitVertexArray()
         {
-            VertexArray = new PMXVertex[VertexCount];
+            VertexArray = new PNTVertex[VertexCount];
             for (int i = 0; i < VertexCount; i++)
             {
-                VertexArray[i] = new PMXVertex(Pmx.Vertex[i]);
+                VertexArray[i] = new PNTVertex(Pmx.Vertex[i]);
             }
         }
         

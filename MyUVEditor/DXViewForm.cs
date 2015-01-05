@@ -17,5 +17,12 @@ namespace MyUVEditor
         {
             InitializeComponent();
         }
+
+        private void DXViewForm_ResizeEnd(object sender, EventArgs e)
+        {
+            ViewPort.ResizeEnd();
+        }
+
+        
     }
 }

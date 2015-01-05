@@ -33,7 +33,7 @@ namespace MyUVEditor
             }
         }
 
-        public Result Render(MaterialManager mm)
+        public Result Render(PMXMesh pmx)
         {
             Device device = swapChain.Device;
             using (Surface surface = swapChain.GetBackBuffer(0))
@@ -42,10 +42,11 @@ namespace MyUVEditor
                 device.DepthStencilSurface = depthSurface;
                 device.Viewport = Viewport;
             }
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, mm.BGColor, 1.0f, 0);
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, pmx.MatManager.BGColor, 1.0f, 0);
             device.BeginScene();
             device.SetTransform(TransformState.View, camera.TransformView());
             device.SetTransform(TransformState.Projection, camera.TransformProjection(device, 1));
+            pmx.DrawSubset(0);
             device.EndScene();
             return swapChain.Present(Present.None);
         }

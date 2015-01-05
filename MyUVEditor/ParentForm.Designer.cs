@@ -1,6 +1,6 @@
 ﻿namespace MyUVEditor
 {
-    partial class DXViewForm
+    partial class ParentForm
     {
         /// <summary>
         /// Required designer variable.
@@ -28,32 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.dxView1 = new MyUVEditor.DXView();
-            this.SuspendLayout();
-            // 
-            // dxView1
-            // 
-            this.dxView1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dxView1.Location = new System.Drawing.Point(0, 0);
-            this.dxView1.Name = "dxView1";
-            this.dxView1.Size = new System.Drawing.Size(292, 273);
-            this.dxView1.TabIndex = 0;
-            // 
-            // DXViewForm
-            // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.components = new System.ComponentModel.Container();
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(292, 273);
-            this.Controls.Add(this.dxView1);
-            this.Name = "DXViewForm";
-            this.Text = "DXViewForm";
-            this.ResizeEnd += new System.EventHandler(this.DXViewForm_ResizeEnd);
-            this.ResumeLayout(false);
-
+            this.Text = "ParentForm";
         }
 
         #endregion
-
-        private DXView dxView1;
     }
 }

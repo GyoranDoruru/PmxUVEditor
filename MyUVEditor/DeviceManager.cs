@@ -9,7 +9,7 @@ using System.Threading;
 
 namespace MyUVEditor
 {
-    public class DeviceManager : IDisposable
+    public class DeviceManager
     {
         static public PresentParameters GetPresentParameters(Control c)
         {
@@ -33,18 +33,16 @@ namespace MyUVEditor
 
         public Device Device { get; private set; }
         public string DriveState { get; private set; }
-        public DXViewForm mainForm { get; private set; }
-        public DXViewForm subForm { get; private set; }
-        private MaterialManager mm = new MaterialManager();
-        public DeviceManager()
+        public DeviceManager(DXViewForm[] forms)
         {
-            mainForm = new DXViewForm();
-            subForm = new DXViewForm();
-            CreateDevice(mainForm);
-            mainForm.ViewPort.InitResource(Device.GetSwapChain(0));
-            subForm.ViewPort.InitResource(Device, null);
-            mainForm.Show();
-            subForm.Show();
+            CreateDevice(forms[0]);
+            forms[0].ViewPort.InitResource(Device.GetSwapChain(0));
+            forms[0].Show();
+            for (int i = 1; i < forms.Length; i++)
+            {
+                forms[i].ViewPort.InitResource(Device, null);
+                forms[i].Show();
+            }
         }
         private void CreateDevice(DXViewForm form)
         {
@@ -78,38 +76,38 @@ namespace MyUVEditor
             }
         }
 
-        public void Render()
+        public void Render(DXViewForm[] forms,PMXMesh mesh)
         {
             Result hr;
-            hr = mainForm.ViewPort.Render(mm);
-            LoopForResetDevice(hr);
-            hr = subForm.ViewPort.Render(mm);
-            LoopForResetDevice(hr);
+            for (int i = 0; i < forms.Length; i++)
+            {
+                hr = forms[i].ViewPort.Render(mesh);
+                LoopForResetDevice(forms, hr);
+            }
         }
-        public void Dispose()
+        public void Dispose(DXViewForm[] forms)
         {
-            PresentParameters pp1, pp2;
-            DisposeResource(out pp1, out pp2);
+            PresentParameters[] pps;
+            DisposeResource(forms,out pps);
             if (Device != null && !Device.Disposed)
             {
                 Device.Dispose();
             }
         }
 
-        public void LoopForResetDevice(Result hr)
+        public void LoopForResetDevice(DXViewForm[] forms, Result hr)
         {
             if (hr.IsSuccess)
                 return;
             if (hr != ResultCode.DeviceLost)
                 throw new SlimDXException(hr);
 
-            PresentParameters ppMain;
-            PresentParameters ppSub;
-            DisposeResource(out ppMain, out ppSub);
+            PresentParameters[] pps;
+            DisposeResource(forms, out pps);
             while (hr == ResultCode.DeviceLost)
             {
                 Thread.Sleep(100);
-                hr = Device.Reset(ppMain);
+                hr = Device.Reset(pps[0]);
             }
 
             if (hr.IsFailure)
@@ -118,16 +116,21 @@ namespace MyUVEditor
             }
             else
             {
-                mainForm.ViewPort.InitResource(Device.GetSwapChain(0));
-                subForm.ViewPort.InitResource(Device, ppSub);
+                forms[0].ViewPort.InitResource(Device.GetSwapChain(0));
+                for (int i = 0; i < forms.Length; i++)
+                    forms[i].ViewPort.InitResource(Device, pps[i]);
             }
         }
 
-        public void DisposeResource(out PresentParameters mainPP, out PresentParameters subPP)
+        public void DisposeResource(DXViewForm[] forms, out PresentParameters[] pps)
         {
             Device device;
-            mainForm.ViewPort.DisposeResource(out device, out mainPP);
-            subForm.ViewPort.DisposeResource(out device, out subPP);
+            pps = new PresentParameters[forms.Length];
+            for (int i = 0; i < forms.Length;i++ )
+            {
+                forms[i].ViewPort.DisposeResource(out device, out pps[i]);
+            }
         }
+
     }
 }

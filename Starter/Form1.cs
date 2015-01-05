@@ -20,23 +20,6 @@ namespace Starter
         {
             InitializeComponent();
         }
-//        public void Run()
-//        {
-//            IPXPmx miku = new PMXImporter.PMX.ImpPmx();
-//            miku.FromFile(
-//@"C:\Documents and Settings\User\My Documents\MMD\MikuMikuDance_v707\UserFile\Model\あにまさもでる\初音ミクVer2.pmx");
-//            IPERunArgs runArgs = new DummyIPERunArgs();
-//            runArgs.Host.Connector.Pmx.Update(miku);
-
-//            MyPlugin plugin = new MyPlugin();
-//            plugin.Run(runArgs);
-//        }
-
-        public void Run()
-        {
-            DeviceManager dm = new DeviceManager();
-            dm.Render();
-        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -47,10 +30,11 @@ namespace Starter
         {
             IPXPmx pmx = new PMXImporter.PMX.ImpPmx();
             pmx.FromFile(((OpenFileDialog)sender).FileName);
-            IPERunArgs runArgs = new DummyIPERunArgs();
-            runArgs.Host.Connector.Pmx.Update(pmx);
-            MyPlugin plugin = new MyPlugin();
-            plugin.Run(runArgs);
+            //IPERunArgs runArgs = new DummyIPERunArgs();
+            //runArgs.Host.Connector.Pmx.Update(pmx);
+            //MyPlugin plugin = new MyPlugin();
+            //plugin.Run(runArgs);
+            ParentForm pf = new ParentForm(pmx);
         }
     }
 }
