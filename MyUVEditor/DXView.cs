@@ -15,7 +15,7 @@ namespace MyUVEditor
         public DXView()
         {
             InitializeComponent();
-            camera = new Camera();
+            camera = new Camera(this);
         }
         private Camera camera;
         private SwapChain swapChain;
@@ -32,6 +32,13 @@ namespace MyUVEditor
                 };
             }
         }
+        public event EventHandler RequestRender;
+        public void SetRequest(Form c)
+        {
+            c.SizeChanged += (o, args) => { this.Resize(); };
+            c.ResizeEnd += (o, args) => { this.ResizeEnd(); };
+            c.MouseWheel += (o, args) => { camera.CameraDolly(args.Delta); RequestRender(this, EventArgs.Empty); };
+        }
 
         public Result Render(PMXMesh pmx)
         {
@@ -44,11 +51,22 @@ namespace MyUVEditor
             }
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, pmx.MatManager.BGColor, 1.0f, 0);
             device.BeginScene();
-            device.SetTransform(TransformState.View, camera.TransformView());
-            device.SetTransform(TransformState.Projection, camera.TransformProjection(device, 1));
+            device.SetTransform(TransformState.View, camera.View);
+            device.SetTransform(TransformState.Projection, camera.Projection);
             pmx.DrawSubset(0);
             device.EndScene();
             return swapChain.Present(Present.None);
+        }
+
+        public new void Resize()
+        {
+            Device device = swapChain.Device;
+            Viewport viewport = device.Viewport;
+            viewport.Width = ClientSize.Width;
+            viewport.Height = ClientSize.Height;
+            //device.Viewport = viewport;
+            camera.SetClientSize(this);
+            RequestRender(this, EventArgs.Empty);
         }
 
         public void ResizeEnd()
@@ -59,6 +77,8 @@ namespace MyUVEditor
             pp.BackBufferWidth = ClientSize.Width;
             pp.BackBufferHeight = ClientSize.Height;
             InitResource(device, pp);
+            camera.SetClientSize(this);
+            RequestRender(this, EventArgs.Empty);
         }
 
         /// <summary>

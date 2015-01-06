@@ -24,8 +24,10 @@ namespace MyUVEditor
 
             foreach (var v in DXViewers)
             {
-                v.Resize += (o, args) => { DeviceM.Render(DXViewers, PMX); };
-                v.ResizeEnd += (o, args) => { DeviceM.Render(DXViewers, PMX); };
+                v.ViewPort.RequestRender += (o, args) => { DeviceM.Render(DXViewers, PMX); };
+
+                //v.Resize += (o, args) => { DeviceM.Render(DXViewers, PMX); };
+                //v.ResizeEnd += (o, args) => { DeviceM.Render(DXViewers, PMX); };
             }
         }
         public DeviceManager DeviceM { get; private set; }
