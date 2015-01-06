@@ -19,7 +19,7 @@ namespace MyUVEditor
         private PNTVertex[] VertexArray;
         private AttributeRange[] ARangeArray;
         private HashSet<int>[] VIndices;
-        private ExtendedMaterial[] ExMaterialArray;
+        public ExtendedMaterial[] ExMaterialArray { get; private set; }
         public MaterialManager MatManager { get; private set; }
 
         static public PMXMesh GetPMXMesh(Device device, IPXPmx pmx)
@@ -51,9 +51,11 @@ namespace MyUVEditor
             InitIndexArray(vDic);
             InitMaterialArray(vDic);
 
-            SetVertexBuffer();
             SetIndexBuffer();
+            SetVertexBuffer();
             SetAttributeTable(ARangeArray);
+            SetARangeBuffer();
+            SetMaterials(ExMaterialArray);
         }
 
         private Dictionary<IPXVertex, int> GetVDic()
@@ -122,7 +124,7 @@ namespace MyUVEditor
                     VertexCount = VIndices[i].Count,
                     VertexStart = vDic[m.Faces[0].Vertex1]
                 };
-
+                faceOffset += m.Faces.Count;
                 ExMaterialArray[i] = new ExtendedMaterial
                 {
                     MaterialD3D = new Material
@@ -134,6 +136,7 @@ namespace MyUVEditor
                     },
                     TextureFileName = m.Tex
                 };
+
             }
         }
         private void SetIndexBuffer()
@@ -150,6 +153,20 @@ namespace MyUVEditor
             {
                 data.WriteRange(VertexArray);
                 UnlockVertexBuffer();
+            }
+        }
+        private void SetARangeBuffer()
+        {
+            using (DataStream data = LockAttributeBuffer(LockFlags.None))
+            {
+                foreach (var a in ARangeArray)
+                {
+                    for (int i = 0; i < a.FaceCount;i++ )
+                    {
+                        data.Write<int>(a.AttribId);
+                    }
+                }
+                UnlockAttributeBuffer();
             }
         }
     }

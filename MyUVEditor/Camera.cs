@@ -33,7 +33,7 @@ namespace MyUVEditor
             get
             {
                 if (FOV > 0)
-                    return Matrix.PerspectiveFovLH(FOV, (float)Width / Height, 0.1f, 1000);
+                    return Matrix.PerspectiveFovLH(FOV, (float)Width / Height, 1f, 1000);
                 else
                 {
                     float width = Width / Height * scale * aspect;

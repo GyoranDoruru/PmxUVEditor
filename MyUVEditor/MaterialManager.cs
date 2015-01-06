@@ -85,9 +85,17 @@ namespace MyUVEditor
             }
         }
 
+        public Light Light { get; private set; }
         public MaterialManager()
         {
             BGColor = new Color4(0.3f, 0.3f, 0.3f);
+            Light = new Light
+            {
+                Type = LightType.Directional,
+                Diffuse = Color.White,
+                Ambient = Color.GhostWhite,
+                Direction = new Vector3(0.0f, -1.0f, 0.0f)
+            };
         }
     }
 }

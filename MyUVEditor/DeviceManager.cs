@@ -11,6 +11,10 @@ namespace MyUVEditor
 {
     public class DeviceManager
     {
+        static MultisampleType maxSample;
+        static public MultisampleType tmpSample { get; private set; }
+        static int maxQuality;
+        static public int tmpQuality { get; private set; }
         static public PresentParameters GetPresentParameters(Control c)
         {
             return new PresentParameters
@@ -19,11 +23,13 @@ namespace MyUVEditor
                 BackBufferCount = 1,
                 BackBufferWidth = c.ClientSize.Width,
                 BackBufferHeight = c.ClientSize.Height,
-                Multisample = MultisampleType.None,
+                Multisample = tmpSample,
+                MultisampleQuality = tmpQuality-1,
                 SwapEffect = SwapEffect.Discard,
                 EnableAutoDepthStencil = true,
                 AutoDepthStencilFormat = Format.D16,
-                PresentFlags = PresentFlags.DiscardDepthStencil,
+                //PresentFlags = PresentFlags.DiscardDepthStencil,
+                PresentFlags = PresentFlags.None,
                 PresentationInterval = PresentInterval.Default,
                 Windowed = true,
                 DeviceWindowHandle = c.Handle
@@ -36,17 +42,50 @@ namespace MyUVEditor
         public DeviceManager(DXViewForm[] forms)
         {
             CreateDevice(forms[0]);
-            forms[0].ViewPort.InitResource(Device.GetSwapChain(0));
-            forms[0].Show();
-            for (int i = 1; i < forms.Length; i++)
+            for (int i = 0; i < forms.Length; i++)
             {
-                forms[i].ViewPort.InitResource(Device, null);
+                forms[i].ViewPort.InitResource(Device);
                 forms[i].Show();
             }
+        }
+
+        private bool CheckDeviceType(Direct3D d3d, out DeviceType dType, out MultisampleType mType, out int mQuality)
+        {
+            dType = DeviceType.Hardware;
+            mType = MultisampleType.EightSamples;
+            mQuality = 0;
+            //if (!d3d.CheckDeviceType(0, dType, Format.X8R8G8B8, Format.D16, true))
+            //{
+            //    dType = DeviceType.Reference;
+            //    if (!d3d.CheckDeviceType(0, dType, Format.X8R8G8B8, Format.D16, true))
+            //        return false;
+            //}
+
+            if (!d3d.CheckDeviceMultisampleType(0, dType, Format.X8R8G8B8, true, mType, out mQuality)
+                || !d3d.CheckDeviceMultisampleType(0, dType, Format.D16, true, mType, out mQuality)
+                || mQuality<1)
+            {
+                mType = MultisampleType.FourSamples;
+                if (!d3d.CheckDeviceMultisampleType(0, dType, Format.X8R8G8B8, true, mType, out mQuality)
+                    || !d3d.CheckDeviceMultisampleType(0, dType, Format.D16, true, mType, out mQuality)
+                    || mQuality<1)
+                {
+                    mType = MultisampleType.TwoSamples;
+                    if (!d3d.CheckDeviceMultisampleType(0, dType, Format.X8R8G8B8, true, mType, out mQuality)
+                        || !d3d.CheckDeviceMultisampleType(0, dType, Format.D16, true, mType, out mQuality)
+                        ||mQuality<1)
+                        mType = MultisampleType.None;
+                }
+            }
+            return true;
         }
         private void CreateDevice(DXViewForm form)
         {
             Direct3D direct3D = new Direct3D();
+            DeviceType dType;
+            CheckDeviceType(direct3D, out dType, out maxSample, out maxQuality);
+            tmpSample = maxSample;
+            tmpQuality = maxQuality;
             PresentParameters pp = GetPresentParameters(form.ViewPort);
             direct3D = new Direct3D();
             try
@@ -76,7 +115,7 @@ namespace MyUVEditor
             }
         }
 
-        public void Render(DXViewForm[] forms,PMXMesh mesh)
+        public void Render(DXViewForm[] forms, PMXMesh mesh)
         {
             Result hr;
             for (int i = 0; i < forms.Length; i++)
@@ -87,8 +126,7 @@ namespace MyUVEditor
         }
         public void Dispose(DXViewForm[] forms)
         {
-            PresentParameters[] pps;
-            DisposeResource(forms,out pps);
+            DisposeResource(forms);
             if (Device != null && !Device.Disposed)
             {
                 Device.Dispose();
@@ -102,12 +140,12 @@ namespace MyUVEditor
             if (hr != ResultCode.DeviceLost)
                 throw new SlimDXException(hr);
 
-            PresentParameters[] pps;
-            DisposeResource(forms, out pps);
+            DisposeResource(forms);
+            PresentParameters pp = DeviceManager.GetPresentParameters(forms[0]);
             while (hr == ResultCode.DeviceLost)
             {
                 Thread.Sleep(100);
-                hr = Device.Reset(pps[0]);
+                hr = Device.Reset(pp);
             }
 
             if (hr.IsFailure)
@@ -116,19 +154,17 @@ namespace MyUVEditor
             }
             else
             {
-                forms[0].ViewPort.InitResource(Device.GetSwapChain(0));
                 for (int i = 0; i < forms.Length; i++)
-                    forms[i].ViewPort.InitResource(Device, pps[i]);
+                    forms[i].ViewPort.InitResource(Device);
             }
         }
 
-        public void DisposeResource(DXViewForm[] forms, out PresentParameters[] pps)
+        public void DisposeResource(DXViewForm[] forms)
         {
             Device device;
-            pps = new PresentParameters[forms.Length];
-            for (int i = 0; i < forms.Length;i++ )
+            for (int i = 0; i < forms.Length; i++)
             {
-                forms[i].ViewPort.DisposeResource(out device, out pps[i]);
+                forms[i].ViewPort.DisposeResource(out device);
             }
         }
 

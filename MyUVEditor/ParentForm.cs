@@ -15,9 +15,9 @@ namespace MyUVEditor
         public ParentForm(IPXPmx pmx)
         {
             InitializeComponent();
-            ModelViewer = new DXViewForm();
-            UVEditor = new DXViewForm();
-            DXViewers = new DXViewForm[] { UVEditor, ModelViewer };
+            DXViewers = new DXViewForm[] { new DXViewForm(), new DXViewForm() };
+            DXViewers[0].Text = "main";
+            DXViewers[1].Text = "sub";
             DeviceM = new DeviceManager(DXViewers);
             PMX = PMXMesh.GetPMXMesh(DeviceM.Device,pmx);
             DeviceM.Render(DXViewers, PMX);
@@ -32,8 +32,8 @@ namespace MyUVEditor
         }
         public DeviceManager DeviceM { get; private set; }
         public DXViewForm[] DXViewers { get; private set; }
-        private DXViewForm UVEditor { get; set; }
-        private DXViewForm ModelViewer { get;  set; }
+        private DXViewForm UVEditor { get { return DXViewers[0]; } }
+        private DXViewForm ModelViewer { get { return DXViewers[1]; } }
         public PMXMesh PMX { get; private set; }
     }
 }

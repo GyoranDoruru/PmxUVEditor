@@ -17,6 +17,8 @@ namespace MyUVEditor
             InitializeComponent();
             camera = new Camera(this);
         }
+        static int swapCount = 0;
+        //private bool primary;
         private Camera camera;
         private SwapChain swapChain;
         private Surface depthSurface;
@@ -43,17 +45,32 @@ namespace MyUVEditor
         public Result Render(PMXMesh pmx)
         {
             Device device = swapChain.Device;
-            using (Surface surface = swapChain.GetBackBuffer(0))
-            {
-                device.SetRenderTarget(0, surface);
-                device.DepthStencilSurface = depthSurface;
-                device.Viewport = Viewport;
-            }
-            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, pmx.MatManager.BGColor, 1.0f, 0);
-            device.BeginScene();
+            device.SetRenderTarget(0, swapChain.GetBackBuffer(0));
+
+            device.SetRenderState(RenderState.ZEnable, true);
+            device.DepthStencilSurface = depthSurface;
+            device.Viewport = Viewport;
+            device.SetRenderState(RenderState.Lighting, true);
+            device.SetLight(0, pmx.MatManager.Light);
+            device.EnableLight(0, true);
             device.SetTransform(TransformState.View, camera.View);
             device.SetTransform(TransformState.Projection, camera.Projection);
-            pmx.DrawSubset(0);
+            //カリング無視
+
+            device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
+
+            //アルファブレンド
+            device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+            device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+            device.SetRenderState(RenderState.AlphaBlendEnable, true);
+
+            device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, pmx.MatManager.BGColor, 1.0f, 0);
+            device.BeginScene();
+            for (int i = 0; i < pmx.ExMaterialArray.Length; i++)
+            {
+                device.Material = pmx.GetMaterials()[i].MaterialD3D;
+                pmx.DrawSubset(i);
+            }
             device.EndScene();
             return swapChain.Present(Present.None);
         }
@@ -61,10 +78,8 @@ namespace MyUVEditor
         public new void Resize()
         {
             Device device = swapChain.Device;
-            Viewport viewport = device.Viewport;
-            viewport.Width = ClientSize.Width;
-            viewport.Height = ClientSize.Height;
-            //device.Viewport = viewport;
+            swapChain.PresentParameters.BackBufferHeight = ClientSize.Height;
+            swapChain.PresentParameters.BackBufferWidth = ClientSize.Width;
             camera.SetClientSize(this);
             RequestRender(this, EventArgs.Empty);
         }
@@ -72,68 +87,75 @@ namespace MyUVEditor
         public void ResizeEnd()
         {
             Device device;
-            PresentParameters pp;
-            DisposeResource(out device, out pp);
-            pp.BackBufferWidth = ClientSize.Width;
-            pp.BackBufferHeight = ClientSize.Height;
-            InitResource(device, pp);
+            DisposeResource(out device);
+            InitResource(device);
             camera.SetClientSize(this);
             RequestRender(this, EventArgs.Empty);
         }
 
-        /// <summary>
-        /// サブウィンドウ用リソース初期化
-        /// </summary>
-        /// <param name="device"></param>
-        /// <param name="pp"></param>
-        public void InitResource(Device device, PresentParameters pp)
+        ///// <summary>
+        ///// サブウィンドウ用リソース初期化
+        ///// </summary>
+        ///// <param name="device"></param>
+        ///// <param name="pp"></param>
+        //public void InitResource(Device device, PresentParameters pp)
+        //{
+        //    if (pp == null)
+        //    {
+        //        pp = DeviceManager.GetPresentParameters(this);
+        //    }
+        //    swapChain = new SwapChain(device, pp);
+        //    depthSurface = Surface.CreateDepthStencil(device,
+        //        ClientSize.Width, ClientSize.Height,
+        //        pp.AutoDepthStencilFormat, MultisampleType.None, 0, true);
+
+        //}
+        ///// <summary>
+        ///// メインウィンドウ用リソース初期化
+        ///// </summary>
+        ///// <param name="swapChain"></param>
+        //public void InitResource(SwapChain swapChain)
+        //{
+        //    this.swapChain = swapChain;
+        //    depthSurface = Surface.CreateDepthStencil(swapChain.Device,
+        //        ClientSize.Width, ClientSize.Height,
+        //        swapChain.PresentParameters.AutoDepthStencilFormat,
+        //        MultisampleType.None, 0, true);
+        //}
+
+        public void InitResource(Device device)
         {
-            if (pp == null)
+            if (swapCount == 0)
             {
-                pp = DeviceManager.GetPresentParameters(this);
+                swapChain = device.GetSwapChain(0);
+                depthSurface = device.DepthStencilSurface;
             }
-            swapChain = new SwapChain(device, pp);
-            depthSurface = Surface.CreateDepthStencil(device,
-                ClientSize.Width, ClientSize.Height,
-                pp.AutoDepthStencilFormat, MultisampleType.None, 0, true);
-
-        }
-        /// <summary>
-        /// メインウィンドウ用リソース初期化
-        /// </summary>
-        /// <param name="swapChain"></param>
-        public void InitResource(SwapChain swapChain)
-        {
-            this.swapChain = swapChain;
-            depthSurface = Surface.CreateDepthStencil(swapChain.Device,
-                ClientSize.Width, ClientSize.Height,
-                swapChain.PresentParameters.AutoDepthStencilFormat,
-                MultisampleType.None, 0, true);
-        }
-
-        public void DisposeResource(out Device device, out PresentParameters pp)
-        {
-            if (depthSurface != null)
-                depthSurface.Dispose();
-
-            if (swapChain == null)
+            else
             {
-                device = null;
-                pp = null;
-                return;
+                PresentParameters pp = DeviceManager.GetPresentParameters(this);
+                swapChain = new SwapChain(device, pp);
+                depthSurface = Surface.CreateDepthStencil(
+                    device, ClientSize.Width, ClientSize.Height,
+                    swapChain.PresentParameters.AutoDepthStencilFormat
+                    , DeviceManager.tmpSample, DeviceManager.tmpQuality - 1, true);
             }
+            swapCount++;
+        }
+        public void DisposeResource(out Device device)
+        {
+
             device = swapChain.Device;
-            pp = swapChain.PresentParameters;
             for (int i = 0; i < swapChain.PresentParameters.BackBufferCount; i++)
                 swapChain.GetBackBuffer(i).Dispose();
 
+            depthSurface.Dispose();
             swapChain.Dispose();
         }
+
         public new void Dispose()
         {
             Device device;
-            PresentParameters pp;
-            DisposeResource(out device, out pp);
+            DisposeResource(out device);
             base.Dispose();
         }
     }
