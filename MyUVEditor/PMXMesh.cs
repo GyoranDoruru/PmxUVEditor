@@ -129,7 +129,8 @@ namespace MyUVEditor
                 {
                     MaterialD3D = new Material
                     {
-                        Ambient = new Color4(1,m.Ambient.R,m.Ambient.G,m.Ambient.B),
+                        //Ambient = new Color4(1,m.Ambient.R,m.Ambient.G,m.Ambient.B),
+                        Emissive = new Color4(1,m.Ambient.R,m.Ambient.G,m.Ambient.B),
                         Diffuse = m.Diffuse.ToColor4(),
                         Power = m.Power,
                         Specular = new Color4(m.Specular.ToColor3())
