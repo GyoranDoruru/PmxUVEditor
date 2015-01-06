@@ -37,6 +37,7 @@ namespace MyUVEditor
         {
             c.SizeChanged += (o, args) => { this.Resize(); };
             c.ResizeEnd += (o, args) => { this.ResizeEnd(); };
+            c.MouseWheel += (o, args) => { camera.CameraDolly(args.Delta); RequestRender(this, EventArgs.Empty); };
         }
 
         public Result Render(PMXMesh pmx)
