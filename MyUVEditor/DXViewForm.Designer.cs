@@ -47,7 +47,6 @@
             this.Controls.Add(this.dxView1);
             this.Name = "DXViewForm";
             this.Text = "DXViewForm";
-            this.ResizeEnd += new System.EventHandler(this.DXViewForm_ResizeEnd);
             this.ResumeLayout(false);
 
         }

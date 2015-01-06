@@ -260,7 +260,7 @@ namespace MyUVEditor
             }
             //mainSwap = device.GetSwapChain(0);
             //subSwap = new SwapChain(device, pps[1]);
-            this.camera = new Camera();
+            this.camera = new Camera(form.ViewPanel,-1);
             //高さと幅設定
 
             //Xファイルからmeshとtextures登録
