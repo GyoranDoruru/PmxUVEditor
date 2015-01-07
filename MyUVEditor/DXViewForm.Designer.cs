@@ -53,6 +53,7 @@
 
         #endregion
 
-        private DXView dxView1;
+        protected DXView dxView1;
+
     }
 }

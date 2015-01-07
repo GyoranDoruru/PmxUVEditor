@@ -18,11 +18,11 @@ namespace MyUVEditor
             camera = new Camera(this);
         }
         static int swapCount = 0;
-        //private bool primary;
-        private Camera camera;
-        private SwapChain swapChain;
-        private Surface depthSurface;
-        private Viewport Viewport
+        //protected bool primary;
+        protected Camera camera;
+        protected SwapChain swapChain;
+        protected Surface depthSurface;
+        protected Viewport Viewport
         {
             get
             {
@@ -131,14 +131,14 @@ namespace MyUVEditor
             base.Dispose();
         }
 
-        public Point Prev_Point { get; private set; }
-        public Point L_Down { get; private set; }
-        public Point M_Down { get; private set; }
-        public Point R_Down { get; private set; }
-        public bool isL_Down { get; private set; }
-        public bool isM_Down { get; private set; }
-        public bool isR_Down { get; private set; }
-        private void DXView_MouseDown(object sender, MouseEventArgs e)
+        public Point Prev_Point { get; protected set; }
+        public Point L_Down { get; protected set; }
+        public Point M_Down { get; protected set; }
+        public Point R_Down { get; protected set; }
+        public bool isL_Down { get; protected set; }
+        public bool isM_Down { get; protected set; }
+        public bool isR_Down { get; protected set; }
+        protected void DXView_MouseDown(object sender, MouseEventArgs e)
         {
             switch (e.Button)
             {
@@ -157,13 +157,13 @@ namespace MyUVEditor
             }
         }
 
-        private void DXView_MouseMove(object sender, MouseEventArgs e)
+        protected void DXView_MouseMove(object sender, MouseEventArgs e)
         {
             Prev_Point = e.Location;
             RequestRender(this, EventArgs.Empty);
         }
 
-        private void DXView_MouseUp(object sender, MouseEventArgs e)
+        protected void DXView_MouseUp(object sender, MouseEventArgs e)
         {
             switch (e.Button)
             {

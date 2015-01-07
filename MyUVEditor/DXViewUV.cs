@@ -6,18 +6,19 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using SlimDX;
-using SlimDX.Direct3D9;
+
 namespace MyUVEditor
 {
-    public partial class DXViewForm : Form,IDXViewForm
+    public partial class DXViewUV : DXView
     {
-        public DXView ViewPort { get { return this.dxView1; } }
-        public DXViewForm()
+        public DXViewUV()
         {
             InitializeComponent();
-            ViewPort.SetRequest(this);
         }
-        
+
+        protected override void OnPaint(PaintEventArgs pe)
+        {
+            base.OnPaint(pe);
+        }
     }
 }

@@ -1,0 +1,13 @@
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\bin\Release\UVEditorForm.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\bin\Release\UVEditorForm.pdb
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\bin\Release\SlimDX.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\bin\Release\UVEditor0_139_10_2.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\bin\Release\PEPlugin.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\bin\Release\UVEditor0_139_10_2.pdb
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\bin\Release\SlimDX.pdb
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\bin\Release\SlimDX.xml
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\obj\Release\UVEditorForm.csprojResolveAssemblyReference.cache
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\obj\Release\MyUVEditor.Form1.resources
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\obj\Release\UVEditorForm.csproj.GenerateResource.Cache
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\obj\Release\UVEditorForm.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\UVEditorForm\obj\Release\UVEditorForm.pdb

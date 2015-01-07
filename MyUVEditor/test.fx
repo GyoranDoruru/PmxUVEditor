@@ -80,12 +80,12 @@ technique MainTec < string MMDPass = "object"; > {
 	}
 }
 
-float3 UV_VS(float2 Tex : TEXCOORD0) : POSITION
+float4 UV_VS(float2 Tex : TEXCOORD0) : POSITION
 {
-	return float3(Tex.X, Tex.Y, 0);
+	return float4(Tex.x, Tex.y, 0, 1);
 }
 
-float4 UV_VS() : COLOR0
+float4 UV_PS() : COLOR0
 {
 	return float4(1, 1, 1, 1);
 }

@@ -39,7 +39,7 @@ namespace MyUVEditor
 
         public Device Device { get; private set; }
         public string DriveState { get; private set; }
-        public DeviceManager(DXViewForm[] forms)
+        public DeviceManager(IDXViewForm[] forms)
         {
             CreateDevice(forms[0]);
             for (int i = 0; i < forms.Length; i++)
@@ -79,7 +79,7 @@ namespace MyUVEditor
             }
             return true;
         }
-        private void CreateDevice(DXViewForm form)
+        private void CreateDevice(IDXViewForm form)
         {
             Direct3D direct3D = new Direct3D();
             DeviceType dType;
@@ -115,7 +115,7 @@ namespace MyUVEditor
             }
         }
 
-        public void Render(DXViewForm[] forms, PMXMesh mesh)
+        public void Render(IDXViewForm[] forms, PMXMesh mesh)
         {
             Result hr;
             for (int i = 0; i < forms.Length; i++)
@@ -133,7 +133,7 @@ namespace MyUVEditor
             }
         }
 
-        public void LoopForResetDevice(DXViewForm[] forms, Result hr)
+        public void LoopForResetDevice(IDXViewForm[] forms, Result hr)
         {
             if (hr.IsSuccess)
                 return;
@@ -141,7 +141,7 @@ namespace MyUVEditor
                 throw new SlimDXException(hr);
 
             DisposeResource(forms);
-            PresentParameters pp = DeviceManager.GetPresentParameters(forms[0]);
+            PresentParameters pp = DeviceManager.GetPresentParameters(forms[0].ViewPort);
             while (hr == ResultCode.DeviceLost)
             {
                 Thread.Sleep(100);
@@ -159,7 +159,7 @@ namespace MyUVEditor
             }
         }
 
-        public void DisposeResource(DXViewForm[] forms)
+        public void DisposeResource(IDXViewForm[] forms)
         {
             Device device;
             for (int i = 0; i < forms.Length; i++)

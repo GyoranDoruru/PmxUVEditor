@@ -7,24 +7,31 @@ using SlimDX.Direct3D9;
 
 namespace MyUVEditor
 {
-    class EffectManager
+    public class EffectManager
     {
-        static readonly string defaultPath = "test.fx";
+        static readonly string defaultPath
+            = @"D:\Documents\Visual Studio 2010\Projects\MyUVEditor\MyUVEditor\test.fx";
         Effect Effect;
-        EffectManager(Device device)
+        public EffectManager(Device device)
         {
-            var dicTec = new Dictionary<string, EffectHandle>();
-            Effect = Effect.FromFile(device, defaultPath, ShaderFlags.None);
-            EffectHandle h = null;
-            EffectHandle hNext;
-            do
+            try
             {
-                hNext = Effect.FindNextValidTechnique(h);
-                string name = Effect.GetTechniqueDescription(hNext).Name;
-                dicTec.Add(name, hNext);
-                h = hNext;
-
-            } while (h != null);
+                Console.WriteLine(System.IO.File.Exists(defaultPath));
+                var dicTec = new Dictionary<string, EffectHandle>();
+                Effect = Effect.FromFile(device, defaultPath, ShaderFlags.Debug);
+                EffectHandle h = Effect.FindNextValidTechnique(null);
+                while(h!=null)
+                {
+                    h = Effect.FindNextValidTechnique(h);
+                    string name = Effect.GetTechniqueDescription(h).Name;
+                    dicTec.Add(name, h);
+                    h = Effect.FindNextValidTechnique(h);
+                }
+            }
+            catch (SlimDX.CompilationException se)
+            {
+                Console.WriteLine(se);
+            }
         }
     }
 }

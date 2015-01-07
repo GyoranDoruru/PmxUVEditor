@@ -21,6 +21,7 @@ namespace MyUVEditor
         private HashSet<int>[] VIndices;
         public ExtendedMaterial[] ExMaterialArray { get; private set; }
         public MaterialManager MatManager { get; private set; }
+        public EffectManager EffectManager { get; private set; }
 
         static public PMXMesh GetPMXMesh(Device device, IPXPmx pmx)
         {
@@ -43,6 +44,7 @@ namespace MyUVEditor
 //            : base(device, faceCount, pmx.Vertex.Count, MeshFlags.Use32Bit | MeshFlags.Managed, PNTVertex.GetElements())
         {
             MatManager = new MaterialManager();
+            EffectManager = new EffectManager(device);
             Pmx = pmx;
             InitVertexArray();
             InitVertexArray();
