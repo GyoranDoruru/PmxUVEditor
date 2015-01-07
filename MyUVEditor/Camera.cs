@@ -121,13 +121,13 @@ namespace MyUVEditor
         /// </summary>
         /// <param name="p"></param>
         /// <returns></returns>
-        public Vector3 ScreenToViewLay(Vector2 p)
+        public Ray ScreenToViewRay(Vector2 p)
         {
             Matrix invScreen = Matrix.Invert(Screen);
             Matrix invWVP = Matrix.Invert(WorldViewProjection);
             Vector4 pWorld4 = Vector4.Transform(Vector2.Transform(p, invScreen), invWVP);
             Vector3 pWorld3 = new Vector3(pWorld4.X, pWorld4.Y, pWorld4.Z) / pWorld4.W;
-            return Vector3.Normalize(pWorld3 - Position);
+            return new Ray(Position,Vector3.Normalize(pWorld3 - Position));
         }
 
         private void CameraMove(Point prev, Point tmp)
@@ -196,6 +196,7 @@ namespace MyUVEditor
         {
             CameraDolly(e.Delta);
         }
+
         #region 旧コード
         //private float scale = 1f;
 
