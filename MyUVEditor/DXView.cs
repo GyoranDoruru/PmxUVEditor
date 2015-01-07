@@ -35,11 +35,13 @@ namespace MyUVEditor
             }
         }
         public event EventHandler RequestRender;
+
         public void SetRequest(Form c)
         {
-            c.SizeChanged += (o, args) => { this.Resize(); };
+            this.SizeChanged += (o, args) => { this.Resize(); };
             c.ResizeEnd += (o, args) => { this.ResizeEnd(); };
-            c.MouseWheel += (o, args) => { camera.CameraDolly(args.Delta); RequestRender(this, EventArgs.Empty); };
+            this.MouseWheel += (o, args) => { RequestRender(this, EventArgs.Empty); };
+            this.MouseMove += (o, args) => { DXView_MouseMove(this, args); };
         }
 
         public Result Render(PMXMesh pmx)
@@ -93,36 +95,6 @@ namespace MyUVEditor
             RequestRender(this, EventArgs.Empty);
         }
 
-        ///// <summary>
-        ///// サブウィンドウ用リソース初期化
-        ///// </summary>
-        ///// <param name="device"></param>
-        ///// <param name="pp"></param>
-        //public void InitResource(Device device, PresentParameters pp)
-        //{
-        //    if (pp == null)
-        //    {
-        //        pp = DeviceManager.GetPresentParameters(this);
-        //    }
-        //    swapChain = new SwapChain(device, pp);
-        //    depthSurface = Surface.CreateDepthStencil(device,
-        //        ClientSize.Width, ClientSize.Height,
-        //        pp.AutoDepthStencilFormat, MultisampleType.None, 0, true);
-
-        //}
-        ///// <summary>
-        ///// メインウィンドウ用リソース初期化
-        ///// </summary>
-        ///// <param name="swapChain"></param>
-        //public void InitResource(SwapChain swapChain)
-        //{
-        //    this.swapChain = swapChain;
-        //    depthSurface = Surface.CreateDepthStencil(swapChain.Device,
-        //        ClientSize.Width, ClientSize.Height,
-        //        swapChain.PresentParameters.AutoDepthStencilFormat,
-        //        MultisampleType.None, 0, true);
-        //}
-
         public void InitResource(Device device)
         {
             if (swapCount == 0)
@@ -158,5 +130,54 @@ namespace MyUVEditor
             DisposeResource(out device);
             base.Dispose();
         }
+
+        public Point Prev_Point { get; private set; }
+        public Point L_Down { get; private set; }
+        public Point M_Down { get; private set; }
+        public Point R_Down { get; private set; }
+        public bool isL_Down { get; private set; }
+        public bool isM_Down { get; private set; }
+        public bool isR_Down { get; private set; }
+        private void DXView_MouseDown(object sender, MouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    L_Down = e.Location;
+                    isL_Down = true;
+                    break;
+                case MouseButtons.Middle:
+                    M_Down = e.Location;
+                    isM_Down = true;
+                    break;
+                case MouseButtons.Right:
+                    R_Down = e.Location;
+                    isR_Down = true;
+                    break;
+            }
+        }
+
+        private void DXView_MouseMove(object sender, MouseEventArgs e)
+        {
+            Prev_Point = e.Location;
+            RequestRender(this, EventArgs.Empty);
+        }
+
+        private void DXView_MouseUp(object sender, MouseEventArgs e)
+        {
+            switch (e.Button)
+            {
+                case MouseButtons.Left:
+                    isL_Down = false;
+                    break;
+                case MouseButtons.Middle:
+                    isM_Down = false;
+                    break;
+                case MouseButtons.Right:
+                    isR_Down = false;
+                    break;
+            }
+        }
+
     }
 }

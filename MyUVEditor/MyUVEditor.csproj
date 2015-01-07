@@ -110,6 +110,9 @@
     <Compile Include="VertexSelect.cs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DXView.resx">
+      <DependentUpon>DXView.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="DXViewForm.resx">
       <DependentUpon>DXViewForm.cs</DependentUpon>
     </EmbeddedResource>

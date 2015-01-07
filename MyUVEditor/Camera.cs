@@ -69,6 +69,19 @@ namespace MyUVEditor
             }
         }
 
+        public Camera(DXView client, float f = 0.43633194f)
+        {
+            Position = new Vector3(0, 18, -52);
+            Target = new Vector3(0, 10, 0);
+            UpDir = new Vector3(0, 1, 0);
+            FOV = f;
+            SetClientSize(client);
+            World = Matrix.Identity;
+            ResetWVPMatrix();
+            client.MouseMove += (o, args) => { Camera_MouseMove(o, args); };
+            client.MouseWheel += (o, args) => { Camera_MouseWheel(o, args); };
+        }
+
         public Camera(Control client, float f = 0.43633194f)
         {
             Position = new Vector3(0, 18, -52);
@@ -117,7 +130,7 @@ namespace MyUVEditor
             return Vector3.Normalize(pWorld3 - Position);
         }
 
-        public void CameraMove(Point prev, Point tmp)
+        private void CameraMove(Point prev, Point tmp)
         {
             float tgZ = TargetScreenZ;
             Vector3 moved = ScreenToWorld(tmp, tgZ) - ScreenToWorld(prev, tgZ);
@@ -126,7 +139,7 @@ namespace MyUVEditor
             ResetWVPMatrix();
         }
 
-        public void CameraRotate(Point prev, Point tmp)
+        private void CameraRotate(Point prev, Point tmp)
         {
             float d_theta = (tmp.Y - prev.Y) / 100f;
             float d_phi = (tmp.X - prev.X) / 100f;
@@ -147,7 +160,7 @@ namespace MyUVEditor
             ResetWVPMatrix();
         }
 
-        public void CameraDolly(int delta)
+        private void CameraDolly(int delta)
         {
             if (FOV > 0)
             {
@@ -165,7 +178,24 @@ namespace MyUVEditor
                 this.scale *= (float)Math.Pow(0.999f, delta);
             }
         }
+        private void Camera_MouseMove(object sender, MouseEventArgs e)
+        {
+            var view = (DXView)sender;
+            switch (e.Button)
+            {
+                case MouseButtons.Right:
+                    CameraRotate(view.Prev_Point, e.Location);
+                    break;
+                case MouseButtons.Middle:
+                    CameraMove(view.Prev_Point, e.Location);
+                    break;
+            }
+        }
 
+        private void Camera_MouseWheel(object sender, MouseEventArgs e)
+        {
+            CameraDolly(e.Delta);
+        }
         #region 旧コード
         //private float scale = 1f;
 

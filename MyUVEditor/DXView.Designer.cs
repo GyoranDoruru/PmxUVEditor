@@ -28,8 +28,17 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            this.SuspendLayout();
+            // 
+            // DXView
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Name = "DXView";
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DXView_MouseDown);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.DXView_MouseUp);
+            this.ResumeLayout(false);
+
         }
 
         #endregion
