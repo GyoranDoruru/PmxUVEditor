@@ -9,18 +9,18 @@ using System.Drawing;
 
 namespace MyUVEditor
 {
-    public class Camera
+    public class Camera : IDisposable
     {
         static float defFOV = 0.43633194f; //25度
-        public Vector3 Position { get; private set; }
-        public Vector3 Target { get; private set; }
-        public Vector3 UpDir { get; private set; }
-        public float FOV { get; private set; }  //radian    less than 0 -> othro
-        private float scale = 1;
-        private float aspect = 1;
-        public int Width { get; private set; }
-        public int Height { get; private set; }
-        public Matrix World { get; private set; }
+        public Vector3 Position { get; protected set; }
+        public Vector3 Target { get; protected set; }
+        public Vector3 UpDir { get; protected set; }
+        public float FOV { get; protected set; }  //radian    less than 0 -> othro
+        protected float scale = 1;
+        protected float aspect = 1;
+        public int Width { get { return Client.ClientSize.Width; } }
+        public int Height { get { return Client.ClientSize.Height; } }
+        public Matrix World { get; protected set; }
         public Matrix View
         {
             get
@@ -36,7 +36,7 @@ namespace MyUVEditor
                     return Matrix.PerspectiveFovLH(FOV, (float)Width / Height, 1f, 1000);
                 else
                 {
-                    float width = Width / Height * scale * aspect;
+                    float width = (float)Width / Height * scale * aspect;
                     float height = scale;
                     return Matrix.OrthoLH(width, height, 0.1f, 1000);
                 }
@@ -54,7 +54,7 @@ namespace MyUVEditor
                 return sc;
             }
         }
-        public Matrix WorldViewProjection { get; private set; }
+        public Matrix WorldViewProjection { get; protected set; }
         public float TargetScreenZ
         {
             get
@@ -68,18 +68,11 @@ namespace MyUVEditor
                 return O.Z / O.W;
             }
         }
-
-        public Camera(DXView client, float f = 0.43633194f)
+        private Control client;
+        public Control Client
         {
-            Position = new Vector3(0, 18, -52);
-            Target = new Vector3(0, 10, 0);
-            UpDir = new Vector3(0, 1, 0);
-            FOV = f;
-            SetClientSize(client);
-            World = Matrix.Identity;
-            ResetWVPMatrix();
-            client.MouseMove += (o, args) => { Camera_MouseMove(o, args); };
-            client.MouseWheel += (o, args) => { Camera_MouseWheel(o, args); };
+            get { return client; }
+            protected set { Console.WriteLine("client has been changed.value==null"+(value==null)); client = value; }
         }
 
         public Camera(Control client, float f = 0.43633194f)
@@ -88,19 +81,34 @@ namespace MyUVEditor
             Target = new Vector3(0, 10, 0);
             UpDir = new Vector3(0, 1, 0);
             FOV = f;
-            SetClientSize(client);
+            Client = client;
             World = Matrix.Identity;
             ResetWVPMatrix();
         }
 
-        public void SetClientSize(Control c)
+        public Camera(DXView client, float f = 0.43633194f)
         {
-            Width = c.ClientSize.Width;
-            Height = c.ClientSize.Height;
+            Position = new Vector3(0, 18, -52);
+            Target = new Vector3(0, 10, 0);
+            UpDir = new Vector3(0, 1, 0);
+            FOV = f;
+            Client = client;
+            World = Matrix.Identity;
             ResetWVPMatrix();
         }
 
-        private void ResetWVPMatrix()
+        public void SetEvent()
+        {
+            Client.MouseMove += (o, args) => { Camera_MouseMove(o, args); };
+            Client.MouseWheel += (o, args) => { Camera_MouseWheel(o, args); };
+        }
+
+        public void SetClientSize(Control c)
+        {
+            ResetWVPMatrix();
+        }
+
+        protected void ResetWVPMatrix()
         {
             WorldViewProjection = World * View * Projection;
         }
@@ -127,10 +135,10 @@ namespace MyUVEditor
             Matrix invWVP = Matrix.Invert(WorldViewProjection);
             Vector4 pWorld4 = Vector4.Transform(Vector2.Transform(p, invScreen), invWVP);
             Vector3 pWorld3 = new Vector3(pWorld4.X, pWorld4.Y, pWorld4.Z) / pWorld4.W;
-            return new Ray(Position,Vector3.Normalize(pWorld3 - Position));
+            return new Ray(Position, Vector3.Normalize(pWorld3 - Position));
         }
 
-        private void CameraMove(Point prev, Point tmp)
+        protected void CameraMove(Point prev, Point tmp)
         {
             float tgZ = TargetScreenZ;
             Vector3 moved = ScreenToWorld(tmp, tgZ) - ScreenToWorld(prev, tgZ);
@@ -139,7 +147,7 @@ namespace MyUVEditor
             ResetWVPMatrix();
         }
 
-        private void CameraRotate(Point prev, Point tmp)
+        protected virtual void CameraRotate(Point prev, Point tmp)
         {
             float d_theta = (tmp.Y - prev.Y) / 100f;
             float d_phi = (tmp.X - prev.X) / 100f;
@@ -160,7 +168,7 @@ namespace MyUVEditor
             ResetWVPMatrix();
         }
 
-        private void CameraDolly(int delta)
+        protected void CameraDolly(int delta)
         {
             if (FOV > 0)
             {
@@ -178,7 +186,7 @@ namespace MyUVEditor
                 this.scale *= (float)Math.Pow(0.999f, delta);
             }
         }
-        private void Camera_MouseMove(object sender, MouseEventArgs e)
+        protected void Camera_MouseMove(object sender, MouseEventArgs e)
         {
             var view = (DXView)sender;
             switch (e.Button)
@@ -192,15 +200,16 @@ namespace MyUVEditor
             }
         }
 
-        private void Camera_MouseWheel(object sender, MouseEventArgs e)
+        protected void Camera_MouseWheel(object sender, MouseEventArgs e)
         {
+            //Client = (Control)sender;
             CameraDolly(e.Delta);
         }
 
         #region 旧コード
-        //private float scale = 1f;
+        //protected float scale = 1f;
 
-        private Vector3 _target = new Vector3(0.5f, 0.5f, 0.0f);
+        protected Vector3 _target = new Vector3(0.5f, 0.5f, 0.0f);
         readonly Vector3 dir = new Vector3(0, 0, 10);
         readonly Vector3 up = new Vector3(0, -1, 0);
 
@@ -280,5 +289,12 @@ namespace MyUVEditor
             return IsContainIt(device, p1, p2, vecVertex);
         }
         #endregion
+
+        public void Dispose()
+        {
+            Client.MouseMove -= (o, args) => { Camera_MouseMove(o, args); };
+            Client.MouseWheel -= (o, args) => { Camera_MouseWheel(o, args); };
+            Client = null;
+        }
     }
 }

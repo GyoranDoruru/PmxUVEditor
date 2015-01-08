@@ -82,7 +82,7 @@ namespace MyUVEditor
             this.Text += version;
             this.MouseWheel += new MouseEventHandler(viewpanel_MouseWheel);
             this.morphPanel_comboBox.SelectedIndex = 1;
-
+            ViewPort.Camera.SetEvent();
             ViewPort.SetRequest(this);
         }
 

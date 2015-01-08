@@ -15,11 +15,10 @@ namespace MyUVEditor
         public DXView()
         {
             InitializeComponent();
-            camera = new Camera(this);
+            Camera = new Camera(this);
         }
         static int swapCount = 0;
-        //protected bool primary;
-        protected Camera camera;
+        public Camera Camera { get; protected set; }
         protected SwapChain swapChain;
         protected Surface depthSurface;
         protected Viewport Viewport
@@ -55,8 +54,8 @@ namespace MyUVEditor
             device.SetRenderState(RenderState.Lighting, true);
             device.SetLight(0, pmx.MatManager.Light);
             device.EnableLight(0, true);
-            device.SetTransform(TransformState.View, camera.View);
-            device.SetTransform(TransformState.Projection, camera.Projection);
+            device.SetTransform(TransformState.View, Camera.View);
+            device.SetTransform(TransformState.Projection, Camera.Projection);
             //カリング無視
 
             device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
@@ -82,7 +81,7 @@ namespace MyUVEditor
             Device device = swapChain.Device;
             swapChain.PresentParameters.BackBufferHeight = ClientSize.Height;
             swapChain.PresentParameters.BackBufferWidth = ClientSize.Width;
-            camera.SetClientSize(this);
+            Camera.SetClientSize(this);
             RequestRender(this, EventArgs.Empty);
         }
 
@@ -91,7 +90,7 @@ namespace MyUVEditor
             Device device;
             DisposeResource(out device);
             InitResource(device);
-            camera.SetClientSize(this);
+            Camera.SetClientSize(this);
             RequestRender(this, EventArgs.Empty);
         }
 
@@ -159,6 +158,7 @@ namespace MyUVEditor
 
         protected void DXView_MouseMove(object sender, MouseEventArgs e)
         {
+            if (Prev_Point == e.Location) return;
             Prev_Point = e.Location;
             RequestRender(this, EventArgs.Empty);
         }

@@ -6,7 +6,7 @@ namespace MyUVEditor
 {
     public class MyPlugin : PEPluginClass
     {
-        MyGame game;
+        //MyGame game;
         const string ver = "0_139_10_2";
         //Thread _thread;
         public MyPlugin()
@@ -30,7 +30,7 @@ namespace MyUVEditor
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "エラー", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                game.Dispose();
+                //game.Dispose();
             }
 
         }

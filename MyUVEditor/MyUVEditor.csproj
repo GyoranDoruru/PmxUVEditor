@@ -51,6 +51,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
+    <Compile Include="CameraUV.cs" />
     <Compile Include="CustomVertex.cs" />
     <Compile Include="DeviceManager.cs" />
     <Compile Include="DrawingMode.cs" />
@@ -90,6 +91,7 @@
     <Compile Include="Form1.designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="ICamera.cs" />
     <Compile Include="IDXViewForm.cs" />
     <Compile Include="KeyBoardEvent.cs" />
     <Compile Include="MakeUVMorph.cs" />
@@ -101,8 +103,12 @@
       <DependentUpon>MessageForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MouceEvent.cs" />
-    <Compile Include="MyGame.cs" />
-    <Compile Include="MyGamePT.cs" />
+    <Compile Include="MyGame.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MyGamePT.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MyPlugin.cs" />
     <Compile Include="MyPMX.cs" />
     <Compile Include="ParentForm.cs">

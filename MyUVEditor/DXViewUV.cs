@@ -14,6 +14,7 @@ namespace MyUVEditor
         public DXViewUV()
         {
             InitializeComponent();
+            this.Camera = new CameraUV(this);
         }
 
         protected override void OnPaint(PaintEventArgs pe)

@@ -16,6 +16,7 @@ namespace MyUVEditor
         public DXViewForm()
         {
             InitializeComponent();
+            ViewPort.Camera.SetEvent();
             ViewPort.SetRequest(this);
         }
         
