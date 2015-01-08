@@ -67,9 +67,11 @@ namespace MyUVEditor
 
             device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, pmx.MatManager.BGColor, 1.0f, 0);
             device.BeginScene();
-            for (int i = 0; i < pmx.ExMaterialArray.Length; i++)
+            for (int i = 0; i < pmx.Pmx.Material.Count; i++)
             {
-                device.Material = pmx.GetMaterials()[i].MaterialD3D;
+                ExtendedMaterial m = pmx.GetMaterials()[i];
+                device.Material = m.MaterialD3D;
+                device.SetTexture(0, pmx.MatManager.DicObjTex[m.TextureFileName]);
                 pmx.DrawSubset(i);
             }
             device.EndScene();

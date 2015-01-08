@@ -132,6 +132,7 @@
   <ItemGroup>
     <EmbeddedResource Include="DXView.resx">
       <DependentUpon>DXView.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="DXViewForm.resx">
       <DependentUpon>DXViewForm.cs</DependentUpon>
@@ -147,9 +148,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="basic.fx" />
+    <None Include="basic.fx" />
     <Content Include="full.fx" />
-    <Content Include="test.fx" />
+    <None Include="test.fx" />
+    <EmbeddedResource Include="WhiteTex.bmp" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

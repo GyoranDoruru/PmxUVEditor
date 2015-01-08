@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SlimDX;
 using SlimDX.Direct3D9;
+using PEPlugin;
 using PEPlugin.Pmx;
 
 //using PNTVertex = MyUVEditor.CustomVertex.PositionNormalTextured;
@@ -13,13 +14,13 @@ namespace MyUVEditor
 {
     public class PMXMesh : Mesh
     {
-        private IPXPmx Pmx;
+        public IPXPmx Pmx { get; private set; }
         private int[] IndexArray;
         //private PMXVertex[] VertexArray;
         private PNTVertex[] VertexArray;
         private AttributeRange[] ARangeArray;
         private HashSet<int>[] VIndices;
-        public ExtendedMaterial[] ExMaterialArray { get; private set; }
+        //public ExtendedMaterial[] ExMaterialArray { get; private set; }
         public MaterialManager MatManager { get; private set; }
         public EffectManager EffectManager { get; private set; }
 
@@ -41,7 +42,7 @@ namespace MyUVEditor
 
         private PMXMesh(IPXPmx pmx, Device device, int faceCount)
             : base(device, faceCount, pmx.Vertex.Count, MeshFlags.Use32Bit | MeshFlags.Managed, PNTVertex.Format)
-//            : base(device, faceCount, pmx.Vertex.Count, MeshFlags.Use32Bit | MeshFlags.Managed, PNTVertex.GetElements())
+        //            : base(device, faceCount, pmx.Vertex.Count, MeshFlags.Use32Bit | MeshFlags.Managed, PNTVertex.GetElements())
         {
             MatManager = new MaterialManager();
             EffectManager = new EffectManager(device);
@@ -51,8 +52,9 @@ namespace MyUVEditor
 
             var vDic = GetVDic();
             InitIndexArray(vDic);
-            InitMaterialArray(vDic);
-
+            ExtendedMaterial[] ExMaterialArray
+                = InitMaterialArray(vDic);
+            MatManager.SetTexDics(this);
             SetIndexBuffer();
             SetVertexBuffer();
             SetAttributeTable(ARangeArray);
@@ -70,7 +72,7 @@ namespace MyUVEditor
             return vDic;
         }
 
-        private void InitIndexArray(Dictionary<IPXVertex,int> vDic)
+        private void InitIndexArray(Dictionary<IPXVertex, int> vDic)
         {
             IndexArray = new int[FaceCount * 3];
             VIndices = new HashSet<int>[Pmx.Material.Count];
@@ -100,7 +102,7 @@ namespace MyUVEditor
 
 
         }
-        
+
         private void InitVertexArray()
         {
             VertexArray = new PNTVertex[VertexCount];
@@ -109,9 +111,10 @@ namespace MyUVEditor
                 VertexArray[i] = new PNTVertex(Pmx.Vertex[i]);
             }
         }
-        
-        private void InitMaterialArray(Dictionary<IPXVertex,int> vDic)
+
+        private ExtendedMaterial[] InitMaterialArray(Dictionary<IPXVertex, int> vDic)
         {
+            ExtendedMaterial[] ExMaterialArray = new ExtendedMaterial[Pmx.Material.Count];
             ARangeArray = new AttributeRange[Pmx.Material.Count];
             ExMaterialArray = new ExtendedMaterial[Pmx.Material.Count];
             int faceOffset = 0;
@@ -132,16 +135,17 @@ namespace MyUVEditor
                     MaterialD3D = new Material
                     {
                         //Ambient = new Color4(1,m.Ambient.R,m.Ambient.G,m.Ambient.B),
-                        Emissive = new Color4(1,m.Ambient.R,m.Ambient.G,m.Ambient.B),
+                        Emissive = new Color4(1, m.Ambient.R, m.Ambient.G, m.Ambient.B),
                         Diffuse = m.Diffuse.ToColor4(),
                         Power = m.Power,
                         Specular = new Color4(m.Specular.ToColor3())
                     },
                     TextureFileName = m.Tex
                 };
-
             }
+            return ExMaterialArray;
         }
+
         private void SetIndexBuffer()
         {
             using (DataStream data = LockIndexBuffer(LockFlags.None))
@@ -164,7 +168,7 @@ namespace MyUVEditor
             {
                 foreach (var a in ARangeArray)
                 {
-                    for (int i = 0; i < a.FaceCount;i++ )
+                    for (int i = 0; i < a.FaceCount; i++)
                     {
                         data.Write<int>(a.AttribId);
                     }
