@@ -20,8 +20,8 @@ namespace MyUVEditor
         protected float aspect = 1;
         public int Width { get { return Client.ClientSize.Width; } }
         public int Height { get { return Client.ClientSize.Height; } }
-        public Matrix World { get; protected set; }
-        public Matrix View
+        public virtual Matrix World { get { return Matrix.Identity; } }
+        public virtual Matrix View
         {
             get
             {
@@ -82,7 +82,6 @@ namespace MyUVEditor
             UpDir = new Vector3(0, 1, 0);
             FOV = f;
             Client = client;
-            World = Matrix.Identity;
             ResetWVPMatrix();
         }
 
@@ -93,7 +92,6 @@ namespace MyUVEditor
             UpDir = new Vector3(0, 1, 0);
             FOV = f;
             Client = client;
-            World = Matrix.Identity;
             ResetWVPMatrix();
         }
 
@@ -114,7 +112,7 @@ namespace MyUVEditor
         }
 
 
-        public Vector3 ScreenToWorld(Point p, float tgZ)
+        public Vector3 ScreenToLocal(Point p, float tgZ)
         {
             Vector3 mousePoint = new Vector3(p.X, p.Y, tgZ);
             Matrix invSC = Matrix.Invert(Screen);
@@ -141,7 +139,8 @@ namespace MyUVEditor
         protected void CameraMove(Point prev, Point tmp)
         {
             float tgZ = TargetScreenZ;
-            Vector3 moved = ScreenToWorld(tmp, tgZ) - ScreenToWorld(prev, tgZ);
+            Vector3 moved = Vector3.TransformCoordinate(ScreenToLocal(tmp, tgZ),World)
+                - Vector3.TransformCoordinate(ScreenToLocal(prev, tgZ),World);
             Target -= moved;
             Position -= moved;
             ResetWVPMatrix();

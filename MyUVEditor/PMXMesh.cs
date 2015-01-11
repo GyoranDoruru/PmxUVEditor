@@ -23,6 +23,7 @@ namespace MyUVEditor
         //public ExtendedMaterial[] ExMaterialArray { get; private set; }
         public MaterialManager MatManager { get; private set; }
         public EffectManager EffectManager { get; private set; }
+        public Sprite TexSprite { get; private set; }
 
         static public PMXMesh GetPMXMesh(Device device, IPXPmx pmx)
         {
@@ -47,6 +48,7 @@ namespace MyUVEditor
             MatManager = new MaterialManager();
             EffectManager = new EffectManager(device);
             Pmx = pmx;
+            TexSprite = new Sprite(device);
             InitVertexArray();
             InitVertexArray();
 

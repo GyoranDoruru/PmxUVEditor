@@ -43,7 +43,7 @@ namespace MyUVEditor
             this.MouseMove += (o, args) => { DXView_MouseMove(this, args); };
         }
 
-        public Result Render(PMXMesh pmx)
+        public virtual Result Render(PMXMesh pmx)
         {
             Device device = swapChain.Device;
             device.SetRenderTarget(0, swapChain.GetBackBuffer(0));
@@ -54,11 +54,10 @@ namespace MyUVEditor
             device.SetRenderState(RenderState.Lighting, true);
             device.SetLight(0, pmx.MatManager.Light);
             device.EnableLight(0, true);
+            device.SetTransform(TransformState.World, Camera.World);
             device.SetTransform(TransformState.View, Camera.View);
             device.SetTransform(TransformState.Projection, Camera.Projection);
-            //カリング無視
 
-            device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
 
             //アルファブレンド
             device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
@@ -72,6 +71,13 @@ namespace MyUVEditor
                 ExtendedMaterial m = pmx.GetMaterials()[i];
                 device.Material = m.MaterialD3D;
                 device.SetTexture(0, pmx.MatManager.DicObjTex[m.TextureFileName]);
+                if(pmx.Pmx.Material[i].BothDraw){
+                    device.SetRenderState(RenderState.CullMode, Cull.None);
+                }
+                else
+                {
+                    device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
+                }
                 pmx.DrawSubset(i);
             }
             device.EndScene();
