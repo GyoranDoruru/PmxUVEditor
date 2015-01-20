@@ -178,12 +178,12 @@ namespace MyUVEditor
                     return;
                 }
                 Position = Target + tmpTtoP;
-                ResetWVPMatrix();
             }
             else
             {
                 this.scale *= (float)Math.Pow(0.999f, delta);
             }
+            ResetWVPMatrix();
         }
         protected void Camera_MouseMove(object sender, MouseEventArgs e)
         {

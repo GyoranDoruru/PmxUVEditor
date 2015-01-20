@@ -21,6 +21,16 @@ static float4 DiffuseColor = MaterialDiffuse  * float4(LightDiffuse, 1.0f);
 static float3 AmbientColor = MaterialAmbient  * LightAmbient + MaterialEmmisive;
 static float3 SpecularColor = MaterialSpecular * LightSpecular;
 
+// オブジェクトのテクスチャ
+texture ObjectTexture: MATERIALTEXTURE;
+sampler ObjTexSampler = sampler_state {
+	texture = <ObjectTexture>;
+	MINFILTER = LINEAR;
+	MAGFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+	ADDRESSU = WRAP;
+	ADDRESSV = WRAP;
+};
 
 struct VS_OUTPUT
 {
@@ -82,16 +92,18 @@ technique MainTec < string MMDPass = "object"; > {
 
 float4 UV_VS(float2 Tex : TEXCOORD0) : POSITION
 {
-	return float4(Tex.x, Tex.y, 0, 1);
+	return mul(float4(Tex.x, Tex.y, 0, 1),WorldViewProjMatrix);
 }
 
 float4 UV_PS() : COLOR0
 {
-	return float4(1, 1, 1, 1);
+	return float4(0, 0, 0, 1);
 }
 
 technique UVTec{
 	pass DrawUV{
+		FillMode = WireFrame;
+		CullMode = None;
 		VertexShader = compile vs_2_0 UV_VS();
 		PixelShader = compile ps_2_0 UV_PS();
 	}

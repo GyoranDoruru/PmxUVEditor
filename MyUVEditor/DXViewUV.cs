@@ -50,10 +50,10 @@ namespace MyUVEditor
                 Texture tex = pmx.MatManager.DicObjTex[m.TextureFileName];
                 int width = tex.GetLevelDescription(0).Width;
                 int height = tex.GetLevelDescription(0).Height;
-                Matrix scaling = Matrix.Scaling(new Vector3(1.0f /width, 1.0f / height, 1.0f));
+                Matrix scaling = Matrix.Scaling(new Vector3(1.0f / width, 1.0f / height, 1.0f));
                 Matrix transpose = Matrix.Translation(Pos);
                 texSprite.Transform = scaling * transpose;
-                texSprite.Draw(tex,Color.White);
+                texSprite.Draw(tex, Color.White);
                 if (i % 7 == 6)
                 {
                     Pos.X = 0;
@@ -65,6 +65,18 @@ namespace MyUVEditor
                 }
             }
             texSprite.End();
+            pmx.EffectManager.SetMatrix(Camera);
+            pmx.EffectManager.BeginUVTec();
+            for (int p = 0; p < 1; p++)
+            {
+                pmx.EffectManager.BeginPass(p);
+                for (int i = 0; i < pmx.Pmx.Material.Count; i++)
+                {
+                    pmx.DrawSubset(i);
+                }
+                pmx.EffectManager.EndPass();
+            }
+            pmx.EffectManager.EndTec();
             device.EndScene();
             return swapChain.Present(Present.None);
         }
