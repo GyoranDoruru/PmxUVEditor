@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Windows.Forms;
 using PEPlugin;
+using System.Threading;
 
 namespace MyUVEditor
 {
     public class MyPlugin : PEPluginClass
     {
-        //MyGame game;
+        MyGame game;
         const string ver = "0_139_10_2";
-        //Thread _thread;
+        Thread _thread;
         public MyPlugin()
             : base()
         {
@@ -22,10 +23,12 @@ namespace MyUVEditor
             try
             {
                 //game = new MyGame(args.Host,ver);
-                //game.Run();
-                ParentForm PF = new ParentForm(args.Host.Connector.Pmx.GetCurrentState());
+                //TestGame testGame = new TestGame(args);
+                //testGame.Run();
+               ParentForm PF = new ParentForm(args.Host.Connector.Pmx.GetCurrentState());
                 //_thread = new Thread(new ThreadStart(game.Run));
                 //_thread.Start();
+
             }
             catch (Exception ex)
             {
