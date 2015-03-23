@@ -49,8 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Camera.cs" />
-    <Compile Include="CameraUV.cs" />
+    <Compile Include="Camera\Camera3D.cs" />
+    <Compile Include="Camera\Camera2D.cs" />
     <Compile Include="CustomVertex.cs" />
     <Compile Include="DeviceManager.cs" />
     <Compile Include="DrawingMode.cs" />
@@ -91,7 +91,7 @@
     <Compile Include="Form1.designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ICamera.cs" />
+    <Compile Include="Camera\ICamera.cs" />
     <Compile Include="IDXViewForm.cs" />
     <Compile Include="KeyBoardEvent.cs" />
     <Compile Include="MakeUVMorph.cs" />

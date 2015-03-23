@@ -8,6 +8,8 @@ using System.Text;
 using System.Windows.Forms;
 using SlimDX;
 using SlimDX.Direct3D9;
+using MyUVEditor.Camera;
+
 namespace MyUVEditor
 {
     public partial class DXView : UserControl
@@ -15,10 +17,10 @@ namespace MyUVEditor
         public DXView()
         {
             InitializeComponent();
-            Camera = new Camera(this);
+            Camera = new Camera3D(this);
         }
         static int swapCount = 0;
-        public Camera Camera { get; protected set; }
+        public ICamera Camera { get; protected set; }
         protected SwapChain swapChain;
         protected Surface depthSurface;
         protected Viewport Viewport

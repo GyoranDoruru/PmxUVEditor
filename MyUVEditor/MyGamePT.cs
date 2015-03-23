@@ -266,7 +266,7 @@ namespace MyUVEditor
             this.mouse.MouseDown(e);
             drivingMode.GetDrivingMode(this, e);
             drivingMode.MouseDowend(this, e);
-            Vector3 vec = Camera.Screen2World(this.device, e.Location);
+            Vector3 vec = Camera.ScreenToWorldVec(e.Location);
             vS.PutSelectPoly(vec);
             this.Render();
         }
@@ -275,7 +275,7 @@ namespace MyUVEditor
         {
             this.mouse.MouseMove(e);
             this.drivingMode.MouseMoved(this, e);
-            this.form.UVLocation = Camera.Screen2World(this.device,e.Location);
+            this.form.UVLocation = Camera.ScreenToWorldVec(e.Location);
             this.Render();
         }
 
@@ -297,7 +297,7 @@ namespace MyUVEditor
 
         public void form_MouseWheel(object sender, MouseEventArgs e)
         {
-            this.camera.ScaleChange(e.Delta);
+           // this.camera.ScaleChange(e.Delta);
             this.Render();
         }
 

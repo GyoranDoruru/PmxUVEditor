@@ -5,9 +5,9 @@ using System.Text;
 using SlimDX;
 using System.Drawing;
 
-namespace MyUVEditor
+namespace MyUVEditor.Camera
 {
-    class CameraUV:Camera
+    class Camera2D:Camera3D
     {
         public override Matrix World
         {
@@ -24,7 +24,7 @@ namespace MyUVEditor
                 };
             }
         }
-        public CameraUV(DXView client):base(client,-1)
+        public Camera2D(DXView client):base(client,-1)
         {
             Position = new Vector3(0, 0, -10);
             Target = new Vector3(0, 0, 0);

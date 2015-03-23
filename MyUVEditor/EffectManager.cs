@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using SlimDX;
 using SlimDX.Direct3D9;
+using MyUVEditor.Camera;
 
 namespace MyUVEditor
 {
@@ -108,7 +109,7 @@ namespace MyUVEditor
             }
         }
 
-        public void SetMatrix(Camera c)
+        public void SetMatrix(ICamera c)
         {
             EffectHandle h = geoHandles[(int)eGeoSemantics.WORLDVIEWPROJECTION, (int)eGeoAnotations.Camera];
             Effect.SetValue(h, c.WorldViewProjection);
