@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 using SlimDX;
-using SlimDX.Direct3D9;
 using System.Drawing;
 
 namespace MyUVEditor.Camera

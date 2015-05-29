@@ -8,7 +8,7 @@ namespace MyUVEditor
     public class MyPlugin : PEPluginClass
     {
         MyGame game;
-        const string ver = "0_139_10_2";
+        const string ver = "0_222c_12_0";
         Thread _thread;
         public MyPlugin()
             : base()
