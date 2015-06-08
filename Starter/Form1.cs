@@ -34,7 +34,7 @@ namespace Starter
             //runArgs.Host.Connector.Pmx.Update(pmx);
             //MyPlugin plugin = new MyPlugin();
             //plugin.Run(runArgs);
-            ParentForm pf = new ParentForm(pmx);
+            //ParentForm pf = new ParentForm(pmx);
         }
     }
 }

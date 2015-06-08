@@ -5,7 +5,7 @@ using System.Threading;
 
 namespace MyUVEditor
 {
-    public class MyPlugin : IPEPlugin
+    public class MyPlugin :IPEPlugin
     {
         const string ver = "0_222c_12_0";
         public MyPlugin()
@@ -14,7 +14,7 @@ namespace MyUVEditor
            m_option = new PEPluginOption(false, true, "UVエディタ_" +Version);
         }
         // エントリポイント
-        public override void Run(IPERunArgs args)
+        public void Run(IPERunArgs args)
         {
             try
             {
@@ -53,5 +53,6 @@ namespace MyUVEditor
         public void Dispose()
         {
         }
+
     }
 }
