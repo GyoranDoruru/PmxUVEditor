@@ -16,28 +16,39 @@ namespace MyUVEditor
         public ParentForm(IPERunArgs peRunArgs)
         {
             InitializeComponent();
-            DXViewers = new IDXViewForm[] { new UVEditorForm("test"), new DXViewForm() };
-            DXViewers[0].Text = "main";
-            DXViewers[1].Text = "sub";
-            DeviceM = new DeviceManager(DXViewers);
-            this.PERunArgs = peRunArgs;
-            PMX = PMXMesh.GetPMXMesh(DeviceM.Device,peRunArgs.Host.Connector.Pmx.GetCurrentState());
-            DeviceM.Render(DXViewers, PMX);
-
-            foreach (var v in DXViewers)
-            {
-                v.ViewPort.RequestRender += (o, args) => { DeviceM.Render(DXViewers, PMX); };
-
-                //v.Resize += (o, args) => { DeviceM.Render(DXViewers, PMX); };
-                //v.ResizeEnd += (o, args) => { DeviceM.Render(DXViewers, PMX); };
-            }
+            PERunArgs = peRunArgs;
         }
 
         public IPERunArgs PERunArgs { get; private set; }
-        public DeviceManager DeviceM { get; private set; }
-        public IDXViewForm[] DXViewers { get; private set; }
-        private IDXViewForm UVEditor { get { return DXViewers[0]; } }
-        private IDXViewForm ModelViewer { get { return DXViewers[1]; } }
-        public PMXMesh PMX { get; private set; }
+        public BackgroundWorker Worker { get { return backgroundWorker1; } }
+
+        private Form[] m_Forms = new Form[2];
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            using (DirectX11.DeviceManager11 deviceManager = new DirectX11.DeviceManager11())
+            {
+
+                for (int i = 0; i < m_Forms.Length; i++)
+                {
+                    m_Forms[i] = new Form();
+                    m_Forms[i].Text = i.ToString();
+                    m_Forms[i].Show();
+                }
+                deviceManager.SetCommonContents(new DirectX11.DummyCommonContents());
+                deviceManager.Run(m_Forms);
+            }
+        }
+
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            label1.Text = e.UserState.ToString();
+            progressBar1.Value = e.ProgressPercentage;
+        }
+
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            label1.Text = "UVエディタ終了";
+            this.Close();
+        }
     }
 }

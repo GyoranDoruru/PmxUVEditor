@@ -5,20 +5,22 @@ using System.Threading;
 
 namespace MyUVEditor
 {
-    public class MyPlugin :IPEPlugin
+    public class MyPlugin : IPEPlugin
     {
         const string ver = "0_222c_12_0";
         public MyPlugin()
             : base()
         {
-           m_option = new PEPluginOption(false, true, "UVエディタ_" +Version);
+            m_option = new PEPluginOption(false, true, "UVエディタ_" + Version);
         }
         // エントリポイント
         public void Run(IPERunArgs args)
         {
             try
             {
-               ParentForm PF = new ParentForm(args);
+                ParentForm PF = new ParentForm(args);
+                PF.Show();
+                PF.Worker.RunWorkerAsync();
 
             }
             catch (Exception ex)

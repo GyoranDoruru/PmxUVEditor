@@ -6,17 +6,23 @@ namespace MyUVEditor.DirectX11
 {
     class RenderTargetSet : IDisposable
     {
-        public SwapChain SwapChain { get; private set; }
-        public RenderTargetView RenderTarget { get; private set; }
-        public DepthStencilView DepthStencil { get; private set; }
-        protected SlimDX.Direct3D11.Device m_device;
-        protected Control m_client;
+        private SwapChain SwapChain { get; set; }
+        private RenderTargetView RenderTarget { get; set; }
+        private DepthStencilView DepthStencil { get; set; }
+        protected SlimDX.Direct3D11.Device GraphicsDevice { get; private set; }
+        protected Control Client { get; private set; }
         protected SlimDX.Color4 m_backgroundColor = new SlimDX.Color4(1.0f, 0.39f, 0.58f, 0.93f);
+        public bool ClientIsDisposed { get { return Client.IsDisposed; } }
+
         public RenderTargetSet(SlimDX.Direct3D11.Device device, SwapChain swapChain, Control client)
         {
-            m_device = device;
+            GraphicsDevice = device;
             SwapChain = swapChain;
-            m_client = client;
+            Client = client;
+
+            GetParentForm(Client).ResizeEnd += ClientResize;
+            initRenderTarget();
+            initDepthStencil();
             LoadContent();
         }
 
@@ -26,40 +32,82 @@ namespace MyUVEditor.DirectX11
             DrawContents(commonContents);
             SwapChain.Present(1, PresentFlags.None);
         }
-
         public void Dispose()
         {
             UnloadContent();
             RenderTarget.Dispose();
             DepthStencil.Dispose();
             SwapChain.Dispose();
-            m_device = null;
-            m_client = null;
+            GetParentForm(Client).ResizeEnd -= ClientResize;
+            GraphicsDevice = null;
+            Client = null;
         }
 
         private void SetTargets()
         {
-            m_device.ImmediateContext.OutputMerger.SetTargets(DepthStencil, RenderTarget);
-            m_device.ImmediateContext.Rasterizer.SetViewports(
+            GraphicsDevice.ImmediateContext.OutputMerger.SetTargets(DepthStencil, RenderTarget);
+            GraphicsDevice.ImmediateContext.Rasterizer.SetViewports(
                 new Viewport
                 {
-                    Width = m_client.ClientSize.Width,
-                    Height = m_client.ClientSize.Height,
+                    Width = Client.ClientSize.Width,
+                    Height = Client.ClientSize.Height,
                     MaxZ = 1
                 });
 
-            m_device.ImmediateContext.ClearRenderTargetView(RenderTarget, m_backgroundColor);
-            m_device.ImmediateContext.ClearDepthStencilView(DepthStencil, DepthStencilClearFlags.Depth, 1, 0);
+            GraphicsDevice.ImmediateContext.ClearRenderTargetView(RenderTarget, m_backgroundColor);
+            GraphicsDevice.ImmediateContext.ClearDepthStencilView(DepthStencil, DepthStencilClearFlags.Depth, 1, 0);
+        }
+        private void initRenderTarget()
+        {
+            using (Texture2D backBuffer
+                = SlimDX.Direct3D11.Resource.FromSwapChain<Texture2D>(SwapChain, 0)
+                )
+            {
+                RenderTarget = new RenderTargetView(GraphicsDevice, backBuffer);
+            }
+        }
+        private void initDepthStencil()
+        {
+            Texture2DDescription depthBufferDesc = new Texture2DDescription
+            {
+                ArraySize = 1,
+                BindFlags = BindFlags.DepthStencil,
+                Format = Format.D32_Float,
+                Width = Client.ClientSize.Width,
+                Height = Client.ClientSize.Height,
+                MipLevels = 1,
+                SampleDescription = new SampleDescription(1, 0)
+            };
+
+            using (Texture2D depthBuffer = new Texture2D(GraphicsDevice, depthBufferDesc))
+            {
+                DepthStencil = new DepthStencilView(GraphicsDevice, depthBuffer);
+            }
         }
 
+        private void ClientResize(object sender, EventArgs args)
+        {
+            RenderTarget.Dispose();
+            DepthStencil.Dispose();
+            System.Drawing.Size size = Client.ClientSize;
+            SwapChain.ResizeBuffers(1, size.Width, size.Height, Format.R8G8B8A8_UNorm, SwapChainFlags.None);
+            initRenderTarget();
+            initDepthStencil();
+        }
         protected virtual void DrawContents(ICommonContents commonContents) { }
         protected virtual void LoadContent() { }
         protected virtual void UnloadContent() { }
 
-    }
-    interface ICommonContents
-    {
-        void Load();
-        void Unload();
+        static internal Form GetParentForm(Control control)
+        {
+            Control tmp_c = control;
+            Form form = null;
+            for (; form == null; tmp_c = tmp_c.Parent)
+            {
+                form = tmp_c as Form;
+            }
+            return form;
+        }
+
     }
 }

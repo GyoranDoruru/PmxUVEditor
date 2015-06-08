@@ -89,7 +89,8 @@ namespace MyUVEditor.DirectX11
         {
             CreateDeviceAndMultiSwapChain(clients);
             LoadCommonContent();
-            SlimDX.Windows.MessagePump.Run(Draw);
+            SlimDX.Windows.MessagePump.Run(RenderTargetSet.GetParentForm(clients[0]), Draw);
+            Dispose();
         }
 
         public void SetCommonContents(ICommonContents commonContents)
@@ -99,8 +100,12 @@ namespace MyUVEditor.DirectX11
 
         private void Draw()
         {
+            bool isEnd = true;
             foreach (var rt in m_RenderTargets)
+            {
+                isEnd &= rt.ClientIsDisposed;
                 rt.Draw(m_CommonContents);
+            }
         }
 
         public void Dispose()
