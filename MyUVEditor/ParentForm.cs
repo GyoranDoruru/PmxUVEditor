@@ -34,7 +34,7 @@ namespace MyUVEditor
                     m_Forms[i].Text = i.ToString();
                     m_Forms[i].Show();
                 }
-                deviceManager.SetCommonContents(new DirectX11.DummyCommonContents());
+                deviceManager.SetCommonContents(new DirectX11.MyCommonContents(),PERunArgs);
                 deviceManager.Run(m_Forms);
             }
         }

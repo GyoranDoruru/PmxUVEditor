@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
+using PEPlugin;
 
 
 
@@ -25,23 +26,6 @@ namespace MyUVEditor.DirectX11
                 out m_Device,
                 out swapChain
                 );
-        }
-
-        private SlimDX.Direct3D11.Buffer CreateVertexBuffer(Array vertices)
-        {
-            using (SlimDX.DataStream vertexStream
-                = new SlimDX.DataStream(vertices, true, true))
-            {
-                return new SlimDX.Direct3D11.Buffer(
-                    m_Device,
-                    vertexStream,
-                    new BufferDescription
-                    {
-                        SizeInBytes = (int)vertexStream.Length,
-                        BindFlags = BindFlags.VertexBuffer,
-                    }
-                    );
-            }
         }
 
         private void CreateDeviceAndMultiSwapChain(Control[] controls)
