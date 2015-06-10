@@ -38,7 +38,8 @@ namespace MyUVEditor.DirectX11
             RenderTarget.Dispose();
             DepthStencil.Dispose();
             SwapChain.Dispose();
-            GetParentForm(Client).ResizeEnd -= ClientResize;
+            if(Client!=null&&!Client.IsDisposed)
+                GetParentForm(Client).ResizeEnd -= ClientResize;
             GraphicsDevice = null;
             Client = null;
         }
