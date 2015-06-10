@@ -82,7 +82,7 @@ namespace MyUVEditor.DirectX11
             };
         }
 
-        private void LoadCommonContent() { m_CommonContents.Load(); }
+        private void LoadCommonContent() { m_CommonContents.Load(m_Device); }
         private void UnloadCommonContent() { m_CommonContents.Unload(); }
 
         public void Run(Control[] clients)
@@ -93,9 +93,10 @@ namespace MyUVEditor.DirectX11
             Dispose();
         }
 
-        public void SetCommonContents(ICommonContents commonContents)
+        public void SetCommonContents(ICommonContents commonContents, IPERunArgs args)
         {
             m_CommonContents = commonContents;
+            m_CommonContents.Set(args);
         }
 
         private void Draw()
