@@ -9,36 +9,29 @@ using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using SlimDX.D3DCompiler;
 using PEPlugin;
+using PEPlugin.Pmx;
 namespace MyUVEditor.DirectX11
 {
     class MyCommonContents:ICommonContents
     {
+        public IPXPmx Pmx { get; private set; }
+        public Effect Effect { get; private set; }
+        public InputLayout VertexLayout { get; private set; }
+        public SlimDX.Direct3D11.Buffer VertexBuffer { get; private set; }
 
-        InputLayout m_VertexLayout;
-        SlimDX.Direct3D11.Buffer m_VertexBuffer;
-        ShaderResourceView[] m_Textures;
-        Effect m_effect;
+        private IPERunArgs Args { get; set; }
+        private Dictionary<string, ShaderResourceView> m_Textures;
 
         private void initEffect(SlimDX.Direct3D11.Device device)
         {
-            using (ShaderBytecode shaderByteCode = ShaderBytecode.Compile(
-                Properties.Resources.myeffect, "fx_5_0", ShaderFlags.None, EffectFlags.None))
-            {
-                m_effect = new Effect(device, shaderByteCode);
-            }
+            Effect = EffectManager11.InitEffect(device);
         }
 
-        private void initVertexLayout(SlimDX.Direct3D11.Device device)
+        private void initVertexLayout(SlimDX.Direct3D11.Device device, Effect effect)
         {
-            var t = m_effect.GetTechniqueByIndex(0);
-            var p = t.GetPassByIndex(0);
-            var d = p.Description;
-            var s = d.Signature;
-            var ve = PmxVertexStruct.VertexElements;
-
-            m_VertexLayout = new InputLayout(
+            VertexLayout = new InputLayout(
                 device,
-                m_effect.GetTechniqueByIndex(0).GetPassByIndex(0).Description.Signature,
+                EffectManager11.Signature(effect),
                 PmxVertexStruct.VertexElements);
         }
 
@@ -61,7 +54,7 @@ namespace MyUVEditor.DirectX11
             using (SlimDX.DataStream vertexStream
                 = new SlimDX.DataStream(vertices, true, true))
             {
-                m_VertexBuffer = new SlimDX.Direct3D11.Buffer(
+                VertexBuffer = new SlimDX.Direct3D11.Buffer(
                     device,
                     vertexStream,
                     new BufferDescription
@@ -72,8 +65,43 @@ namespace MyUVEditor.DirectX11
             }
         }
 
-        private Texture2D BitmapToTexture(
-            SlimDX.Direct3D11.Device device,System.Drawing.Bitmap bitmap)
+        private void initTexture(SlimDX.Direct3D11.Device device)
+        {
+            m_Textures.Add("", GetWhiteTex(device));
+        }
+
+        public void Load(SlimDX.Direct3D11.Device device)
+        {
+            initEffect(device);
+            initVertexLayout(device, Effect);
+            initVertexBuffer(device);
+            initTexture(device);
+        }
+
+        public void Unload() {
+            VertexLayout.Dispose();
+            VertexBuffer.Dispose();
+            foreach (var t in m_Textures)
+            {
+                t.Value.Dispose();
+            }
+            m_Textures.Clear();
+            Effect.Dispose();
+        }
+
+        public MyCommonContents()
+        {
+            m_Textures = new Dictionary<string, ShaderResourceView>();
+        }
+
+
+        public void SetRunArgs(PEPlugin.IPERunArgs args)
+        {
+            Args = args;
+        }
+
+        static private Texture2D BitmapToTexture(
+            SlimDX.Direct3D11.Device device, System.Drawing.Bitmap bitmap)
         {
             using (var stream = new MemoryStream())
             {
@@ -85,44 +113,22 @@ namespace MyUVEditor.DirectX11
 
         }
 
-        private ShaderResourceView GetWhiteTex(SlimDX.Direct3D11.Device device)
+        static private ShaderResourceView GetWhiteTex(SlimDX.Direct3D11.Device device)
         {
-            using (var texture = BitmapToTexture(device,Properties.Resources.WhiteTex))
+            using (var texture = BitmapToTexture(device, Properties.Resources.WhiteTex))
             {
                 return new ShaderResourceView(device, texture);
             }
 
         }
-        private void initTexture(SlimDX.Direct3D11.Device device)
+
+
+
+        public ShaderResourceView GetTexture(string key)
         {
-            m_Textures = new ShaderResourceView[] { GetWhiteTex(device) };
-        }
-
-        public void Load(SlimDX.Direct3D11.Device device)
-        {
-            initEffect(device);
-            initVertexLayout(device);
-            initVertexBuffer(device);
-            initTexture(device);
-        }
-
-        public void Unload() {
-            m_effect.Dispose();
-            m_VertexLayout.Dispose();
-            m_VertexBuffer.Dispose();
-            foreach (var t in m_Textures)
-            {
-                t.Dispose();
-            }
-        }
-
-        public MyCommonContents() { }
-
-
-        private IPERunArgs Args { get; set; }
-        public void Set(PEPlugin.IPERunArgs args)
-        {
-            Args = args;
+            ShaderResourceView value = null;
+            m_Textures.TryGetValue(key, out value);
+            return value;
         }
     }
 }

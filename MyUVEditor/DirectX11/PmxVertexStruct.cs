@@ -5,10 +5,10 @@ namespace MyUVEditor.DirectX11
 {
     struct PmxVertexStruct
     {
-        public Vector3 Position;
-        public Vector2 Tex;
+        internal Vector3 Position;
+        internal Vector2 Tex;
 
-        public static readonly InputElement[] VertexElements = new[]{
+        internal static readonly InputElement[] VertexElements = new[]{
             new InputElement{
                 SemanticName = "SV_Position",
                 Format = SlimDX.DXGI.Format.R32G32B32_Float},
@@ -18,7 +18,7 @@ namespace MyUVEditor.DirectX11
                 AlignedByteOffset = InputElement.AppendAligned},
         };
 
-        public static int SizeInBytes
+        internal static int SizeInBytes
         {
             get
             {

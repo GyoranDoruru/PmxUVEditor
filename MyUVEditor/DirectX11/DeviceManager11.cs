@@ -14,7 +14,7 @@ namespace MyUVEditor.DirectX11
     class DeviceManager11:IDisposable
     {
         private SlimDX.Direct3D11.Device m_Device;
-        private RenderTargetSet[] m_RenderTargets;
+        private RenderTargetContents[] m_RenderTargets;
         private ICommonContents m_CommonContents;
 
         private void CreateDeviceAndSwapChain( Control control, out SwapChain swapChain)
@@ -30,16 +30,16 @@ namespace MyUVEditor.DirectX11
 
         private void CreateDeviceAndMultiSwapChain(Control[] controls)
         {
-            m_RenderTargets = new RenderTargetSet[controls.Length];
+            m_RenderTargets = new RenderTargetContents[controls.Length];
             SwapChain tmp_Swap;
             CreateDeviceAndSwapChain(controls[0], out tmp_Swap);
-            m_RenderTargets[0] = new RenderTargetSet(m_Device,tmp_Swap, controls[0]);
+            m_RenderTargets[0] = new RenderTargetContents(m_Device,tmp_Swap, controls[0]);
             Factory factory = m_Device.Factory;
             for (int i = 1; i < controls.Length; i++)
             {
                 tmp_Swap
                     = new SwapChain(factory,m_Device,DefaultSwapChainDescription(controls[i]));
-                m_RenderTargets[i] = new RenderTargetSet(m_Device, tmp_Swap, controls[i]);
+                m_RenderTargets[i] = new RenderTargetContents(m_Device, tmp_Swap, controls[i]);
             }
         }
 
@@ -73,14 +73,18 @@ namespace MyUVEditor.DirectX11
         {
             CreateDeviceAndMultiSwapChain(clients);
             LoadCommonContent();
-            SlimDX.Windows.MessagePump.Run(RenderTargetSet.GetParentForm(clients[0]), Draw);
+            foreach (var rt in m_RenderTargets)
+            {
+                rt.LoadContent(m_CommonContents);
+            }
+            SlimDX.Windows.MessagePump.Run(RenderTargetContents.GetParentForm(clients[0]), Draw);
             Dispose();
         }
 
         public void SetCommonContents(ICommonContents commonContents, IPERunArgs args)
         {
             m_CommonContents = commonContents;
-            m_CommonContents.Set(args);
+            m_CommonContents.SetRunArgs(args);
         }
 
         private void Draw()
@@ -89,7 +93,7 @@ namespace MyUVEditor.DirectX11
             foreach (var rt in m_RenderTargets)
             {
                 isEnd &= rt.ClientIsDisposed;
-                rt.Draw(m_CommonContents);
+                rt.Draw();
             }
         }
 
@@ -97,6 +101,7 @@ namespace MyUVEditor.DirectX11
         {
             foreach (var rt in m_RenderTargets)
                 rt.Dispose();
+
             UnloadCommonContent();
             m_Device.Dispose();
         }

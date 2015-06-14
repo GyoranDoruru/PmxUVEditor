@@ -1,21 +1,25 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 namespace MyUVEditor.DirectX11
 {
-    class RenderTargetSet : IDisposable
+    class RenderTargetContents : IDisposable
     {
         private SwapChain SwapChain { get; set; }
         private RenderTargetView RenderTarget { get; set; }
         private DepthStencilView DepthStencil { get; set; }
         protected SlimDX.Direct3D11.Device GraphicsDevice { get; private set; }
+        private EffectManager11 EffectManager { get; set; }
         protected Control Client { get; private set; }
+        protected IList<IDrawable> DrawableList { get; private set; }
         protected SlimDX.Color4 m_backgroundColor = new SlimDX.Color4(1.0f, 0.39f, 0.58f, 0.93f);
         public bool ClientIsDisposed { get { return Client.IsDisposed; } }
 
-        public RenderTargetSet(SlimDX.Direct3D11.Device device, SwapChain swapChain, Control client)
+        public RenderTargetContents(SlimDX.Direct3D11.Device device, SwapChain swapChain, Control client)
         {
+            DrawableList = new List<IDrawable>();
             GraphicsDevice = device;
             SwapChain = swapChain;
             Client = client;
@@ -23,13 +27,12 @@ namespace MyUVEditor.DirectX11
             GetParentForm(Client).ResizeEnd += ClientResize;
             initRenderTarget();
             initDepthStencil();
-            LoadContent();
         }
 
-        public void Draw(ICommonContents commonContents)
+        public void Draw()
         {
             SetTargets();
-            DrawContents(commonContents);
+            DrawContents();
             SwapChain.Present(1, PresentFlags.None);
         }
         public void Dispose()
@@ -95,9 +98,22 @@ namespace MyUVEditor.DirectX11
             initRenderTarget();
             initDepthStencil();
         }
-        protected virtual void DrawContents(ICommonContents commonContents) { }
-        protected virtual void LoadContent() { }
-        protected virtual void UnloadContent() { }
+        protected virtual void DrawContents()
+        {
+            foreach (var d in DrawableList)
+                d.Draw();
+        }
+        public virtual void LoadContent(ICommonContents commonContents) {
+            Drawable drawable = new Drawable(null);
+            drawable.SetEffectManager(new EffectManager11(commonContents.Effect), false);
+            drawable.setVertexLayout(commonContents.VertexLayout, true, PmxVertexStruct.SizeInBytes);
+            drawable.SetVertexBuffer(commonContents.VertexBuffer, true);
+            drawable.SetTexture(commonContents.GetTexture(""), true);
+
+            DrawableList.Add(drawable);
+
+        }
+        public virtual void UnloadContent() { foreach (var d in DrawableList)d.Dispose(); }
 
         static internal Form GetParentForm(Control control)
         {
