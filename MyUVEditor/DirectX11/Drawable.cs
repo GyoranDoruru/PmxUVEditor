@@ -17,7 +17,7 @@ namespace MyUVEditor.DirectX11
         protected PrimitiveTopology Topology { get; private set; }
         protected ShaderResourceView Texture { get; private set; }
         protected Device Device { get { return Texture.Device; } }
-
+        virtual public bool Visible { get; set; }
         private bool m_IsCommonEffectManager;
         private bool m_IsCommonVertexLayout;
         private bool m_IsCommonVertexBuffer;
@@ -26,10 +26,13 @@ namespace MyUVEditor.DirectX11
         public Drawable(IPXMaterial material)
         {
             World = Matrix.Identity;
+            Visible = true;
         }
 
         virtual public void Draw()
         {
+            if (!Visible)
+                return;
             EffectManager.SetWorld(World);
             EffectManager.SetTexture(Texture);
             Device.ImmediateContext.InputAssembler.InputLayout

@@ -91,7 +91,7 @@ namespace MyUVEditor
             Device device = swapChain.Device;
             swapChain.PresentParameters.BackBufferHeight = ClientSize.Height;
             swapChain.PresentParameters.BackBufferWidth = ClientSize.Width;
-            Camera.SetClientSize(this);
+            //Camera.SetClientSize(this);
             RequestRender(this, EventArgs.Empty);
         }
 
@@ -100,7 +100,7 @@ namespace MyUVEditor
             Device device;
             DisposeResource(out device);
             InitResource(device);
-            Camera.SetClientSize(this);
+            //Camera.SetClientSize(this);
             RequestRender(this, EventArgs.Empty);
         }
 

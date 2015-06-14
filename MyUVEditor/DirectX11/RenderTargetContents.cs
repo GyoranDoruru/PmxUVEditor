@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
+using MyUVEditor.Camera;
+
 namespace MyUVEditor.DirectX11
 {
     class RenderTargetContents : IDisposable
@@ -14,6 +16,7 @@ namespace MyUVEditor.DirectX11
         private EffectManager11 EffectManager { get; set; }
         protected Control Client { get; private set; }
         protected IList<IDrawable> DrawableList { get; private set; }
+        protected ICamera Camera { get; private set; }
         protected SlimDX.Color4 m_backgroundColor = new SlimDX.Color4(1.0f, 0.39f, 0.58f, 0.93f);
         public bool ClientIsDisposed { get { return Client.IsDisposed; } }
 
@@ -25,13 +28,15 @@ namespace MyUVEditor.DirectX11
             Client = client;
 
             GetParentForm(Client).ResizeEnd += ClientResize;
+
             initRenderTarget();
             initDepthStencil();
         }
 
-        public void Draw()
+        virtual public void Draw()
         {
             SetTargets();
+            EffectManager.SetViewProjection(Camera.View * Camera.Projection);
             DrawContents();
             SwapChain.Present(1, PresentFlags.None);
         }
@@ -104,8 +109,11 @@ namespace MyUVEditor.DirectX11
                 d.Draw();
         }
         public virtual void LoadContent(ICommonContents commonContents) {
+            EffectManager = new EffectManager11(commonContents.Effect);
+            InitCamera();
+
             Drawable drawable = new Drawable(null);
-            drawable.SetEffectManager(new EffectManager11(commonContents.Effect), false);
+            drawable.SetEffectManager(EffectManager, true);
             drawable.setVertexLayout(commonContents.VertexLayout, true, PmxVertexStruct.SizeInBytes);
             drawable.SetVertexBuffer(commonContents.VertexBuffer, true);
             drawable.SetTexture(commonContents.GetTexture(""), true);
@@ -113,7 +121,17 @@ namespace MyUVEditor.DirectX11
             DrawableList.Add(drawable);
 
         }
-        public virtual void UnloadContent() { foreach (var d in DrawableList)d.Dispose(); }
+        public virtual void UnloadContent() { 
+            foreach (var d in DrawableList)d.Dispose();
+            EffectManager.Dispose();
+        }
+
+        protected virtual void InitCamera()
+        {
+            if (Camera != null)
+                Camera.Dispose();
+            Camera = new Camera3D(Client);
+        }
 
         static internal Form GetParentForm(Control control)
         {

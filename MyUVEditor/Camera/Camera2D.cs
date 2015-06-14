@@ -29,9 +29,9 @@ namespace MyUVEditor.Camera
             ResetWVPMatrix();
         }
 
-        protected override void CameraRotate(Point prev, Point tmp)
+        protected override void CameraRotate(Point tmp)
         {
-            CameraMove(prev, tmp);
+            CameraMove(tmp);
         }
 
 

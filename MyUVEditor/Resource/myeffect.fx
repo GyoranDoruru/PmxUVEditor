@@ -15,6 +15,8 @@ struct PmxVertexStruct{
 PmxVertexStruct MyVertexShader(PmxVertexStruct input)
 {
 	PmxVertexStruct output = input;
+	output.Position = mul(output.Position, World);
+	output.Position = mul(output.Position,ViewProjection);
 	return output;
 }
 

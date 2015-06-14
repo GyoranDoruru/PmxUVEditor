@@ -43,6 +43,12 @@ namespace MyUVEditor.DirectX11
             Effect.GetVariableByName("World").AsMatrix().SetMatrix(world);
         }
 
+        public void SetViewProjection(Matrix viewProjection)
+        {
+            Effect.GetVariableByName("ViewProjection").AsMatrix().SetMatrix(
+                viewProjection);
+        }
+
         public void SetTexture(ShaderResourceView texture)
         {
             Effect.GetVariableByName("diffuseTexture").AsResource().SetResource(texture);

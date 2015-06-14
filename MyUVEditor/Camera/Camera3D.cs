@@ -79,6 +79,7 @@ namespace MyUVEditor.Camera
             UpDir = new Vector3(0, 1, 0);
             FOV = f;
             Client = client;
+            SetEvent();
             ResetWVPMatrix();
         }
 
@@ -89,11 +90,13 @@ namespace MyUVEditor.Camera
             UpDir = new Vector3(0, 1, 0);
             FOV = f;
             Client = client;
+            SetEvent();
             ResetWVPMatrix();
         }
 
         public void SetEvent()
         {
+            Client.ClientSizeChanged += (o, args) => { SetClientSize((Control)o); };
             Client.MouseMove += (o, args) => { Camera_MouseMove(o, args); };
             Client.MouseWheel += (o, args) => { Camera_MouseWheel(o, args); };
         }
@@ -137,20 +140,22 @@ namespace MyUVEditor.Camera
             return new Ray(Position, Vector3.Normalize(pWorld3 - Position));
         }
 
-        protected virtual void CameraMove(Point prev, Point tmp)
+        protected Point PrevPoint;
+
+        protected virtual void CameraMove(Point tmp)
         {
             float tgZ = TargetScreenZ;
             Vector3 moved = Vector3.TransformCoordinate(ScreenToWorldVec(tmp, tgZ),World)
-                - Vector3.TransformCoordinate(ScreenToWorldVec(prev, tgZ),World);
+                - Vector3.TransformCoordinate(ScreenToWorldVec(PrevPoint, tgZ),World);
             Target -= moved;
             Position -= moved;
             ResetWVPMatrix();
         }
 
-        protected virtual void CameraRotate(Point prev, Point tmp)
+        protected virtual void CameraRotate(Point tmp)
         {
-            float d_theta = (tmp.Y - prev.Y) / 100f;
-            float d_phi = (tmp.X - prev.X) / 100f;
+            float d_theta = (tmp.Y - PrevPoint.Y) / 100f;
+            float d_phi = (tmp.X - PrevPoint.X) / 100f;
             Vector3 eyeLine = Target - Position;
             Vector3 Cx = Vector3.Normalize(Vector3.Cross(UpDir, eyeLine));
             UpDir = Vector3.Normalize(Vector3.Cross(eyeLine, Cx));
@@ -188,16 +193,16 @@ namespace MyUVEditor.Camera
         }
         protected void Camera_MouseMove(object sender, MouseEventArgs e)
         {
-            var view = (DXView)sender;
             switch (e.Button)
             {
                 case MouseButtons.Right:
-                    CameraRotate(view.Prev_Point, e.Location);
+                    CameraRotate(e.Location);
                     break;
                 case MouseButtons.Middle:
-                    CameraMove(view.Prev_Point, e.Location);
+                    CameraMove(e.Location);
                     break;
             }
+            PrevPoint = e.Location;
         }
 
         protected void Camera_MouseWheel(object sender, MouseEventArgs e)
@@ -231,6 +236,7 @@ namespace MyUVEditor.Camera
 
         public void Dispose()
         {
+            Client.ClientSizeChanged -= (o, args) => { SetClientSize((Control)o); };
             Client.MouseMove -= (o, args) => { Camera_MouseMove(o, args); };
             Client.MouseWheel -= (o, args) => { Camera_MouseWheel(o, args); };
             Client = null;

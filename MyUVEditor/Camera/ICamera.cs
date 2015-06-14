@@ -13,15 +13,12 @@ namespace MyUVEditor.Camera
         Matrix View { get; }
         Matrix Projection { get; }
         Matrix Screen { get; }
-        float TargetScreenZ { get; }
         void ResetCamera();
-        void SetClientSize(Control c);
         Ray ScreenToWorldRay(Point p);
         Vector3 ScreenToWorldVec(Point p);
         Vector3 ScreenToWorldVec(Point p, float z);
         bool IsNear(Point screenPoint, Vector3 worldPos,float rad);
         bool IsContainIt(Vector3 rec1, Vector3 rec2, Vector3 worldPos);
         bool IsContainIt(Point rec1, Point rec2, Point scPos);
-        void SetEvent();
     }
 }
