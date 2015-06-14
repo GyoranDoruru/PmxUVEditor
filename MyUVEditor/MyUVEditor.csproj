@@ -127,7 +127,7 @@
     </Compile>
     <Compile Include="PMXMesh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="DirectX11\RenderTargetSet.cs" />
+    <Compile Include="DirectX11\RenderTargetContents.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
