@@ -18,6 +18,9 @@ namespace MyUVEditor
         {
             try
             {
+                if (!IsFairPmx(args))
+                    return;
+
                 ParentForm PF = new ParentForm(args);
                 PF.Show();
                 PF.Worker.RunWorkerAsync();
@@ -54,6 +57,26 @@ namespace MyUVEditor
 
         public void Dispose()
         {
+        }
+
+        private bool IsFairPmx(IPERunArgs args)
+        {
+            var pmx = args.Host.Connector.Pmx.GetCurrentState();
+            if (pmx.Vertex.Count == 0 || pmx.Material.Count == 0)
+            {
+                MessageBox.Show("モデルが読み込まれてないかも？");
+                return false;
+            }
+
+            foreach (var m in pmx.Material)
+            {
+                if (m.Faces.Count == 0)
+                {
+                    MessageBox.Show("材質: " + m.Name + "の面の数が0なので中断します");
+                    return false;
+                }
+            }
+            return true;
         }
 
     }
