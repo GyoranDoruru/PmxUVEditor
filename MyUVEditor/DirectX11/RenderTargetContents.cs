@@ -112,7 +112,7 @@ namespace MyUVEditor.DirectX11
             EffectManager = new EffectManager11(commonContents.Effect);
             InitCamera();
 
-            Drawable drawable = new Drawable(null);
+            DrawableTriangle drawable = new DrawableTriangle(null);
             drawable.SetEffectManager(EffectManager, true);
             drawable.setVertexLayout(commonContents.VertexLayout, true, PmxVertexStruct.SizeInBytes);
             drawable.SetVertexBuffer(commonContents.VertexBuffer, true);

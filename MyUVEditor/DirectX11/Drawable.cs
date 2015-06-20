@@ -7,7 +7,7 @@ using PEPlugin.Pmx;
 
 namespace MyUVEditor.DirectX11
 {
-    class Drawable:IDrawable
+    class DrawableTriangle:IDrawable
     {
         protected EffectManager11 EffectManager { get; private set; }
         protected Matrix World { get; set; }
@@ -23,7 +23,7 @@ namespace MyUVEditor.DirectX11
         private bool m_IsCommonVertexBuffer;
         private bool m_IsCommonTexture;
 
-        public Drawable(IPXMaterial material)
+        public DrawableTriangle(IPXMaterial material)
         {
             World = Matrix.Identity;
             Visible = true;
