@@ -26,7 +26,7 @@ namespace MyUVEditor.DirectX11
             Device.ImmediateContext.InputAssembler.SetVertexBuffers(
                 0, new VertexBufferBinding(VertexBuffer, VertexSizeInBytes, 0));
             Device.ImmediateContext.InputAssembler.SetIndexBuffer(
-                IndexBuffer, SlimDX.DXGI.Format.R16_UInt, 0);
+                IndexBuffer, SlimDX.DXGI.Format.R32_UInt, 0);
             Device.ImmediateContext.InputAssembler.PrimitiveTopology
                 = PrimitiveTopology.TriangleList;
 
