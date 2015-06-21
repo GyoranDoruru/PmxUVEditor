@@ -60,6 +60,7 @@
     <Compile Include="Camera\Camera2D.cs" />
     <Compile Include="CustomVertex.cs" />
     <Compile Include="DeviceManager.cs" />
+    <Compile Include="DirectX11\BlendStateManager.cs" />
     <Compile Include="DirectX11\DeviceManager11.cs" />
     <Compile Include="DirectX11\Drawable.cs" />
     <Compile Include="DirectX11\DrawableMaterial.cs" />

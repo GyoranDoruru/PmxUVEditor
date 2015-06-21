@@ -52,8 +52,8 @@ namespace MyUVEditor.DirectX11
                 IsWindowed = true,
                 SampleDescription = new SampleDescription
                 {
-                    Count = 1,
-                    Quality = 0
+                    Count = 4,
+                    Quality = 16
                 },
                 ModeDescription = new ModeDescription
                 {

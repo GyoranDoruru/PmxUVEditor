@@ -11,6 +11,7 @@ namespace MyUVEditor.DirectX11
         public IPXPmx Pmx { get; private set; }
         public List<IDrawable> CommonDrawables { get; private set; }
         public Effect Effect { get; private set; }
+        public BlendStateManager BlendStateManager { get; private set; }
         internal Dictionary<IPXVertex, int> VertexIndexDic { get; private set; }
 
         private IPERunArgs Args { get; set; }
@@ -19,6 +20,12 @@ namespace MyUVEditor.DirectX11
         private void initEffect(Device device)
         {
             Effect = EffectManager11.InitEffect(device);
+        }
+
+        private void initBlenderState(Device device)
+        {
+            BlendStateManager = new BlendStateManager(device);
+            device.ImmediateContext.OutputMerger.BlendState = BlendStateManager.BlendState;
         }
         
         private void initTexture(Device device)
@@ -40,9 +47,10 @@ namespace MyUVEditor.DirectX11
 
         }
 
-        public void Load(SlimDX.Direct3D11.Device device)
+        public void Load(Device device)
         {
             initEffect(device);
+            initBlenderState(device);
             initTexture(device);
             CommonDrawables = new List<IDrawable>{ getModel(device) };
         }
@@ -62,6 +70,7 @@ namespace MyUVEditor.DirectX11
 
             m_Textures.Clear();
             Effect.Dispose();
+            BlendStateManager.Dispose();
         }
 
         public MyCommonContents()

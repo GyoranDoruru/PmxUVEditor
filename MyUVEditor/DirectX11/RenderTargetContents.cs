@@ -77,6 +77,7 @@ namespace MyUVEditor.DirectX11
         }
         private void initDepthStencil()
         {
+            var swapChainSampleDesc = SwapChain.Description.SampleDescription;
             Texture2DDescription depthBufferDesc = new Texture2DDescription
             {
                 ArraySize = 1,
@@ -85,7 +86,7 @@ namespace MyUVEditor.DirectX11
                 Width = Client.ClientSize.Width,
                 Height = Client.ClientSize.Height,
                 MipLevels = 1,
-                SampleDescription = new SampleDescription(1, 0)
+                SampleDescription = new SampleDescription(swapChainSampleDesc.Count, swapChainSampleDesc.Quality)
             };
 
             using (Texture2D depthBuffer = new Texture2D(GraphicsDevice, depthBufferDesc))
