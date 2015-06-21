@@ -90,6 +90,16 @@ namespace MyUVEditor.DirectX11
         private void Draw()
         {
             bool isEnd = true;
+            bool isFocused = false;
+            foreach (var rt in m_RenderTargets)
+            {
+                isFocused = rt.IsFocused();
+                if (isFocused)
+                    break;
+            }
+
+            if (!isFocused)
+                return;
             foreach (var rt in m_RenderTargets)
             {
                 isEnd &= rt.ClientIsDisposed;

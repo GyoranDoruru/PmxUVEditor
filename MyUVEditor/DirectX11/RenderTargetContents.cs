@@ -150,5 +150,10 @@ namespace MyUVEditor.DirectX11
             return form;
         }
 
+        internal bool IsFocused()
+        {
+            return GetParentForm(Client).Focused;
+        }
+
     }
 }
