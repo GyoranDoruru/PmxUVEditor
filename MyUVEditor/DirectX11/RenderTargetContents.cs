@@ -114,17 +114,7 @@ namespace MyUVEditor.DirectX11
         public virtual void LoadContent(ICommonContents commonContents) {
             EffectManager = new EffectManager11(commonContents.Effect);
             InitCamera();
-
-            DrawableMaterial dMaterial = new DrawableMaterial();
-            dMaterial.SetEffectManager(EffectManager, true);
-            dMaterial.setVertexLayout(commonContents.VertexLayout, true, PmxVertexStruct.SizeInBytes);
-            dMaterial.SetVertexBuffer(commonContents.VertexBuffer, true);
-            dMaterial.SetIndexBuffer(commonContents.IndexBuffer, true, 0);
-            dMaterial.SetMaterial(commonContents.Pmx.Material[0]);
-            dMaterial.SetTexture(commonContents.GetTexture(""), true);
-            dMaterial.ResetForDraw();
-
-            DrawableList.Add(dMaterial);
+            DrawableList.Add(commonContents.CommonDrawables[0]);
 
         }
         public virtual void UnloadContent() { 

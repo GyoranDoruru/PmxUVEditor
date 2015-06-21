@@ -1,4 +1,5 @@
-﻿using SlimDX.Direct3D11;
+﻿using System.Collections.Generic;
+using SlimDX.Direct3D11;
 using PEPlugin;
 using PEPlugin.Pmx;
 namespace MyUVEditor.DirectX11
@@ -9,10 +10,8 @@ namespace MyUVEditor.DirectX11
         void Unload();
         void SetRunArgsAndPmx(IPERunArgs args);
         IPXPmx Pmx { get; }
+        List<IDrawable> CommonDrawables { get; }
         Effect Effect { get; }
-        InputLayout VertexLayout { get; }
-        Buffer VertexBuffer { get; }
-        Buffer IndexBuffer { get; }
         ShaderResourceView GetTexture(string key);
     }
 }

@@ -20,3 +20,4 @@ D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Debug\Starte
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Debug\Starter.pdb
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\UVEditor0_222c_12_0.dll
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\UVEditor0_222c_12_0.pdb
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\TargaImage.dll

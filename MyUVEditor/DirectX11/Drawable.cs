@@ -3,15 +3,16 @@ using SlimDX.Direct3D11;
 
 namespace MyUVEditor.DirectX11
 {
-    class DrawableTriangle:IDrawable
+    class DrawableTriangle : IDrawable
     {
         protected EffectManager11 EffectManager { get; private set; }
         protected Matrix World { get; set; }
         protected InputLayout VertexLayout { get; set; }
-        protected Buffer VertexBuffer { get; private set; }
+        protected Buffer VertexBuffer { get; set; }
         protected int VertexSizeInBytes { get; private set; }
         protected ShaderResourceView Texture { get; private set; }
-        protected Device Device { get { return Texture.Device; } }
+        virtual protected Device Device { get { return Texture.Device; } }
+        protected Effect Effect { get { return EffectManager.Effect; } }
         virtual public bool Visible { get; set; }
         private bool m_IsCommonEffectManager;
         private bool m_IsCommonVertexLayout;
@@ -23,6 +24,45 @@ namespace MyUVEditor.DirectX11
             World = Matrix.Identity;
             Visible = true;
         }
+
+        virtual protected void initVertexLayout(Device device, Effect effect)
+        {
+            VertexLayout = new InputLayout(
+                device,
+                EffectManager11.Signature(effect),
+                PmxVertexStruct.VertexElements);
+        }
+
+        virtual protected void initVertexBuffer(Device device)
+        {
+            var vertices = new[] {
+                new PmxVertexStruct {
+                    Position = new Vector3(0, 0.5f, 0),
+                    Tex = new Vector2(0.5f, 0)
+                },
+                new PmxVertexStruct{
+                    Position = new Vector3(0.5f, 0, 0),
+                    Tex = new Vector2(1, 1)
+                },
+                new PmxVertexStruct{
+                    Position = new Vector3(-0.5f, 0, 0),
+                    Tex = new Vector2(0, 1)
+                },
+            };
+            using (DataStream vertexStream
+                = new DataStream(vertices, true, true))
+            {
+                VertexBuffer = new Buffer(
+                    device,
+                    vertexStream,
+                    new BufferDescription
+                    {
+                        SizeInBytes = (int)vertexStream.Length,
+                        BindFlags = BindFlags.VertexBuffer,
+                    });
+            }
+        }
+
         virtual public void ResetForDraw()
         {
             Device.ImmediateContext.InputAssembler.InputLayout
@@ -30,6 +70,7 @@ namespace MyUVEditor.DirectX11
             Device.ImmediateContext.InputAssembler.SetVertexBuffers(
                 0, new VertexBufferBinding(VertexBuffer, VertexSizeInBytes, 0));
         }
+
         virtual public void Draw()
         {
             if (!Visible)
@@ -40,6 +81,7 @@ namespace MyUVEditor.DirectX11
             Device.ImmediateContext.Draw(3, 0);
 
         }
+
         public void SetEffectManager(EffectManager11 effectManager, bool isCommon)
         {
             EffectManager = effectManager;
@@ -47,13 +89,21 @@ namespace MyUVEditor.DirectX11
         }
         public void setVertexLayout(InputLayout vertexLayout, bool isCommon, int vertexSizeInBytes)
         {
-            VertexLayout = vertexLayout;
+            if (isCommon && vertexLayout != null)
+                VertexLayout = vertexLayout;
+            else
+                initVertexLayout(Device, Effect);
+
             m_IsCommonVertexLayout = isCommon;
             VertexSizeInBytes = vertexSizeInBytes;
         }
         public void SetVertexBuffer(Buffer vertexBuffer, bool isCommon)
         {
-            VertexBuffer = vertexBuffer;
+            if (isCommon && vertexBuffer != null)
+                VertexBuffer = vertexBuffer;
+            else
+                initVertexBuffer(Device);
+
             m_IsCommonVertexBuffer = isCommon;
         }
         public void SetTexture(ShaderResourceView texture, bool isCommon)
