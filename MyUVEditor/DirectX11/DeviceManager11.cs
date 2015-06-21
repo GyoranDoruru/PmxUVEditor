@@ -84,7 +84,7 @@ namespace MyUVEditor.DirectX11
         public void SetCommonContents(ICommonContents commonContents, IPERunArgs args)
         {
             m_CommonContents = commonContents;
-            m_CommonContents.SetRunArgs(args);
+            m_CommonContents.SetRunArgsAndPmx(args);
         }
 
         private void Draw()

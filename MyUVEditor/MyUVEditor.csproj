@@ -56,6 +56,7 @@
     <Compile Include="DeviceManager.cs" />
     <Compile Include="DirectX11\DeviceManager11.cs" />
     <Compile Include="DirectX11\Drawable.cs" />
+    <Compile Include="DirectX11\DrawableMaterial.cs" />
     <Compile Include="DirectX11\EffectManager11.cs" />
     <Compile Include="DirectX11\IDrawable.cs" />
     <Compile Include="DirectX11\MyCommonContents.cs" />

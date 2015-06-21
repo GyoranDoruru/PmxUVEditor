@@ -106,19 +106,25 @@ namespace MyUVEditor.DirectX11
         protected virtual void DrawContents()
         {
             foreach (var d in DrawableList)
+            {
+                d.ResetForDraw();
                 d.Draw();
+            }
         }
         public virtual void LoadContent(ICommonContents commonContents) {
             EffectManager = new EffectManager11(commonContents.Effect);
             InitCamera();
 
-            DrawableTriangle drawable = new DrawableTriangle(null);
-            drawable.SetEffectManager(EffectManager, true);
-            drawable.setVertexLayout(commonContents.VertexLayout, true, PmxVertexStruct.SizeInBytes);
-            drawable.SetVertexBuffer(commonContents.VertexBuffer, true);
-            drawable.SetTexture(commonContents.GetTexture(""), true);
+            DrawableMaterial dMaterial = new DrawableMaterial();
+            dMaterial.SetEffectManager(EffectManager, true);
+            dMaterial.setVertexLayout(commonContents.VertexLayout, true, PmxVertexStruct.SizeInBytes);
+            dMaterial.SetVertexBuffer(commonContents.VertexBuffer, true);
+            dMaterial.SetIndexBuffer(commonContents.IndexBuffer, true, 0);
+            dMaterial.SetMaterial(commonContents.Pmx.Material[0]);
+            dMaterial.SetTexture(commonContents.GetTexture(""), true);
+            dMaterial.ResetForDraw();
 
-            DrawableList.Add(drawable);
+            DrawableList.Add(dMaterial);
 
         }
         public virtual void UnloadContent() { 

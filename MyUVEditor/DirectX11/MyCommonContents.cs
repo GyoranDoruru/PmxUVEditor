@@ -18,9 +18,11 @@ namespace MyUVEditor.DirectX11
         public Effect Effect { get; private set; }
         public InputLayout VertexLayout { get; private set; }
         public SlimDX.Direct3D11.Buffer VertexBuffer { get; private set; }
+        public SlimDX.Direct3D11.Buffer IndexBuffer { get; private set; }
 
         private IPERunArgs Args { get; set; }
         private Dictionary<string, ShaderResourceView> m_Textures;
+        private Dictionary<IPXVertex, int> m_VertexIndexDic;
 
         private void initEffect(SlimDX.Direct3D11.Device device)
         {
@@ -37,20 +39,17 @@ namespace MyUVEditor.DirectX11
 
         private void initVertexBuffer(SlimDX.Direct3D11.Device device)
         {
-            var vertices = new[] {
-                new PmxVertexStruct {
-                    Position = new Vector3(0, 0.5f, 0),
-                    Tex = new Vector2(0.5f, 0)
-                },
-                new PmxVertexStruct{
-                    Position = new Vector3(0.5f, 0, 0),
-                    Tex = new Vector2(1, 1)
-                },
-                new PmxVertexStruct{
-                    Position = new Vector3(-0.5f, 0, 0),
-                    Tex = new Vector2(0, 1)
-                },
-            };
+            m_VertexIndexDic.Clear();
+
+            int index = 0;
+            var vertices = new PmxVertexStruct[Pmx.Vertex.Count];
+            foreach (var v in Pmx.Vertex)
+            {
+                vertices[index] = new PmxVertexStruct(v);
+                m_VertexIndexDic.Add(v, index);
+                index++;
+            }
+
             using (SlimDX.DataStream vertexStream
                 = new SlimDX.DataStream(vertices, true, true))
             {
@@ -65,9 +64,46 @@ namespace MyUVEditor.DirectX11
             }
         }
 
+        private void initIndexBuffer(SlimDX.Direct3D11.Device device)
+        {
+            int faceLength = 0;
+            foreach (var m in Pmx.Material)
+                faceLength += m.Faces.Count;
+            int[] vertexIndices = new int[faceLength*3];
+            int index = 0;
+            foreach (var m in Pmx.Material)
+            {
+                foreach (var f in m.Faces)
+                {
+                    vertexIndices[index] = m_VertexIndexDic[f.Vertex1];
+                    vertexIndices[index+1] = m_VertexIndexDic[f.Vertex2];
+                    vertexIndices[index+2] = m_VertexIndexDic[f.Vertex3];
+                    index += 3;
+                }
+            }
+            using (SlimDX.DataStream indexStream
+                = new SlimDX.DataStream(vertexIndices, true, true))
+            {
+                IndexBuffer = new SlimDX.Direct3D11.Buffer(
+                    device,
+                    indexStream,
+                    new BufferDescription
+                    {
+                        SizeInBytes = (int)indexStream.Length,
+                        BindFlags = BindFlags.IndexBuffer,
+                    });
+            }
+
+        }
+
         private void initTexture(SlimDX.Direct3D11.Device device)
         {
             m_Textures.Add("", GetWhiteTex(device));
+        }
+
+        private void SetPmx()
+        {
+            Pmx = Args.Host.Connector.Pmx.GetCurrentState();
         }
 
         public void Load(SlimDX.Direct3D11.Device device)
@@ -75,6 +111,7 @@ namespace MyUVEditor.DirectX11
             initEffect(device);
             initVertexLayout(device, Effect);
             initVertexBuffer(device);
+            initIndexBuffer(device);
             initTexture(device);
         }
 
@@ -92,12 +129,14 @@ namespace MyUVEditor.DirectX11
         public MyCommonContents()
         {
             m_Textures = new Dictionary<string, ShaderResourceView>();
+            m_VertexIndexDic = new Dictionary<IPXVertex, int>();
         }
 
 
-        public void SetRunArgs(PEPlugin.IPERunArgs args)
+        public void SetRunArgsAndPmx(PEPlugin.IPERunArgs args)
         {
             Args = args;
+            Pmx = args.Host.Connector.Pmx.GetCurrentState();
         }
 
         static private Texture2D BitmapToTexture(

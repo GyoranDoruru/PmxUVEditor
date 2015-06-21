@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using SlimDX;
 using SlimDX.Direct3D11;
+using PEPlugin.Pmx;
 namespace MyUVEditor.DirectX11
 {
     struct PmxVertexStruct
@@ -24,6 +25,12 @@ namespace MyUVEditor.DirectX11
             {
                 return Marshal.SizeOf(typeof(PmxVertexStruct));
             }
+        }
+
+        internal PmxVertexStruct(IPXVertex vertex)
+        {
+            Position = vertex.Position.ToVector3();
+            Tex = vertex.UV.ToVector2();
         }
     }
 }

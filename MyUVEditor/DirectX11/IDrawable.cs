@@ -5,6 +5,7 @@ namespace MyUVEditor.DirectX11
 {
     interface IDrawable:System.IDisposable
     {
+        void ResetForDraw();
         void Draw();
         bool Visible { get; }
     }

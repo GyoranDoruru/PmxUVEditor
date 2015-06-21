@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SlimDX;
+﻿using SlimDX;
 using SlimDX.Direct3D11;
-using PEPlugin.Pmx;
 
 namespace MyUVEditor.DirectX11
 {
@@ -14,7 +10,6 @@ namespace MyUVEditor.DirectX11
         protected InputLayout VertexLayout { get; set; }
         protected Buffer VertexBuffer { get; private set; }
         protected int VertexSizeInBytes { get; private set; }
-        protected PrimitiveTopology Topology { get; private set; }
         protected ShaderResourceView Texture { get; private set; }
         protected Device Device { get { return Texture.Device; } }
         virtual public bool Visible { get; set; }
@@ -23,24 +18,24 @@ namespace MyUVEditor.DirectX11
         private bool m_IsCommonVertexBuffer;
         private bool m_IsCommonTexture;
 
-        public DrawableTriangle(IPXMaterial material)
+        public DrawableTriangle()
         {
             World = Matrix.Identity;
             Visible = true;
         }
-
+        virtual public void ResetForDraw()
+        {
+            Device.ImmediateContext.InputAssembler.InputLayout
+                = VertexLayout;
+            Device.ImmediateContext.InputAssembler.SetVertexBuffers(
+                0, new VertexBufferBinding(VertexBuffer, VertexSizeInBytes, 0));
+        }
         virtual public void Draw()
         {
             if (!Visible)
                 return;
             EffectManager.SetWorld(World);
             EffectManager.SetTexture(Texture);
-            Device.ImmediateContext.InputAssembler.InputLayout
-                = VertexLayout;
-            Device.ImmediateContext.InputAssembler.SetVertexBuffers(
-                0, new VertexBufferBinding(VertexBuffer, VertexSizeInBytes, 0));
-            Device.ImmediateContext.InputAssembler.PrimitiveTopology
-                = Topology;
             EffectManager.SetTechAndPass(0, 0);
             Device.ImmediateContext.Draw(3, 0);
 
