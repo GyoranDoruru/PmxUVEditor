@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
 using SlimDX.Direct3D11;
 using PEPlugin;
 using PEPlugin.Pmx;
@@ -28,12 +29,14 @@ namespace MyUVEditor.DirectX11
             device.ImmediateContext.OutputMerger.BlendState = BlendStateManager.BlendState;
         }
         
-        private void initTexture(Device device)
+        private void initTexture(Device device, BackgroundWorker worker)
         {
+            worker.ReportProgress(0, "テクスチャ読み込み中");
             m_Textures.Add("", TextureUtility.CreateWhiteTex(device));
             string current = Directory.GetCurrentDirectory();
             string pmxDir = Directory.GetParent(Pmx.FilePath).FullName;
             Directory.SetCurrentDirectory(pmxDir);
+            int count = 0;
             foreach (var m in Pmx.Material)
             {
                 if (!m_Textures.ContainsKey(m.Tex))
@@ -42,22 +45,24 @@ namespace MyUVEditor.DirectX11
                     if (tex != null)
                         m_Textures.Add(m.Tex, tex);
                 }
+                count++;
+                worker.ReportProgress(count * 100 / Pmx.Material.Count, "テクスチャ読み込み中");
             }
             Directory.SetCurrentDirectory(current);
 
         }
 
-        public void Load(Device device)
+        public void Load(Device device,BackgroundWorker worker)
         {
             initEffect(device);
             initBlenderState(device);
-            initTexture(device);
-            CommonDrawables = new List<IDrawable>{ getModel(device) };
+            initTexture(device,worker);
+            CommonDrawables = new List<IDrawable> { getModel(device, worker) };
         }
 
-        private IDrawable getModel(Device device){
+        private IDrawable getModel(Device device, BackgroundWorker worker){
             var model = new DrawablePmx(Pmx);
-            model.SetDrawablePmx(this);
+            model.SetDrawablePmx(this, worker);
             return model;
         }
 

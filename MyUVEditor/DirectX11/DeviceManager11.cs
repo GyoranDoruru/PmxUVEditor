@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
 using PEPlugin;
-
 
 
 namespace MyUVEditor.DirectX11
@@ -66,18 +66,20 @@ namespace MyUVEditor.DirectX11
             };
         }
 
-        private void LoadCommonContent() { m_CommonContents.Load(m_Device); }
+        private void LoadCommonContent(BackgroundWorker worker) { m_CommonContents.Load(m_Device, worker); }
         private void UnloadCommonContent() { m_CommonContents.Unload(); }
 
-        public void Run(Control[] clients)
+        public void Run(Control[] clients,BackgroundWorker worker)
         {
             CreateDeviceAndMultiSwapChain(clients);
-            LoadCommonContent();
+            LoadCommonContent(worker);
             foreach (var rt in m_RenderTargets)
             {
                 rt.LoadContent(m_CommonContents);
             }
+            m_parentWorker = worker;
             SlimDX.Windows.MessagePump.Run(RenderTargetContents.GetParentForm(clients[0]), Draw);
+            m_parentWorker = null;
             Dispose();
         }
 
@@ -86,7 +88,10 @@ namespace MyUVEditor.DirectX11
             m_CommonContents = commonContents;
             m_CommonContents.SetRunArgsAndPmx(args);
         }
-
+        private BackgroundWorker m_parentWorker;
+        private int m_PrevTime = 0;
+        private int m_FrameCount = 0;
+        private const int m_Interval = 3000;
         private void Draw()
         {
             bool isEnd = true;
@@ -104,6 +109,15 @@ namespace MyUVEditor.DirectX11
             {
                 isEnd &= rt.ClientIsDisposed;
                 rt.Draw();
+            }
+            m_FrameCount++;
+            int tmpTime = Environment.TickCount;
+            if (tmpTime - m_PrevTime > m_Interval)
+            {
+                int fps = m_FrameCount * 1000 / (tmpTime - m_PrevTime);
+                m_parentWorker.ReportProgress(fps * 100 / 60, fps.ToString() + "fps");
+                m_FrameCount = 0;
+                m_PrevTime = tmpTime;
             }
         }
 

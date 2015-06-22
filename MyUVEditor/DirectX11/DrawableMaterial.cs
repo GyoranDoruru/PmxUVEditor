@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using SlimDX;
 using SlimDX.Direct3D11;
 using PEPlugin.Pmx;
@@ -31,15 +32,17 @@ namespace MyUVEditor.DirectX11
             m_VertexIndexDic = vertexIndexDic;
         }
 
-        override protected void initVertexBuffer(Device device)
+        override protected void initVertexBuffer(Device device, BackgroundWorker worker)
         {
             int index = 0;
             var vertices = new PmxVertexStruct[m_Pmx.Vertex.Count];
+            worker.ReportProgress(0, "頂点読み込み中");
             foreach (var v in m_Pmx.Vertex)
             {
                 vertices[index] = new PmxVertexStruct(v);
                 m_VertexIndexDic.Add(v, index);
                 index++;
+                worker.ReportProgress(index * 100 / m_Pmx.Vertex.Count, "頂点読み込み中");
             }
 
             using (DataStream vertexStream
@@ -56,13 +59,14 @@ namespace MyUVEditor.DirectX11
             }
         }
 
-        protected void initIndexBuffer(Device device)
+        protected void initIndexBuffer(Device device, BackgroundWorker worker)
         {
             int faceLength = 0;
             foreach (var m in m_Pmx.Material)
                 faceLength += m.Faces.Count;
             int[] vertexIndices = new int[faceLength * 3];
             int index = 0;
+            worker.ReportProgress(0, "面頂点読み込み中");
             foreach (var m in m_Pmx.Material)
             {
                 foreach (var f in m.Faces)
@@ -71,6 +75,7 @@ namespace MyUVEditor.DirectX11
                     vertexIndices[index + 1] = m_VertexIndexDic[f.Vertex2];
                     vertexIndices[index + 2] = m_VertexIndexDic[f.Vertex3];
                     index += 3;
+                    worker.ReportProgress(index * 100 / vertexIndices.Length, "面頂点読み込み中");
                 }
             }
             using (DataStream indexStream
@@ -114,7 +119,8 @@ namespace MyUVEditor.DirectX11
         }
 
 
-        public void SetIndexBuffer(Buffer indexBuffer, bool isCommon, int indexOffset)
+        public void SetIndexBuffer(
+            Buffer indexBuffer, bool isCommon, int indexOffset, BackgroundWorker worker)
         {
             if (isCommon && indexBuffer != null)
             {
@@ -122,7 +128,7 @@ namespace MyUVEditor.DirectX11
             }
             else
             {
-                initIndexBuffer(Device);
+                initIndexBuffer(Device,worker);
             }
             m_IndexOffset = indexOffset;
             m_IsCommonIndexBuffer = isCommon;

@@ -1,4 +1,5 @@
-﻿using SlimDX;
+﻿using System.ComponentModel;
+using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace MyUVEditor.DirectX11
@@ -33,8 +34,9 @@ namespace MyUVEditor.DirectX11
                 PmxVertexStruct.VertexElements);
         }
 
-        virtual protected void initVertexBuffer(Device device)
+        virtual protected void initVertexBuffer(Device device, BackgroundWorker worker)
         {
+            worker.ReportProgress(0, "頂点読み込み中");
             var vertices = new[] {
                 new PmxVertexStruct {
                     Position = new Vector3(0, 0.5f, 0),
@@ -61,6 +63,7 @@ namespace MyUVEditor.DirectX11
                         BindFlags = BindFlags.VertexBuffer,
                     });
             }
+            worker.ReportProgress(100, "頂点読み込み中");
         }
 
         virtual public void ResetForDraw()
@@ -97,12 +100,12 @@ namespace MyUVEditor.DirectX11
             m_IsCommonVertexLayout = isCommon;
             VertexSizeInBytes = vertexSizeInBytes;
         }
-        public void SetVertexBuffer(Buffer vertexBuffer, bool isCommon)
+        public void SetVertexBuffer(Buffer vertexBuffer, bool isCommon, BackgroundWorker worker)
         {
             if (isCommon && vertexBuffer != null)
                 VertexBuffer = vertexBuffer;
             else
-                initVertexBuffer(Device);
+                initVertexBuffer(Device,worker);
 
             m_IsCommonVertexBuffer = isCommon;
         }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using SlimDX;
 using SlimDX.Direct3D11;
 using PEPlugin.Pmx;
@@ -26,15 +27,17 @@ namespace MyUVEditor.DirectX11
             VertexIndexDic = new VIDictionary();
         }
 
-        override protected void initVertexBuffer(Device device)
+        override protected void initVertexBuffer(Device device, BackgroundWorker worker)
         {
             int index = 0;
             var vertices = new PmxVertexStruct[Pmx.Vertex.Count];
+            worker.ReportProgress(0, "頂点読み込み中");
             foreach (var v in Pmx.Vertex)
             {
                 vertices[index] = new PmxVertexStruct(v);
                 VertexIndexDic.Add(v, index);
                 index++;
+                worker.ReportProgress(index * 100 / Pmx.Vertex.Count, "頂点読み込み中");
             }
 
             using (DataStream vertexStream
@@ -51,13 +54,14 @@ namespace MyUVEditor.DirectX11
             }
         }
 
-        protected void initIndexBuffer(Device device)
+        protected void initIndexBuffer(Device device, BackgroundWorker worker)
         {
             int faceLength = 0;
             foreach (var m in Pmx.Material)
                 faceLength += m.Faces.Count;
             int[] vertexIndices = new int[faceLength * 3];
             int index = 0;
+            worker.ReportProgress(0, "面頂点読み込み中");
             foreach (var m in Pmx.Material)
             {
                 foreach (var f in m.Faces)
@@ -66,6 +70,8 @@ namespace MyUVEditor.DirectX11
                     vertexIndices[index + 1] = VertexIndexDic[f.Vertex2];
                     vertexIndices[index + 2] = VertexIndexDic[f.Vertex3];
                     index += 3;
+                    worker.ReportProgress(index*100/vertexIndices.Length, "面頂点読み込み中");
+
                 }
             }
             using (DataStream indexStream
@@ -83,7 +89,7 @@ namespace MyUVEditor.DirectX11
 
         }
 
-        public void SetDrawablePmx(MyCommonContents common)
+        public void SetDrawablePmx(MyCommonContents common, BackgroundWorker worker)
         {
             if (VertexLayout != null)
                 VertexLayout.Dispose();
@@ -98,8 +104,8 @@ namespace MyUVEditor.DirectX11
             SetEffectManager(new EffectManager11(common.Effect), false);
             SetTexture(null, true);
             initVertexLayout(Device, Effect);
-            initVertexBuffer(Device);
-            initIndexBuffer(Device);
+            initVertexBuffer(Device, worker);
+            initIndexBuffer(Device, worker);
             foreach(var m in m_Materials)
                 m.Dispose();
             m_Materials.Clear();
@@ -111,8 +117,8 @@ namespace MyUVEditor.DirectX11
                 tmpMaterial.SetEffectManager(EffectManager, true);
                 tmpMaterial.SetTexture(common.GetTexture(ipxm.Tex), true);
                 tmpMaterial.setVertexLayout(VertexLayout, true, PmxVertexStruct.SizeInBytes);
-                tmpMaterial.SetVertexBuffer(VertexBuffer, true);
-                tmpMaterial.SetIndexBuffer(IndexBuffer, true, count);
+                tmpMaterial.SetVertexBuffer(VertexBuffer, true, worker);
+                tmpMaterial.SetIndexBuffer(IndexBuffer, true, count,worker);
                 count += ipxm.Faces.Count * 3;
             }
 

@@ -35,7 +35,7 @@ namespace MyUVEditor
                     m_Forms[i].Show();
                 }
                 deviceManager.SetCommonContents(new DirectX11.MyCommonContents(),PERunArgs);
-                deviceManager.Run(m_Forms);
+                deviceManager.Run(m_Forms, backgroundWorker1);
             }
         }
 
