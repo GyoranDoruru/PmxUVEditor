@@ -24,7 +24,7 @@ namespace MyUVEditor.DirectX11
             Visible = true;
             Pmx = pmx;
             m_Materials = new List<DrawableMaterial>(pmx.Material.Count);
-            VertexIndexDic = new VIDictionary();
+            VertexIndexDic = new VIDictionary(pmx.Vertex.Count);
         }
 
         override protected void initVertexBuffer(Device device, BackgroundWorker worker)
@@ -106,6 +106,7 @@ namespace MyUVEditor.DirectX11
             initVertexLayout(Device, Effect);
             initVertexBuffer(Device, worker);
             initIndexBuffer(Device, worker);
+            m_IsCommonIndexBuffer = false;
             foreach(var m in m_Materials)
                 m.Dispose();
             m_Materials.Clear();

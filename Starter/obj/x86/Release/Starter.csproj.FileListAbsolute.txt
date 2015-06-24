@@ -23,3 +23,4 @@ D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Star
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Starter.csproj.GenerateResource.Cache
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\UVEditor0_222c_12_0.dll
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\UVEditor0_222c_12_0.pdb
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\TargaImage.dll
