@@ -112,6 +112,7 @@
     <Compile Include="Camera\ICamera.cs" />
     <Compile Include="IDXViewForm.cs" />
     <Compile Include="KeyBoardEvent.cs" />
+    <Compile Include="Light\ILight.cs" />
     <Compile Include="MakeUVMorph.cs" />
     <Compile Include="MaterialManager.cs" />
     <Compile Include="MessageForm.cs">
@@ -192,6 +193,7 @@
     <None Include="test.fx" />
     <EmbeddedResource Include="WhiteTex.bmp" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetFileName) D:\Documents\MMD\PmxEditor_0222c\_plugin\User\$(TargetFileName)</PostBuildEvent>

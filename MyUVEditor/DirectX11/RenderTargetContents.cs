@@ -36,7 +36,8 @@ namespace MyUVEditor.DirectX11
         virtual public void Draw()
         {
             SetTargets();
-            EffectManager.SetViewProjection(Camera.View * Camera.Projection);
+            EffectManager.SetCamera(Camera);
+            //EffectManager.SetLight(new SlimDX.Vector3(0, -1, 0));
             DrawContents();
             SwapChain.Present(1, PresentFlags.None);
         }

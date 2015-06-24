@@ -289,7 +289,7 @@ namespace MyUVEditor
         {
             //ライト設定
             device.SetRenderState(RenderState.Lighting, true);
-            device.SetLight(0, new Light()
+            device.SetLight(0, new SlimDX.Direct3D9.Light()
             {
                 Type = LightType.Directional,
                 Diffuse = Color.White,

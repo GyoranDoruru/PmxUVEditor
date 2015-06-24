@@ -95,11 +95,11 @@ namespace MyUVEditor
         public Dictionary<string, Texture> DicToonTex { get; private set; }
         public Dictionary<string, Texture> DicSphTex { get; private set; }
         string toonDir;
-        public Light Light { get; private set; }
+        public SlimDX.Direct3D9.Light Light { get; private set; }
         public MaterialManager(string toonDir = @"D:\Documents\MMD\PmxEditor_0222\_data\toon")
         {
             BGColor = new Color4(0.3f, 0.3f, 0.3f);
-            Light = new Light
+            Light = new SlimDX.Direct3D9.Light
             {
                 Type = LightType.Directional,
                 Diffuse = Color.White,

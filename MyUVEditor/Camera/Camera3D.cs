@@ -9,6 +9,7 @@ namespace MyUVEditor.Camera
     {
         static float defFOV = 0.43633194f; //25度
         public Vector3 Position { get; protected set; }
+        public Vector3 Direction { get { return Vector3.Normalize(Target - Position); } }
         public Vector3 Target { get; protected set; }
         public Vector3 UpDir { get; protected set; }
         public float FOV { get; protected set; }  //radian    less than 0 -> othro

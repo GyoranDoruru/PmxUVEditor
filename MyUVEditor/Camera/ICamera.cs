@@ -8,6 +8,8 @@ namespace MyUVEditor.Camera
     public interface ICamera : IDisposable
     {
         Control Client { get; }
+        Vector3 Position { get; }
+        Vector3 Direction { get; }
         Matrix WorldViewProjection { get; }
         Matrix World { get; }
         Matrix View { get; }
