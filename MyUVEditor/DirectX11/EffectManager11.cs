@@ -12,6 +12,8 @@ namespace MyUVEditor.DirectX11
     using EffectVariableList = List<EffectVariable>;
     using SemanticsDic = Dictionary<string, List<EffectVariable>>;
     using AnnotationDic = Dictionary<string, Dictionary<string, List<EffectVariable>>>;
+    using TexKind = TextureUtility.TextureKind;
+
     class EffectManager11 : IDisposable
     {
         static HashSet<string> SemanticsGeometryTrans = new HashSet<string>{
@@ -146,6 +148,13 @@ namespace MyUVEditor.DirectX11
             foreach (var v in list)
                 v.AsVector().Set(vector);
         }
+        private void SetVariable(string semantics, string annotation, float value)
+        {
+            var list = GetVarialble(semantics, annotation);
+            if (list == null) return;
+            foreach (var v in list)
+                v.AsScalar().Set(value);
+        }
         private void SetVariable(string semantics, string annotation, ShaderResourceView resource)
         {
             var list = GetVarialble(semantics, annotation);
@@ -153,7 +162,6 @@ namespace MyUVEditor.DirectX11
             foreach (var v in list)
                 v.AsResource().SetResource(resource);
         }
-
         public void SetTechAndPass(int techIndex, int passIndex)
         {
             Effect.GetTechniqueByIndex(techIndex).GetPassByIndex(passIndex).Apply(
@@ -227,15 +235,25 @@ namespace MyUVEditor.DirectX11
                 }
             }
         }
-        public void SetTexture(ShaderResourceView texture)
-        {
-            SetVariable("materialtexture", "", texture);
-        }
 
-        public void SetMaterial(IPXMaterial material) { }
+        public void SetMaterial(IPXMaterial material, ShaderResourceView[] textures)
+        {
+            SetVariable("diffuse", "geometry", material.Diffuse.ToVector4());
+            SetVariable("ambient", "geometry", V4ToVector3(material.Diffuse));
+            SetVariable("emissive", "geometry", material.Ambient.ToVector3());
+            SetVariable("specular", "geometry", material.Specular.ToVector3());
+            SetVariable("specularpower", "geometry", material.Power);
+            SetVariable("materialtexture", "", textures[(int)TexKind.OBJ]);
+        }
         public void Dispose()
         {
             Effect = null;
         }
+
+        static Vector3 V4ToVector3(PEPlugin.SDX.V4 src)
+        {
+            return new Vector3(src.X, src.Y, src.Z);
+        }
     }
+
 }

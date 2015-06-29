@@ -79,7 +79,6 @@ namespace MyUVEditor.DirectX11
             if (!Visible)
                 return;
             EffectManager.SetWorld(World);
-            EffectManager.SetTexture(Texture);
             EffectManager.SetTechAndPass(0, 0);
             Device.ImmediateContext.Draw(3, 0);
 

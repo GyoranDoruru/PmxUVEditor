@@ -13,6 +13,7 @@ namespace MyUVEditor.DirectX11
         protected bool m_IsCommonIndexBuffer;
         private IPXPmx m_Pmx;
         private IPXMaterial m_Material;
+        private ShaderResourceView[] Textures { get; set; }
         private VIDictionary m_VertexIndexDic;
         public DrawableMaterial(IPXPmx pmx, IPXMaterial material)
         {
@@ -21,6 +22,7 @@ namespace MyUVEditor.DirectX11
             m_Pmx = pmx;
             m_Material = material;
             m_VertexIndexDic = new VIDictionary();
+            Textures = new ShaderResourceView[(int)TextureUtility.TextureKind.NUM];
         }
 
         public DrawableMaterial(IPXPmx pmx, IPXMaterial material, VIDictionary vertexIndexDic)
@@ -30,6 +32,7 @@ namespace MyUVEditor.DirectX11
             m_Pmx = pmx;
             m_Material = material;
             m_VertexIndexDic = vertexIndexDic;
+            Textures = new ShaderResourceView[(int)TextureUtility.TextureKind.NUM];
         }
 
         override protected void initVertexBuffer(Device device, BackgroundWorker worker)
@@ -93,6 +96,12 @@ namespace MyUVEditor.DirectX11
 
         }
 
+        public void SetTexture(ICommonContents common)
+        {
+            Textures[(int)TextureUtility.TextureKind.OBJ] = common.GetTexture(m_Material.Tex);
+            Textures[(int)TextureUtility.TextureKind.SPHERE] = common.GetTexture(m_Material.Sphere);
+            Textures[(int)TextureUtility.TextureKind.TOON] = common.GetTexture(m_Material.Toon);
+        }
         override public void ResetForDraw()
         {
             Device.ImmediateContext.InputAssembler.InputLayout
@@ -111,8 +120,7 @@ namespace MyUVEditor.DirectX11
         {
             if (!Visible)
                 return;
-            EffectManager.SetMaterial(m_Material);
-            EffectManager.SetTexture(Texture);
+            EffectManager.SetMaterial(m_Material,Textures);
             EffectManager.SetTechAndPass(0, 0);
             Device.ImmediateContext.DrawIndexed(m_Material.Faces.Count * 3, m_IndexOffset, 0);
 

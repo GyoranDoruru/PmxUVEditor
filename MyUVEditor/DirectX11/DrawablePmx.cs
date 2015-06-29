@@ -120,6 +120,7 @@ namespace MyUVEditor.DirectX11
                 tmpMaterial.setVertexLayout(VertexLayout, true, PmxVertexStruct.SizeInBytes);
                 tmpMaterial.SetVertexBuffer(VertexBuffer, true, worker);
                 tmpMaterial.SetIndexBuffer(IndexBuffer, true, count,worker);
+                tmpMaterial.SetTexture(common);
                 count += ipxm.Faces.Count * 3;
             }
 
@@ -149,7 +150,7 @@ namespace MyUVEditor.DirectX11
         }
 
         
-        private void Draw(int i)
+        private void Draw(int i,ICommonContents common)
         {
             m_Materials[i].ResetForDraw();
             m_Materials[i].Draw();

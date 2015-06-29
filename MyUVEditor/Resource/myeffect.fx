@@ -1,9 +1,9 @@
 Texture2D diffuseTexture   : MATERIALTEXTURE;
 float4x4 WorldMatrix              : WORLD;
 float4x4 WorldViewProjMatrix      : WORLDVIEWPROJECTION;
-float3   LightDirection    : DIRECTION < string Object = "Light"; >;
 float4x4 LightWorldViewProjMatrix : WORLDVIEWPROJECTION < string Object = "Light"; >;
 
+float3   LightDirection    : DIRECTION < string Object = "Light"; >;
 float3   CameraPosition    : POSITION  < string Object = "Camera"; >;
 
 // マテリアル色
@@ -38,7 +38,8 @@ PmxVertexStruct MyVertexShader(PmxVertexStruct input)
 
 float4 MyPixelShader(PmxVertexStruct input) : SV_Target
 {
-	return diffuseTexture.Sample(mySampler, input.Tex);
+	return MaterialDiffuse;
+	//return diffuseTexture.Sample(mySampler, input.Tex);
 }
 
 technique10 MyTechnique

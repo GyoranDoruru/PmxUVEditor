@@ -11,13 +11,13 @@ using PEPlugin;
 
 namespace MyUVEditor.DirectX11
 {
-    class DeviceManager11:IDisposable
+    class DeviceManager11 : IDisposable
     {
         private SlimDX.Direct3D11.Device m_Device;
         private RenderTargetContents[] m_RenderTargets;
         private ICommonContents m_CommonContents;
 
-        private void CreateDeviceAndSwapChain( Control control, out SwapChain swapChain)
+        private void CreateDeviceAndSwapChain(Control control, out SwapChain swapChain)
         {
             SlimDX.Direct3D11.Device.CreateWithSwapChain(
                 DriverType.Hardware,
@@ -33,12 +33,12 @@ namespace MyUVEditor.DirectX11
             m_RenderTargets = new RenderTargetContents[controls.Length];
             SwapChain tmp_Swap;
             CreateDeviceAndSwapChain(controls[0], out tmp_Swap);
-            m_RenderTargets[0] = new RenderTargetContents(m_Device,tmp_Swap, controls[0]);
+            m_RenderTargets[0] = new RenderTargetContents(m_Device, tmp_Swap, controls[0]);
             Factory factory = m_Device.Factory;
             for (int i = 1; i < controls.Length; i++)
             {
                 tmp_Swap
-                    = new SwapChain(factory,m_Device,DefaultSwapChainDescription(controls[i]));
+                    = new SwapChain(factory, m_Device, DefaultSwapChainDescription(controls[i]));
                 m_RenderTargets[i] = new RenderTargetContents(m_Device, tmp_Swap, controls[i]);
             }
         }
@@ -69,7 +69,7 @@ namespace MyUVEditor.DirectX11
         private void LoadCommonContent(BackgroundWorker worker) { m_CommonContents.Load(m_Device, worker); }
         private void UnloadCommonContent() { m_CommonContents.Unload(); }
 
-        public void Run(Control[] clients,BackgroundWorker worker)
+        public void Run(Control[] clients, BackgroundWorker worker)
         {
             CreateDeviceAndMultiSwapChain(clients);
             LoadCommonContent(worker);

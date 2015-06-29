@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Drawing;
 using System.Drawing.Imaging;
+using SlimDX;
 using SlimDX.Direct3D11;
 
 namespace MyUVEditor.DirectX11
@@ -52,6 +53,19 @@ namespace MyUVEditor.DirectX11
             }
         }
 
+        internal enum TextureKind
+        {
+            OBJ = 0,
+            TOON,
+            SPHERE,
+            NUM
+        }
 
+        static public Color4 GetTexLeftBottomColor(string path)
+        {
+            var bitmap = new System.Drawing.Bitmap(path);
+            Color pixel = bitmap.GetPixel(0, bitmap.Height - 1);
+            return new Color4(pixel);
+        }
     }
 }
