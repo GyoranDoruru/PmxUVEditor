@@ -113,7 +113,7 @@ namespace MyUVEditor.DirectX11
             if(!m_EffectValueDic.TryGetValue(annotation, out semDic))
                 return null;
             EffectVariableList variableList;
-            if (!semDic.TryGetValue(annotation, out variableList))
+            if (!semDic.TryGetValue(semantics, out variableList))
                 return null;
             return variableList;
         }
