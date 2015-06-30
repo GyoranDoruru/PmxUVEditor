@@ -24,19 +24,30 @@ SamplerState mySampler{
 
 };
 
-struct PmxVertexStruct{
-	float4 Position :SV_Position;
-	float2 Tex : TEXCOORD;
+struct  VS_OUTPUT{
+	float4 Pos		: SV_Position;
+	float2 Tex		: TEXCOORD1;
+	float3 Normal	: TEXCOORD2;
+	float3 Eye		: TEXCOORD3;
+	float4 Color	: COLOR0;
+	float3 Specular	: COLOR1;
 };
 
-PmxVertexStruct MyVertexShader(PmxVertexStruct input)
+VS_OUTPUT MyVertexShader(float4 Pos : SV_POSITION, float3 Normal : NORMAL, float2 Tex : TEXCOORD0)
 {
-	PmxVertexStruct output = input;
-	output.Position = mul(output.Position, WorldViewProjMatrix);
-	return output;
+	VS_OUTPUT Out = (VS_OUTPUT)0;
+	Out.Pos = mul(Pos, WorldViewProjMatrix);
+	Out.Tex = Tex;
+	Out.Normal = mul(Normal, (float3x3)WorldMatrix);
+	Out.Eye = CameraPosition - mul(Pos, WorldMatrix);
+	Out.Color.rgb = saturate(max(0, dot(Out.Normal, -LightDirection))*DiffuseColor.rgb + AmbientColor);
+	Out.Color.a = DiffuseColor.a;
+	float3 HalfVector = normalize(normalize(Out.Eye) - LightDirection);
+		Out.Specular = pow(max(0, dot(HalfVector, Out.Normal)), SpecularPower)*SpecularColor;
+	return Out;
 }
 
-float4 MyPixelShader(PmxVertexStruct input) : SV_Target
+float4 MyPixelShader(VS_OUTPUT input) : SV_Target
 {
 	return MaterialDiffuse;
 	//return diffuseTexture.Sample(mySampler, input.Tex);
