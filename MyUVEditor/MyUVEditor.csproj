@@ -113,6 +113,7 @@
     <Compile Include="IDXViewForm.cs" />
     <Compile Include="KeyBoardEvent.cs" />
     <Compile Include="Light\ILight.cs" />
+    <Compile Include="Light\ParallelLight.cs" />
     <Compile Include="MakeUVMorph.cs" />
     <Compile Include="MaterialManager.cs" />
     <Compile Include="MessageForm.cs">

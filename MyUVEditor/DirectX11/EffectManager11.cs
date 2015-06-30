@@ -245,6 +245,15 @@ namespace MyUVEditor.DirectX11
             SetVariable("specularpower", "geometry", material.Power);
             SetVariable("materialtexture", "", textures[(int)TexKind.OBJ]);
         }
+
+        public void SetLight(Light.ILight light)
+        {
+            SetVariable("worldviewprojection", "light", light.LightWorldViewProjection);
+            SetVariable("direction", "light", light.LightDirection);
+            SetVariable("diffuse", "light", light.Diffuse);
+            SetVariable("ambient", "light", light.Ambient);
+            SetVariable("specular", "light", light.Specular);
+        }
         public void Dispose()
         {
             Effect = null;
