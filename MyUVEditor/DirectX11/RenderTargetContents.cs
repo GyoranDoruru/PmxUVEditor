@@ -39,7 +39,7 @@ namespace MyUVEditor.DirectX11
         {
             SetTargets();
             EffectManager.SetCamera(Camera);
-            //EffectManager.SetLight(new SlimDX.Vector3(0, -1, 0));
+            EffectManager.SetLight(Light);
             DrawContents();
             SwapChain.Present(1, PresentFlags.None);
         }
@@ -107,6 +107,7 @@ namespace MyUVEditor.DirectX11
             initRenderTarget();
             initDepthStencil();
         }
+
         protected virtual void DrawContents()
         {
             foreach (var d in DrawableList)
@@ -115,9 +116,11 @@ namespace MyUVEditor.DirectX11
                 d.Draw();
             }
         }
+
         public virtual void LoadContent(ICommonContents commonContents) {
             EffectManager = new EffectManager11(commonContents.Effect);
             InitCamera();
+            InitLight();
             DrawableList.Add(commonContents.CommonDrawables[0]);
 
         }
@@ -131,6 +134,14 @@ namespace MyUVEditor.DirectX11
             if (Camera != null)
                 Camera.Dispose();
             Camera = new Camera3D(Client);
+        }
+
+        protected virtual void InitLight()
+        {
+            if (Light != null)
+                Light.Dispose();
+            Light = new ParallelLight();
+
         }
 
         static internal Form GetParentForm(Control control)

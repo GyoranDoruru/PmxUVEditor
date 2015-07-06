@@ -6,7 +6,7 @@ using SlimDX;
 
 namespace MyUVEditor.Light
 {
-    interface ILight
+    interface ILight:IDisposable
     {
         Vector3 Diffuse { get; }
         Vector3 Ambient { get; }

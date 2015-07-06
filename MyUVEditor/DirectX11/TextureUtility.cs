@@ -37,7 +37,9 @@ namespace MyUVEditor.DirectX11
                 if (ext == ".tga") return CreateTGATex(device, path);
                 else return ShaderResourceView.FromFile(device, path);
             }
-            catch (System.Exception ex) { System.Windows.Forms.MessageBox.Show(ex.Message); return null; }
+            catch (System.Exception ex) { 
+                System.Windows.Forms.MessageBox.Show(ex.Message);
+                return null; }
         }
 
         static private ShaderResourceView CreateTGATex(Device device, string path)

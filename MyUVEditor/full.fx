@@ -213,10 +213,10 @@ float4 Basic_PS(VS_OUTPUT IN, uniform bool useTexture, uniform bool useSphereMap
     
     // スペキュラ適用
     Color.rgb += IN.Specular;
-	Color.rgb = MaterialDiffuse.rgb;
-	Color.rgb = MaterialAmbient.rgb;
-	Color.rgb = MaterialEmmisive.rgb;
-	Color.rgb = MaterialSpecular.rgb;
+	//Color.rgb = MaterialDiffuse.rgb;
+	//Color.rgb = MaterialAmbient.rgb;
+	//Color.rgb = MaterialEmmisive.rgb;
+	//Color.rgb = MaterialSpecular.rgb;
 	return Color;
 }
 
