@@ -12,19 +12,19 @@ namespace MyUVEditor.DirectX11
         {
             var blendStateDesc = new BlendStateDescription
             {
-                AlphaToCoverageEnable = true,
-                IndependentBlendEnable = true
+                AlphaToCoverageEnable = false,
+                IndependentBlendEnable = false
             };
             blendStateDesc.RenderTargets[0] = new RenderTargetBlendDescription
             {
                 BlendEnable = true,
-                BlendOperationAlpha = BlendOperation.Add,
                 BlendOperation = BlendOperation.Add,
+                BlendOperationAlpha = BlendOperation.Add,
                 DestinationBlend = BlendOption.InverseSourceAlpha,
-                DestinationBlendAlpha = BlendOption.InverseSourceAlpha,
+                DestinationBlendAlpha = BlendOption.Zero,
                 RenderTargetWriteMask = ColorWriteMaskFlags.All,
                 SourceBlend = BlendOption.SourceAlpha,
-                SourceBlendAlpha = BlendOption.SourceAlpha
+                SourceBlendAlpha = BlendOption.One
             };
             BlendState = BlendState.FromDescription(device, blendStateDesc);
         }
