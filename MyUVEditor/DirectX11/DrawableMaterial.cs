@@ -121,7 +121,16 @@ namespace MyUVEditor.DirectX11
             if (!Visible)
                 return;
             EffectManager.SetMaterial(m_Material,Textures);
-            EffectManager.SetTechAndPass(0, 0);
+            switch (m_Material.SphereMode) { 
+                case SphereType.None:
+                case SphereType.Mul:
+                case SphereType.SubTex:
+                EffectManager.SetTechAndPass(0, 0);
+                break;
+                case SphereType.Add:
+                EffectManager.SetTechAndPass(1, 0);
+                break;
+            }
             Device.ImmediateContext.DrawIndexed(m_Material.Faces.Count * 3, m_IndexOffset, 0);
 
         }

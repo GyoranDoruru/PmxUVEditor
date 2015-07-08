@@ -23,12 +23,25 @@ static float3 SpecularColor = MaterialSpecular * LightSpecular;
 
 Texture2D ObjectTexture		: MATERIALTEXTURE;
 SamplerState ObjTexSampler{
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = Wrap;
+	AddressV = Wrap;
+};
 
+Texture2D ObjectSphereMap: MATERIALSPHEREMAP;
+SamplerState ObjSphareSampler{
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = Wrap;
+	AddressV = Wrap;
 };
 
 Texture2D ObjectToonTexture: MATERIALTOONTEXTURE;
 SamplerState ObjToonSampler{
+	Filter = MIN_MAG_LINEAR_MIP_POINT;
+	AddressU = CLAMP;
+	AddressV = CLAMP;
 };
+
 
 struct  VS_OUTPUT{
 	float4 Pos		: SV_Position;
@@ -64,13 +77,18 @@ VS_OUTPUT MyVertexShader(float4 Pos : SV_POSITION, float3 Normal : NORMAL, float
 	return Out;
 }
 
-float4 MyPixelShader(VS_OUTPUT IN) : SV_Target
+float4 MyPixelShader(VS_OUTPUT IN, uniform bool isSph) : SV_Target
 {
 	// material
 	float4 Color = IN.Color;
 	// texture
 	Color *= ObjectTexture.Sample(ObjTexSampler, IN.Tex);
 	// sphere
+	float4 TexColor = ObjectSphereMap.Sample(ObjSphareSampler, IN.SpTex);
+	if (isSph) Color.rgb *= TexColor.rgb;
+	else Color.rgb += TexColor.rgb;
+
+	Color.a *= TexColor.a;
 	// toon
 	float LightNormal = dot(IN.Normal, -LightDirection);
 	Color *= ObjectToonTexture.Sample(ObjToonSampler, float2(0, 0.5f - LightNormal*0.5f));
@@ -81,11 +99,20 @@ float4 MyPixelShader(VS_OUTPUT IN) : SV_Target
 	return Color;
 }
 
-technique10 MyTechnique
+technique10 SphTechnique
 {
-	pass MyPass
+	pass DrawObject
 	{
 		SetVertexShader(CompileShader(vs_5_0, MyVertexShader()));
-		SetPixelShader(CompileShader(ps_5_0, MyPixelShader()));
+		SetPixelShader(CompileShader(ps_5_0, MyPixelShader(true)));
+	}
+}
+
+technique10 SpaTechnique
+{
+	pass DrawObject
+	{
+		SetVertexShader(CompileShader(vs_5_0, MyVertexShader()));
+		SetPixelShader(CompileShader(ps_5_0, MyPixelShader(false)));
 	}
 }

@@ -182,13 +182,13 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Resource\WhiteTex.bmp" />
     <EmbeddedResource Include="UVEditorForm.resx">
       <DependentUpon>UVEditorForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resource\myeffect.fx" />
-    <EmbeddedResource Include="Resource\WhiteTex.bmp" />
     <None Include="basic.fx" />
     <Content Include="full.fx" />
     <None Include="test.fx" />

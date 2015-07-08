@@ -245,6 +245,7 @@ namespace MyUVEditor.DirectX11
             SetVariable("specularpower", "geometry", material.Power);
             SetVariable("materialtexture", "", textures[(int)TexKind.OBJ]);
             SetVariable("materialtoontexture","",textures[(int)TexKind.TOON]);
+            SetVariable("materialspheremap", "", textures[(int)TexKind.SPHERE]);
         }
 
         public void SetLight(Light.ILight light)
