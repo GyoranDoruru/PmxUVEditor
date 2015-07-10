@@ -37,13 +37,20 @@ namespace MyUVEditor.DirectX11
 
         virtual public void Draw()
         {
-            SetTargets();
-            EffectManager.SetCamera(Camera);
-            EffectManager.SetLight(Light);
-            DrawContents();
-            SwapChain.Present(1, PresentFlags.None);
+            try
+            {
+                SetTargets();
+                EffectManager.SetCamera(Camera);
+                EffectManager.SetLight(Light);
+                DrawContents();
+                SwapChain.Present(1, PresentFlags.None);
+            }
+            catch (SlimDX.SlimDXException e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
-        public void Dispose()
+        virtual public void Dispose()
         {
             UnloadContent();
             RenderTarget.Dispose();

@@ -24,7 +24,7 @@ namespace MyUVEditor
                 ParentForm PF = new ParentForm(args);
                 PF.Show();
                 PF.Worker.RunWorkerAsync();
-
+                PF.TopMost = true;
             }
             catch (Exception ex)
             {

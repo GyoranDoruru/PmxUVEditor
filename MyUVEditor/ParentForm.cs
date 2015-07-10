@@ -32,8 +32,12 @@ namespace MyUVEditor
                 {
                     m_Forms[i] = new Form();
                     m_Forms[i].Text = i.ToString();
+                }
+                for (int i = 0; i < m_Forms.Length; i++)
+                {
                     m_Forms[i].Show();
                 }
+
                 deviceManager.SetCommonContents(new DirectX11.MyCommonContents(),PERunArgs);
                 deviceManager.Run(m_Forms, backgroundWorker1);
             }
@@ -42,6 +46,7 @@ namespace MyUVEditor
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             label1.Text = e.UserState.ToString();
+            this.TopMost = false;
             progressBar1.Value = e.ProgressPercentage;
         }
 

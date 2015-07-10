@@ -13,7 +13,6 @@ namespace MyUVEditor.DirectX11
         public List<IDrawable> CommonDrawables { get; private set; }
         public Effect Effect { get; private set; }
         public BlendStateManager BlendStateManager { get; private set; }
-        internal Dictionary<IPXVertex, int> VertexIndexDic { get; private set; }
 
         private IPERunArgs Args { get; set; }
         private Dictionary<string, ShaderResourceView> m_Textures;

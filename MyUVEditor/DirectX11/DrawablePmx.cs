@@ -7,14 +7,19 @@ using PEPlugin.Pmx;
 namespace MyUVEditor.DirectX11
 {
     using VIDictionary = Dictionary<IPXVertex, int>;
-    class DrawablePmx : DrawableTriangle
+    class DrawablePmx : IDrawable
     {
+        public Matrix World { get; private set; }
+        public bool Visible { get; set; }
+        protected Device Device { get; private set; }
+        protected Buffer VertexBuffer { get; private set; }
         protected Buffer IndexBuffer { get; private set; }
-        protected bool m_IsCommonIndexBuffer;
+        protected InputLayout VertexLayout { get; set; }
+
+        private bool m_IsCommonEffectManager;
+        protected EffectManager11 EffectManager { get; private set; }
 
         internal IPXPmx Pmx { get; private set; }
-        private Device m_Device;
-        override protected Device Device { get { return m_Device; } }
         private List<DrawableMaterial> m_Materials;
         internal VIDictionary VertexIndexDic { get; private set; }
 
@@ -27,7 +32,7 @@ namespace MyUVEditor.DirectX11
             VertexIndexDic = new VIDictionary(pmx.Vertex.Count);
         }
 
-        override protected void initVertexBuffer(Device device, BackgroundWorker worker)
+        protected void initVertexBuffer(Device device, BackgroundWorker worker)
         {
             int index = 0;
             var vertices = new PmxVertexStruct[Pmx.Vertex.Count];
@@ -89,6 +94,20 @@ namespace MyUVEditor.DirectX11
 
         }
 
+        protected void initVertexLayout(Device device, Effect effect)
+        {
+            VertexLayout = new InputLayout(
+                device,
+                EffectManager11.Signature(effect),
+                PmxVertexStruct.VertexElements);
+        }
+
+        public void SetEffectManager(EffectManager11 effectManager, bool isCommon)
+        {
+            EffectManager = effectManager;
+            m_IsCommonEffectManager = isCommon;
+        }
+
         public void SetDrawablePmx(MyCommonContents common, BackgroundWorker worker)
         {
             if (VertexLayout != null)
@@ -100,73 +119,61 @@ namespace MyUVEditor.DirectX11
             if (EffectManager != null)
                 EffectManager.Dispose();
 
-            m_Device = common.Effect.Device;
+            Device = common.Effect.Device;
             SetEffectManager(new EffectManager11(common.Effect), false);
-            SetTexture(null, true);
-            initVertexLayout(Device, Effect);
+            initVertexLayout(Device, common.Effect);
             initVertexBuffer(Device, worker);
             initIndexBuffer(Device, worker);
-            m_IsCommonIndexBuffer = false;
-            foreach(var m in m_Materials)
-                m.Dispose();
             m_Materials.Clear();
-            int count = 0;
-            foreach (var ipxm in Pmx.Material)
+            int indexOffset = 0;
+            foreach (var ipxMaterial in Pmx.Material)
             {
-                var tmpMaterial = new DrawableMaterial(Pmx, ipxm, VertexIndexDic);
+                var tmpMaterial = new DrawableMaterial(ipxMaterial, indexOffset);
+                tmpMaterial.SetTextures(common);
                 m_Materials.Add(tmpMaterial);
-                tmpMaterial.SetEffectManager(EffectManager, true);
-                tmpMaterial.SetTexture(common.GetTexture(ipxm.Tex), true);
-                tmpMaterial.setVertexLayout(VertexLayout, true, PmxVertexStruct.SizeInBytes);
-                tmpMaterial.SetVertexBuffer(VertexBuffer, true, worker);
-                tmpMaterial.SetIndexBuffer(IndexBuffer, true, count,worker);
-                tmpMaterial.SetTexture(common);
-                count += ipxm.Faces.Count * 3;
+                indexOffset += ipxMaterial.Faces.Count * 3;
             }
 
         }
 
-        override public void ResetForDraw()
+        public void ResetForDraw()
         {
             Device.ImmediateContext.InputAssembler.InputLayout
                 = VertexLayout;
             Device.ImmediateContext.InputAssembler.SetVertexBuffers(
-                0, new VertexBufferBinding(VertexBuffer, VertexSizeInBytes, 0));
+                0, new VertexBufferBinding(VertexBuffer, PmxVertexStruct.SizeInBytes, 0));
             Device.ImmediateContext.InputAssembler.SetIndexBuffer(
                 IndexBuffer, SlimDX.DXGI.Format.R32_UInt, 0);
             Device.ImmediateContext.InputAssembler.PrimitiveTopology
                 = PrimitiveTopology.TriangleList;
+            EffectManager.SetWorld(World);
         }
 
-        public override void Draw()
+        public void Draw()
         {
             if (!Visible)
                 return;
             foreach (var m in m_Materials)
             {
-                m.ResetForDraw();
-                m.Draw();
+                m.Draw(EffectManager);
             }
         }
 
-        
-        private void Draw(int i,ICommonContents common)
+
+        private void Draw(int i, EffectManager11 effectManager)
         {
-            m_Materials[i].ResetForDraw();
-            m_Materials[i].Draw();
+            m_Materials[i].Draw(effectManager);
         }
 
-        public override void Dispose()
+        public void Dispose()
         {
-            foreach (var m in m_Materials)
-                m.Dispose();
             m_Materials.Clear();
-            if (m_IsCommonIndexBuffer)
-                IndexBuffer = null;
-            else
+            if(!VertexLayout.Disposed)
+                VertexLayout.Dispose();
+            if (!VertexBuffer.Disposed)
+                VertexBuffer.Dispose();
+            if(!IndexBuffer.Disposed)
                 IndexBuffer.Dispose();
-
-            base.Dispose();
         }
     }
 }

@@ -62,7 +62,6 @@
     <Compile Include="DeviceManager.cs" />
     <Compile Include="DirectX11\BlendStateManager.cs" />
     <Compile Include="DirectX11\DeviceManager11.cs" />
-    <Compile Include="DirectX11\Drawable.cs" />
     <Compile Include="DirectX11\DrawableMaterial.cs" />
     <Compile Include="DirectX11\DrawablePmx.cs" />
     <Compile Include="DirectX11\EffectManager11.cs" />
@@ -194,7 +193,9 @@
     <None Include="test.fx" />
     <EmbeddedResource Include="WhiteTex.bmp" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ViewControl\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetFileName) D:\Documents\MMD\PmxEditor_0222c\_plugin\User\$(TargetFileName)</PostBuildEvent>
