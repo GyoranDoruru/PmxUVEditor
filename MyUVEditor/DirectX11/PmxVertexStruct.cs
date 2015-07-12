@@ -24,6 +24,38 @@ namespace MyUVEditor.DirectX11
                 AlignedByteOffset = InputElement.AppendAligned},
         };
 
+        internal static SlimDX.Direct3D9.VertexElement[] D9VertexElements()
+        {
+            var elements = new SlimDX.Direct3D9.VertexElement[3];
+            short offset = 0;
+            elements[0] = new SlimDX.Direct3D9.VertexElement{
+                Stream = 0,
+                Offset = offset,
+                Type = SlimDX.Direct3D9.DeclarationType.Float3,
+                Method = SlimDX.Direct3D9.DeclarationMethod.Default,
+                Usage = SlimDX.Direct3D9.DeclarationUsage.Position,
+                UsageIndex = 0
+            };
+            offset += (short)Marshal.SizeOf(typeof(Vector3));
+            elements[1] = new SlimDX.Direct3D9.VertexElement{
+                Offset = offset,
+                Type = SlimDX.Direct3D9.DeclarationType.Float3,
+                Method = SlimDX.Direct3D9.DeclarationMethod.Default,
+                Usage = SlimDX.Direct3D9.DeclarationUsage.Normal,
+                UsageIndex = 0
+            };
+            offset += (short)Marshal.SizeOf(typeof(Vector3));
+            elements[2] = new SlimDX.Direct3D9.VertexElement
+            {
+                Offset = offset,
+                Type = SlimDX.Direct3D9.DeclarationType.Float2,
+                Method = SlimDX.Direct3D9.DeclarationMethod.Default,
+                Usage = SlimDX.Direct3D9.DeclarationUsage.TextureCoordinate,
+                UsageIndex = 0
+            };
+            return elements;
+        }
+
         internal static int SizeInBytes
         {
             get
