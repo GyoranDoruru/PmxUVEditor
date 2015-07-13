@@ -9,7 +9,6 @@ namespace MyUVEditor.DirectX11
     using TKind = TextureUtility.TextureKind;
     class DrawableMaterial
     {
-        public Matrix World { get; private set; }
         public bool Visible { get; set; }
         private int IndexOffset { get; set; }
         private IPXMaterial OriginMaterial { get; set; }
@@ -17,33 +16,38 @@ namespace MyUVEditor.DirectX11
 
         public DrawableMaterial(IPXMaterial material, int indexOffset)
         {
-            World = Matrix.Identity;
             Visible = true;
             OriginMaterial = material;
             IndexOffset = indexOffset;
             Textures = new ShaderResourceView[(int)TKind.NUM];
         }
 
-        private void SetEffect(EffectManager11 effectManager) {
+        public void SetEffect(EffectManager11 effectManager)
+        {
             effectManager.SetMaterial(OriginMaterial, Textures);
             switch (OriginMaterial.SphereMode)
             {
                 case SphereType.None:
                 case SphereType.Mul:
                 case SphereType.SubTex:
-                    effectManager.SetTechAndPass(0, 0);
+                    SetEffect(effectManager, 0);
                     break;
                 case SphereType.Add:
-                    effectManager.SetTechAndPass(1, 0);
+                    SetEffect(effectManager, 1);
                     break;
             }
+        }
+        public void SetEffect(EffectManager11 effectManager, int technique)
+        {
+            effectManager.SetMaterial(OriginMaterial, Textures);
+            effectManager.SetTechAndPass(technique, 0);
+
         }
 
         public void Draw(EffectManager11 effectManager)
         {
             if (!Visible)
                 return;
-            SetEffect(effectManager);
             effectManager.Effect.Device.ImmediateContext.DrawIndexed(
                 OriginMaterial.Faces.Count * 3, IndexOffset, 0);
 

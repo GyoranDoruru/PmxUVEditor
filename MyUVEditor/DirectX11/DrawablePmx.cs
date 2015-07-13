@@ -17,7 +17,7 @@ namespace MyUVEditor.DirectX11
         protected InputLayout VertexLayout { get; set; }
 
         private bool m_IsCommonEffectManager;
-        protected EffectManager11 EffectManager { get; private set; }
+        public EffectManager11 EffectManager { get; private set; }
 
         internal IPXPmx Pmx { get; private set; }
         private List<DrawableMaterial> m_Materials;
@@ -155,13 +155,15 @@ namespace MyUVEditor.DirectX11
                 return;
             foreach (var m in m_Materials)
             {
+                m.SetEffect(EffectManager);
                 m.Draw(EffectManager);
             }
         }
 
 
-        private void Draw(int i, EffectManager11 effectManager)
+        public void Draw(int i, EffectManager11 effectManager, int technique)
         {
+            m_Materials[i].SetEffect(effectManager, technique);
             m_Materials[i].Draw(effectManager);
         }
 
@@ -174,6 +176,11 @@ namespace MyUVEditor.DirectX11
                 VertexBuffer.Dispose();
             if(!IndexBuffer.Disposed)
                 IndexBuffer.Dispose();
+            if (m_IsCommonEffectManager)
+                EffectManager = null;
+            else
+                EffectManager.Dispose();
+            Device = null;
         }
     }
 }

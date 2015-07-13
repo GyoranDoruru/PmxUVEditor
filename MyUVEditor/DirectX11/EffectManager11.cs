@@ -234,18 +234,25 @@ namespace MyUVEditor.DirectX11
             }
         }
 
+        public void SetObjectTexture(ShaderResourceView texture)
+        {
+            SetVariable("materialtexture", "", texture);
+
+        }
         public void SetMaterial(IPXMaterial material, ShaderResourceView[] textures)
         {
-            SetVariable("diffuse", "geometry", material.Diffuse.ToVector4());
-            SetVariable("ambient", "geometry", V4ToVector3(material.Diffuse));
-            SetVariable("emissive", "geometry", material.Ambient.ToVector3());
-            SetVariable("specular", "geometry", material.Specular.ToVector3());
-            SetVariable("specularpower", "geometry", material.Power);
+            if (material != null)
+            {
+                SetVariable("diffuse", "geometry", material.Diffuse.ToVector4());
+                SetVariable("ambient", "geometry", V4ToVector3(material.Diffuse));
+                SetVariable("emissive", "geometry", material.Ambient.ToVector3());
+                SetVariable("specular", "geometry", material.Specular.ToVector3());
+                SetVariable("specularpower", "geometry", material.Power);
+            }
             SetVariable("materialtexture", "", textures[(int)TexKind.OBJ]);
             SetVariable("materialtoontexture","",textures[(int)TexKind.TOON]);
             SetVariable("materialspheremap", "", textures[(int)TexKind.SPHERE]);
         }
-
         public void SetLight(Light.ILight light)
         {
             SetVariable("worldviewprojection", "light", light.LightWorldViewProjection);

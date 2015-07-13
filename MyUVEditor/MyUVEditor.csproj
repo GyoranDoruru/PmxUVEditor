@@ -64,11 +64,13 @@
     <Compile Include="DirectX11\DeviceManager11.cs" />
     <Compile Include="DirectX11\DrawableMaterial.cs" />
     <Compile Include="DirectX11\DrawablePmx.cs" />
+    <Compile Include="DirectX11\DrawableSprite.cs" />
     <Compile Include="DirectX11\EffectManager11.cs" />
     <Compile Include="DirectX11\IDrawable.cs" />
     <Compile Include="DirectX11\MyCommonContents.cs" />
     <Compile Include="DirectX11\ICommonContents.cs" />
     <Compile Include="DirectX11\PmxVertexStruct.cs" />
+    <Compile Include="DirectX11\RenderTargetContentsUV.cs" />
     <Compile Include="DirectX11\TextureUtility.cs" />
     <Compile Include="DrawingMode.cs" />
     <Compile Include="DrivingMode\Add.cs" />

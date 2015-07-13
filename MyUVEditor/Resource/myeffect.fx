@@ -116,3 +116,35 @@ technique10 SpaTechnique
 		SetPixelShader(CompileShader(ps_5_0, MyPixelShader(false)));
 	}
 }
+
+// Sprite
+
+struct  SPRITE_OUTPUT{
+	float4 Pos		: SV_Position;
+	float2 Tex		: TEXCOORD1;
+};
+
+SPRITE_OUTPUT SpriteVertexShader(float4 Pos : SV_POSITION)
+{
+	SPRITE_OUTPUT Out = (SPRITE_OUTPUT)0;
+	Out.Pos = mul(Pos, WorldViewProjMatrix);
+	Out.Tex = Pos.xy;
+	return Out;
+}
+
+float4 SpritePixelShader(SPRITE_OUTPUT IN) : SV_Target
+{
+	// material
+	float4 Color = float4(1,1,1,1);
+	Color *= ObjectTexture.Sample(ObjTexSampler, IN.Tex);
+	return Color;
+}
+
+technique10 SpriteTechnique
+{
+	pass DrawObject
+	{
+		SetVertexShader(CompileShader(vs_5_0, SpriteVertexShader()));
+		SetPixelShader(CompileShader(ps_5_0, SpritePixelShader()));
+	}
+}
