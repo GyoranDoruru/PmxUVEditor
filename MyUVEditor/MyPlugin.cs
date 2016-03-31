@@ -20,7 +20,7 @@ namespace MyUVEditor
             {
                 if (!IsFairPmx(args))
                     return;
-
+                Connector.Args = args;
                 ParentForm PF = new ParentForm(args);
                 PF.Show();
                 PF.Worker.RunWorkerAsync();
