@@ -189,6 +189,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resource\BlackTex.bmp" />
     <Content Include="Resource\myeffect.fx" />
     <None Include="basic.fx" />
     <Content Include="full.fx" />

@@ -29,6 +29,14 @@ namespace MyUVEditor.DirectX11
             }
         }
 
+        static internal ShaderResourceView CreateBlackTex(Device device)
+        {
+            using (var texture = BitmapToTexture(device, Properties.Resources.BlackTex))
+            {
+                return new ShaderResourceView(device, texture);
+            }
+        }
+
         static internal ShaderResourceView CreateTex(Device device, string path)
         {
             try
