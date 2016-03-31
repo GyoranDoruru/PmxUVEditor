@@ -56,8 +56,12 @@ namespace MyUVEditor.DirectX11
         public void SetTextures(MyCommonContents common)
         {
             Textures[(int)TKind.OBJ] = common.GetTexture(OriginMaterial.Tex);
-            Textures[(int)TKind.SPHERE] = common.GetTexture(OriginMaterial.Sphere);
             Textures[(int)TKind.TOON] = common.GetTexture(OriginMaterial.Toon);
+            Textures[(int)TKind.SPHERE] = common.GetTexture(
+                (OriginMaterial.SphereMode == SphereType.Add && OriginMaterial.Sphere == MyCommonContents.WhiteTexPath)
+                ? MyCommonContents.BlackTexPath
+                : OriginMaterial.Sphere);
+
         }
     }
 }

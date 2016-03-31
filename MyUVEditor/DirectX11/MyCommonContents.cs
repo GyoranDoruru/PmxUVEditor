@@ -9,11 +9,12 @@ namespace MyUVEditor.DirectX11
 {
     class MyCommonContents:ICommonContents
     {
+        static public string WhiteTexPath { get { return ""; } }
+        static public string BlackTexPath { get { return "."; } }
         public IPXPmx Pmx { get; private set; }
         public List<IDrawable> CommonDrawables { get; private set; }
         public Effect Effect { get; private set; }
         public BlendStateManager BlendStateManager { get; private set; }
-
         private IPERunArgs Args { get; set; }
         private Dictionary<string, ShaderResourceView> m_Textures;
 
@@ -31,7 +32,10 @@ namespace MyUVEditor.DirectX11
         private void initTexture(Device device, BackgroundWorker worker)
         {
             // 白テクスチャ
-            m_Textures.Add("", TextureUtility.CreateWhiteTex(device));
+            m_Textures.Add(WhiteTexPath, TextureUtility.CreateWhiteTex(device));
+
+            // 黒テクスチャ
+            m_Textures.Add(BlackTexPath, TextureUtility.CreateBlackTex(device));
 
             // 現状のカレントフォルダ
             string current = Directory.GetCurrentDirectory();
