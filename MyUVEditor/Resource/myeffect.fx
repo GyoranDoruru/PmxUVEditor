@@ -74,6 +74,7 @@ VS_OUTPUT MyVertexShader(float4 Pos : SV_POSITION, float3 Normal : NORMAL, float
 	Out.Color = saturate(Out.Color);
 	float3 HalfVector = normalize(normalize(Out.Eye) - LightDirection);
 	Out.Specular = pow(max(0, dot(HalfVector, Out.Normal)), SpecularPower)*SpecularColor;
+	Out.Specular = saturate(Out.Specular);
 	return Out;
 }
 
