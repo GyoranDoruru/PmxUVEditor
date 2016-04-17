@@ -13,33 +13,31 @@ namespace MyUVEditor
 {
     public partial class ParentForm : Form
     {
-        public ParentForm(IPERunArgs peRunArgs)
+        public ParentForm(IPERunArgs peRunArgs,string version)
         {
             InitializeComponent();
             PERunArgs = peRunArgs;
+            m_version = version;
         }
 
         public IPERunArgs PERunArgs { get; private set; }
         public BackgroundWorker Worker { get { return backgroundWorker1; } }
 
-        private Form[] m_Forms = new Form[2];
+        private string m_version;
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             using (DirectX11.DeviceManager11 deviceManager = new DirectX11.DeviceManager11())
             {
-
-                for (int i = 0; i < m_Forms.Length; i++)
-                {
-                    m_Forms[i] = new Form();
-                    m_Forms[i].Text = i.ToString();
-                }
-                for (int i = 0; i < m_Forms.Length; i++)
-                {
-                    m_Forms[i].Show();
-                }
+            Control[] controls = new Control[2];
+                UVEditorMainForm mainForm = new UVEditorMainForm(m_version);
+                controls[0] = mainForm.ViewPanel;
+                Form subForm = new Form();
+                controls[1] = subForm;
+                mainForm.Show();
+                subForm.Show();
 
                 deviceManager.SetCommonContents(new DirectX11.MyCommonContents(),PERunArgs);
-                deviceManager.Run(m_Forms, backgroundWorker1);
+                deviceManager.Run(controls, backgroundWorker1);
             }
         }
 

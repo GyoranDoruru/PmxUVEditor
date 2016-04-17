@@ -21,7 +21,7 @@ namespace MyUVEditor
                 if (!IsFairPmx(args))
                     return;
                 Connector.Args = args;
-                ParentForm PF = new ParentForm(args);
+                ParentForm PF = new ParentForm(args,Version);
                 PF.Show();
                 PF.Worker.RunWorkerAsync();
                 PF.TopMost = true;

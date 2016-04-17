@@ -98,9 +98,7 @@ namespace MyUVEditor.DirectX11
             bool isFocused = false;
             foreach (var rt in m_RenderTargets)
             {
-                isFocused = rt.IsFocused();
-                if (isFocused)
-                    break;
+                isFocused = isFocused || rt.IsFocused();
             }
 
             if (!isFocused)

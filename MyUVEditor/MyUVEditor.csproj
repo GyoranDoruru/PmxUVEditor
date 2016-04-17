@@ -133,10 +133,16 @@
     </Compile>
     <Compile Include="MyPlugin.cs" />
     <Compile Include="MyPMX.cs" />
-    <Compile Include="ParentForm.cs">
+    <Compile Include="ViewControl\UVEditorMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ParentForm.Designer.cs">
+    <Compile Include="ViewControl\UVEditorMainForm.designer.cs">
+      <DependentUpon>UVEditorMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControl\ParentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewControl\ParentForm.Designer.cs">
       <DependentUpon>ParentForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PMXMesh.cs" />
@@ -155,12 +161,6 @@
       <DependentUpon>TestGame.cs</DependentUpon>
     </Compile>
     <Compile Include="TextureInfo.cs" />
-    <Compile Include="UVEditorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UVEditorForm.designer.cs">
-      <DependentUpon>UVEditorForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="VertexSelect.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -177,7 +177,7 @@
     <EmbeddedResource Include="MessageForm.resx">
       <DependentUpon>MessageForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ParentForm.resx">
+    <EmbeddedResource Include="ViewControl\ParentForm.resx">
       <DependentUpon>ParentForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -185,9 +185,6 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Resource\WhiteTex.bmp" />
-    <EmbeddedResource Include="UVEditorForm.resx">
-      <DependentUpon>UVEditorForm.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resource\BlackTex.bmp" />
@@ -195,14 +192,16 @@
     <None Include="basic.fx" />
     <Content Include="full.fx" />
     <None Include="test.fx" />
+    <EmbeddedResource Include="ViewControl\UVEditorMainForm.resx">
+      <DependentUpon>UVEditorMainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WhiteTex.bmp" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ViewControl\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetFileName) D:\Documents\MMD\PmxEditor_0222c\_plugin\User\$(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetFileName) D:\Documents\MMD\PmxEditor_0222c\_plugin\User\$(TargetFileName)
+copy $(TargetFileName) D:\Documents\MMD\PmxEditor_0232d\_plugin\User\$(TargetFileName)</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

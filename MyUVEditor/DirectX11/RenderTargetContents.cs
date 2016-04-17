@@ -164,7 +164,12 @@ namespace MyUVEditor.DirectX11
 
         internal bool IsFocused()
         {
-            return GetParentForm(Client).Focused;
+            for (Control tmp_c = Client; tmp_c != null; tmp_c = tmp_c.Parent)
+            {
+                if (tmp_c.Focused)
+                    return true;
+            }
+            return false;
         }
 
     }
