@@ -9,12 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMXImporter", "..\..\..\Vis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starter", "Starter\Starter.csproj", "{048007B0-FDE7-4A35-8A14-EFF8AEAF1FBF}"
 EndProject
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "PmxEditor", "..\..\..\MMD\PmxEditor_0222c\PmxEditor.exe", "{1D7CCCD5-6016-4FAA-BC2B-663B92299719}"
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "PmxEditor", "..\..\..\MMD\PmxEditor_0232d\PmxEditor.exe", "{65687C00-5F8E-4F89-9528-76BE6B7989EE}"
 	ProjectSection(DebuggerProjectSystem) = preProject
 		PortSupplier = 00000000-0000-0000-0000-000000000000
-		Executable = D:\Documents\MMD\PmxEditor_0222c\PmxEditor.exe
+		Executable = D:\Documents\MMD\PmxEditor_0232d\PmxEditor.exe
 		RemoteMachine = YUSER-PC
-		StartingDirectory = D:\Documents\MMD\PmxEditor_0222c
+		StartingDirectory = D:\Documents\MMD\PmxEditor_0232d
 		Environment = 既定
 		LaunchingEngine = 00000000-0000-0000-0000-000000000000
 		UseLegacyDebugEngines = No
@@ -62,12 +62,12 @@ Global
 		{048007B0-FDE7-4A35-8A14-EFF8AEAF1FBF}.Release|Mixed Platforms.Build.0 = Release|x86
 		{048007B0-FDE7-4A35-8A14-EFF8AEAF1FBF}.Release|x86.ActiveCfg = Release|x86
 		{048007B0-FDE7-4A35-8A14-EFF8AEAF1FBF}.Release|x86.Build.0 = Release|x86
-		{1D7CCCD5-6016-4FAA-BC2B-663B92299719}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D7CCCD5-6016-4FAA-BC2B-663B92299719}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1D7CCCD5-6016-4FAA-BC2B-663B92299719}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{1D7CCCD5-6016-4FAA-BC2B-663B92299719}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{1D7CCCD5-6016-4FAA-BC2B-663B92299719}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{1D7CCCD5-6016-4FAA-BC2B-663B92299719}.Release|x86.ActiveCfg = Debug|Any CPU
+		{65687C00-5F8E-4F89-9528-76BE6B7989EE}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{65687C00-5F8E-4F89-9528-76BE6B7989EE}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{65687C00-5F8E-4F89-9528-76BE6B7989EE}.Debug|x86.ActiveCfg = Debug|x86
+		{65687C00-5F8E-4F89-9528-76BE6B7989EE}.Release|Any CPU.ActiveCfg = Debug|x86
+		{65687C00-5F8E-4F89-9528-76BE6B7989EE}.Release|Mixed Platforms.ActiveCfg = Debug|x86
+		{65687C00-5F8E-4F89-9528-76BE6B7989EE}.Release|x86.ActiveCfg = Debug|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
