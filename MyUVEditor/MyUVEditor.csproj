@@ -36,7 +36,7 @@
   <ItemGroup>
     <Reference Include="PEPlugin, Version=0.0.7.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\MMD\PmxEditor_0222c\Lib\PEPlugin\PEPlugin.dll</HintPath>
+      <HintPath>..\..\..\..\..\Download\PmxEditor_0254\Lib\PEPlugin\PEPlugin.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -200,8 +200,7 @@
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy $(TargetFileName) D:\Documents\MMD\PmxEditor_0222c\_plugin\User\$(TargetFileName)
-copy $(TargetFileName) D:\Documents\MMD\PmxEditor_0232d\_plugin\User\$(TargetFileName)</PostBuildEvent>
+    <PostBuildEvent>copy $(TargetFileName) D:\Download\PmxEditor_0254\_plugin\User</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
