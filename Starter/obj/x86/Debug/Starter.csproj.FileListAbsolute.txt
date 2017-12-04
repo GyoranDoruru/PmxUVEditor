@@ -21,3 +21,5 @@ D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\PMXImporte
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\UVEditor0_222c_12_0.pdb
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Debug\Starter.exe
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Debug\Starter.pdb
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Debug\SlimDX.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Debug\Starter.csproj.CoreCompileInputs.cache

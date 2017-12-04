@@ -154,7 +154,15 @@ namespace MyUVEditor.DirectX11
             if (!Visible)
                 return;
             var vm = Connector.Args.Host.Connector.View.PmxViewHelper.PartsSelect.GetCheckedMaterialIndices();
-            foreach (int i in vm)
+			if (vm == null)
+			{
+				vm = new int[m_Materials.Count];
+				for (int i = 0; i < m_Materials.Count; ++i)
+				{
+					vm[i] = i;
+				}
+			}
+			foreach (int i in vm)
             {
                 if (i >= m_Materials.Count) break;
                 m_Materials[i].SetEffect(EffectManager);
