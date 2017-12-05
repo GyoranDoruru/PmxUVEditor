@@ -33,7 +33,8 @@ namespace MyUVEditor.DirectX11
             m_RenderTargets = new RenderTargetContents[controls.Length];
             SwapChain tmp_Swap;
             CreateDeviceAndSwapChain(controls[0], out tmp_Swap);
-            m_RenderTargets[0] = new RenderTargetContents(m_Device, tmp_Swap, controls[0]);
+			//m_RenderTargets[0] = new RenderTargetContents(m_Device, tmp_Swap, controls[0]);
+			m_RenderTargets[0] = new RenderTargetContentsUV(m_Device, tmp_Swap, controls[0]);
             Factory factory = m_Device.Factory;
             for (int i = 1; i < controls.Length; i++)
             {

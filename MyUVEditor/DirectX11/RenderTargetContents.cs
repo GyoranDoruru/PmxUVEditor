@@ -17,7 +17,7 @@ namespace MyUVEditor.DirectX11
         private EffectManager11 EffectManager { get; set; }
         protected Control Client { get; private set; }
         protected IList<IDrawable> DrawableList { get; private set; }
-        protected ICamera Camera { get; private set; }
+        protected ICamera Camera { get; set; }
         protected ILight Light { get; private set; }
         protected SlimDX.Color4 m_backgroundColor = new SlimDX.Color4(1.0f, 0.39f, 0.58f, 0.93f);
         public bool ClientIsDisposed { get { return Client.IsDisposed; } }

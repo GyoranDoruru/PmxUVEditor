@@ -15,6 +15,7 @@ Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "PmxEditor", "..\..\..\..\Do
 		Executable = D:\Download\PmxEditor_0254\PmxEditor.exe
 		RemoteMachine = YUSER-PC
 		StartingDirectory = D:\Download\PmxEditor_0254
+		Arguments = "D:\Documents\MMD\Model\Tda式アペミクワンピース\Tda.pmx"
 		Environment = 既定
 		LaunchingEngine = 00000000-0000-0000-0000-000000000000
 		UseLegacyDebugEngines = No
