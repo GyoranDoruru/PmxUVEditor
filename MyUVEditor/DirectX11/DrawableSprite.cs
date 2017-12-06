@@ -69,7 +69,7 @@ namespace MyUVEditor.DirectX11
             EffectManager = effectManager;
             m_IsCommonEffectManager = isCommon;
         }
-        public void SetDrawableSprite(MyCommonContents common)
+        public void SetDrawableSprite(ICommonContents common)
         {
             Device = common.Effect.Device;
             SetEffectManager(new EffectManager11(common.Effect), false);

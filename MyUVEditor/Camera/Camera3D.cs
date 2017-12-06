@@ -75,17 +75,7 @@ namespace MyUVEditor.Camera
 
         public Camera3D(Control client, float f = 0.43633194f)
         {
-            Position = new Vector3(0, 18, -52);
-            Target = new Vector3(0, 10, 0);
-            UpDir = new Vector3(0, 1, 0);
-            FOV = f;
-            Client = client;
-            SetEvent();
-            ResetWVPMatrix();
-        }
-
-        public Camera3D(DXView client, float f = 0.43633194f)
-        {
+            SetCameraIsThis(client);
             Position = new Vector3(0, 18, -52);
             Target = new Vector3(0, 10, 0);
             UpDir = new Vector3(0, 1, 0);
@@ -249,9 +239,10 @@ namespace MyUVEditor.Camera
             Client.MouseWheel -= (o, args) => { Camera_MouseWheel(o, args); };
             Client.MouseDoubleClick -= (o, args) => { Camera_MouseDoubleClick(o, args); };
             Client = null;
+            IsDisposed = true;                     
         }
 
-
+        public bool IsDisposed { get; private set; }
 
 
         public bool IsNear(Point screenPoint, Vector3 worldPos,float rad)
@@ -261,6 +252,16 @@ namespace MyUVEditor.Camera
                 ScreenToWorldRay(screenPoint),
                 new BoundingSphere(worldPos, rad),
                 out dis);
+        }
+
+        private void SetCameraIsThis(Control client)
+        {
+            for(Control c = client; c!=null; c = c.Parent)
+            {
+                var hasC = c as IHasCameraConnection;
+                if (hasC != null)
+                    hasC.Camera = this;
+            }
         }
 
     }

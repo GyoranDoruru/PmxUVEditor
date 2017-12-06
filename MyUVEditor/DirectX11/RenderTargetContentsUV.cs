@@ -24,6 +24,21 @@ namespace MyUVEditor.DirectX11
 			Camera = new Camera2D(Client);
 		}
 
+        public override void LoadContent(ICommonContents commonContents)
+        {
+            base.LoadContent(commonContents);
+            //sprite = new DrawableSprite();
+            //sprite.SetDrawableSprite(commonContents); //error
+        }
+
+        public override void UnloadContent()
+        {
+            //sprite.Dispose();
+            base.UnloadContent();
+        }
+
+        DrawableSprite sprite;
+
 		protected override void DrawContents()
         {
 			// sprite

@@ -22,5 +22,6 @@ namespace MyUVEditor.Camera
         bool IsNear(Point screenPoint, Vector3 worldPos,float rad);
         bool IsContainIt(Vector3 rec1, Vector3 rec2, Vector3 worldPos);
         bool IsContainIt(Point rec1, Point rec2, Point scPos);
+        bool IsDisposed { get; }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using MyUVEditor.Camera;
 using SlimDX;
 
 namespace MyUVEditor
 {
-    public partial class UVEditorMainForm : Form
+    public partial class UVEditorMainForm : Form, Camera.IHasCameraConnection
     {
         public Panel ViewPanel { get { return splitContainer1.Panel1; } }
         public ComboBox SelectedMaterial { get { return _materialSelectbox; } }
@@ -74,6 +75,7 @@ namespace MyUVEditor
         public Button AddMorph { get { return this.addNewMorph_button; } }
         public TrackBar MorphSlider { get { return this.trackBar1; } }
 
+        public ICamera Camera { get; set; }
 
         public UVEditorMainForm(string version)
         {
@@ -154,7 +156,13 @@ namespace MyUVEditor
         }
 
         #region イベント
-        private void viewpanel_MouseWheel(object sender, MouseEventArgs e) { }
+        private void viewpanel_MouseWheel(object sender, MouseEventArgs e)
+        {
+            if (Camera == null || Camera.IsDisposed)
+                return;
+            UVLocation = Camera.ScreenToWorldVec(e.Location);
+        }
+
         private void viewpanel_Click(object sender, EventArgs e)
         {
             if (!splitContainer1.Panel1.Focused) { splitContainer1.Panel1.Focus(); }

@@ -167,6 +167,7 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Click += new System.EventHandler(this.viewpanel_Click);
+            this.splitContainer1.Panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewpanel_MouseWheel);
             this.splitContainer1.Panel1.Resize += new System.EventHandler(this.splitContainer1_Panel1_Resize);
             this.splitContainer1.Panel1MinSize = 1;
             // 
@@ -637,13 +638,13 @@
             this.ヘルプHToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.infoIToolStripMenuItem});
             this.ヘルプHToolStripMenuItem.Name = "ヘルプHToolStripMenuItem";
-            this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(62, 20);
+            this.ヘルプHToolStripMenuItem.Size = new System.Drawing.Size(65, 20);
             this.ヘルプHToolStripMenuItem.Text = "ヘルプ(&H)";
             // 
             // infoIToolStripMenuItem
             // 
             this.infoIToolStripMenuItem.Name = "infoIToolStripMenuItem";
-            this.infoIToolStripMenuItem.Size = new System.Drawing.Size(155, 22);
+            this.infoIToolStripMenuItem.Size = new System.Drawing.Size(158, 22);
             this.infoIToolStripMenuItem.Text = "バージョン情報(&A)";
             this.infoIToolStripMenuItem.Click += new System.EventHandler(this.infoIToolStripMenuItem_Click);
             // 
@@ -660,10 +661,10 @@
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(31, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(33, 17);
             this.toolStripStatusLabel2.Text = "(0, 0)";
             // 
-            // UVEditorForm
+            // UVEditorMainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -673,7 +674,7 @@
             this.Controls.Add(this.statusStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
-            this.Name = "UVEditorForm";
+            this.Name = "UVEditorMainForm";
             this.Text = "UVエディタ";
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
