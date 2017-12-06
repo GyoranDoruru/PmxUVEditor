@@ -14,7 +14,6 @@ namespace MyUVEditor.DirectX11
     class RenderTargetContentsUV:RenderTargetContents
     {
         int m_MaterialIndex = 0;
-		Matrix spWorld = Matrix.Identity;
 		public RenderTargetContentsUV(SlimDX.Direct3D11.Device device, SwapChain swapChain, Control client)
 			: base(device, swapChain, client) { }
 
@@ -35,8 +34,8 @@ namespace MyUVEditor.DirectX11
 			// uv triangles
 			var dpmx = (DrawablePmx)DrawableList[0];
 			dpmx.ResetForDraw();
-			dpmx.EffectManager.SetWorld(spWorld);
-			dpmx.Draw(m_MaterialIndex, dpmx.EffectManager, 2);
+			dpmx.EffectManager.SetCamera(this.Camera);
+			dpmx.Draw(m_MaterialIndex, dpmx.EffectManager, 3);
 
 		}
     }

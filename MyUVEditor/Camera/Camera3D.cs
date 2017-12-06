@@ -36,7 +36,7 @@ namespace MyUVEditor.Camera
                 {
                     float width = (float)Width / Height * scale * aspect;
                     float height = scale;
-                    return Matrix.OrthoLH(width, height, 0.1f, 1000);
+                    return Matrix.OrthoLH(width, height, 1.0f, 1000);
                 }
             }
         }
@@ -100,6 +100,7 @@ namespace MyUVEditor.Camera
             Client.ClientSizeChanged += (o, args) => { SetClientSize((Control)o); };
             Client.MouseMove += (o, args) => { Camera_MouseMove(o, args); };
             Client.MouseWheel += (o, args) => { Camera_MouseWheel(o, args); };
+            Client.MouseDoubleClick += (o, args) => { Camera_MouseDoubleClick(o, args); };
         }
 
         public void SetClientSize(Control c)
@@ -212,11 +213,17 @@ namespace MyUVEditor.Camera
             CameraDolly(e.Delta);
         }
 
-        public void ResetCamera()
+        protected void Camera_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ResetCamera();
+        }
+
+        public virtual void ResetCamera()
         {
             Position = new Vector3(0, 18, -52);
             Target = new Vector3(0, 10, 0);
             UpDir = new Vector3(0, 1, 0);
+            ResetWVPMatrix();
         }
 
         //world
@@ -240,6 +247,7 @@ namespace MyUVEditor.Camera
             Client.ClientSizeChanged -= (o, args) => { SetClientSize((Control)o); };
             Client.MouseMove -= (o, args) => { Camera_MouseMove(o, args); };
             Client.MouseWheel -= (o, args) => { Camera_MouseWheel(o, args); };
+            Client.MouseDoubleClick -= (o, args) => { Camera_MouseDoubleClick(o, args); };
             Client = null;
         }
 

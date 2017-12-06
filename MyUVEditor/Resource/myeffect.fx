@@ -103,6 +103,7 @@ float4 MyPixelShader(VS_OUTPUT IN, uniform bool isSph) : SV_Target
 RasterizerState RasterizerDefault
 {
 	FillMode					= SOLID;
+	CullMode                    = BACK;
 };
 
 technique10 SphTechnique
@@ -160,50 +161,26 @@ technique10 SpriteTechnique
 
 struct UVS_OUTPUT{
 	float4 Pos		: SV_Position;
-	float2 Tex		: TEXCOORD1;
-	float3 Normal	: TEXCOORD2;
-	float3 Eye		: TEXCOORD3;
-	float2 SpTex	: TexCoord4;
-	float4 Color	: COLOR0;
-	float3 Specular	: COLOR1;
 };
 
 UVS_OUTPUT UVVertexShader(float4 Pos : SV_POSITION, float3 Normal : NORMAL, float2 Tex : TEXCOORD0)
 {
 	UVS_OUTPUT Out = (UVS_OUTPUT)0;
-	Out.Pos.xy = Tex;
+	Out.Pos = float4(Tex, 0,1);
 	Out.Pos = mul(Out.Pos, WorldViewProjMatrix);
-	Out.Tex = Tex;
-	Out.Normal = normalize(mul(Normal, (float3x3)WorldMatrix));
-	Out.Eye = CameraPosition - mul(Pos, WorldMatrix);
 
-	// Use SubTexture
-	//	Out.SpTex = Tex2;
-	// Use SphereTexture
-	float2 NormalWV = mul(Out.Normal, (float3x3)ViewMatrix).xy;
-	Out.SpTex.x = NormalWV.x * 0.5f + 0.5f;
-	Out.SpTex.y = NormalWV.y * -0.5f + 0.5f;
-
-	Out.Color.rgb = AmbientColor;
-	Out.Color.rgb += max(0, dot(Out.Normal, -LightDirection))*DiffuseColor.rgb;
-	Out.Color.a = DiffuseColor.a;
-	Out.Color = saturate(Out.Color);
-	float3 HalfVector = normalize(normalize(Out.Eye) - LightDirection);
-	Out.Specular = pow(max(0, dot(HalfVector, Out.Normal)), SpecularPower)*SpecularColor;
-	Out.Specular = saturate(Out.Specular);
 	return Out;
 }
 
 float4 UVPixelShader(UVS_OUTPUT IN) : SV_Target
 {
-	// material
-	float4 Color = float4(0,0,0,1);
-	return Color;
+	return float4(0,0,0,1);
 }
 
 RasterizerState RasterizerWireFrame
 {
 	FillMode					= WIREFRAME;
+	CullMode					= None;
 };
 
 technique10 UVTechnique
