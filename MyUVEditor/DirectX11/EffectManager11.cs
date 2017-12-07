@@ -60,9 +60,9 @@ namespace MyUVEditor.DirectX11
             }
         }
 
-        static public ShaderSignature Signature(Effect effect)
+        static public ShaderSignature Signature(Effect effect, int technique, int pass)
         {
-            return effect.GetTechniqueByIndex(0).GetPassByIndex(0).Description.Signature;
+            return effect.GetTechniqueByIndex(technique).GetPassByIndex(pass).Description.Signature;
         }
 
         public Effect Effect { get; private set; }

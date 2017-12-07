@@ -112,6 +112,7 @@ technique10 SphTechnique
 	{
 		SetRasterizerState(RasterizerDefault);
 		SetVertexShader(CompileShader(vs_5_0, MyVertexShader()));
+		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, MyPixelShader(true)));
 	}
 }
@@ -122,6 +123,7 @@ technique10 SpaTechnique
 	{
 		SetRasterizerState(RasterizerDefault);
 		SetVertexShader(CompileShader(vs_5_0, MyVertexShader()));
+		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, MyPixelShader(false)));
 	}
 }
@@ -196,6 +198,62 @@ technique10 UVTechnique
 	{
 		SetRasterizerState(RasterizerWireFrame);
 		SetVertexShader(CompileShader(vs_5_0, UVVertexShader()));
+		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, UVPixelShader()));
+	}
+}
+
+struct PSGSIn
+{
+    float4 Pos : SV_Position;
+	float4 Color: COLOR0;
+};
+
+[maxvertexcount(4)]
+void PointSpriteGeometryShader(
+  point PSGSIn input[1],
+  inout TriangleStream<PSGSIn> outputStream){
+  PSGSIn output = input[0];
+  output.Pos.x -= 2.5e-2f;
+  output.Pos.y -= 2.5e-2f;
+  outputStream.Append(output);
+  output.Pos.y += 5.0e-2f;
+  outputStream.Append(output);
+  output.Pos.x += 5.0e-2f;
+  output.Pos.y -= 5.0e-2f;
+  outputStream.Append(output);
+  output.Pos.y += 5.0e-2f;
+  outputStream.Append(output);
+}
+
+
+PSGSIn PointSpriteVertexShader(float4 Pos : SV_POSITION, float3 Normal : NORMAL, float2 Tex : TEXCOORD0)
+{
+	PSGSIn Out = (PSGSIn)0;
+	Out.Pos = float4(Tex, 0, 1);
+	Out.Pos = mul(Out.Pos, WorldViewProjMatrix);
+	Out.Color = float4(0,1,0,1);
+	return Out;
+}
+
+float4 PointSpritePixelShader(PSGSIn IN) : SV_Target
+{
+	return IN.Color;
+}
+
+RasterizerState RasterizerPointSprite
+{
+	FillMode					= SOLID;
+	CullMode					= NONE;
+};
+
+technique10 PointSpriteTechnique
+{
+	pass DrawObject
+	{
+		SetRasterizerState(RasterizerPointSprite);
+		SetVertexShader(CompileShader(vs_5_0, PointSpriteVertexShader()));
+		SetGeometryShader(CompileShader(gs_5_0, PointSpriteGeometryShader()));
+		SetPixelShader(CompileShader(ps_5_0, PointSpritePixelShader()));
 	}
 }

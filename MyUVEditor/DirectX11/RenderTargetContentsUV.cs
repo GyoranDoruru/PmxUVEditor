@@ -52,6 +52,9 @@ namespace MyUVEditor.DirectX11
 			dpmx.EffectManager.SetCamera(this.Camera);
             dpmx.Draw(m_MaterialIndex, dpmx.EffectManager, 3);
 
-		}
+            this.GraphicsDevice.ImmediateContext.InputAssembler.PrimitiveTopology
+                = PrimitiveTopology.PointList;
+            dpmx.Draw(m_MaterialIndex, dpmx.EffectManager, 4);
+        }
     }
 }
