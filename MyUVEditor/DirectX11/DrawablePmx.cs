@@ -11,17 +11,17 @@ namespace MyUVEditor.DirectX11
     {
         public Matrix World { get; private set; }
         public bool Visible { get; set; }
-        protected Device Device { get; private set; }
-        protected Buffer VertexBuffer { get; private set; }
-        protected Buffer IndexBuffer { get; private set; }
+        protected Device Device { get; set; }
+        protected Buffer VertexBuffer { get; set; }
+        protected Buffer IndexBuffer { get; set; }
         protected InputLayout VertexLayout { get; set; }
 
         private bool m_IsCommonEffectManager;
         public EffectManager11 EffectManager { get; private set; }
 
-        internal IPXPmx Pmx { get; private set; }
+        public IPXPmx Pmx { get; protected set; }
         private List<DrawableMaterial> m_Materials;
-        internal VIDictionary VertexIndexDic { get; private set; }
+        public VIDictionary VertexIndexDic { get; protected set; }
 
         public DrawablePmx(IPXPmx pmx)
         {
@@ -36,13 +36,15 @@ namespace MyUVEditor.DirectX11
         {
             int index = 0;
             var vertices = new PmxVertexStruct[Pmx.Vertex.Count];
-            worker.ReportProgress(0, "頂点読み込み中");
+            if (worker!=null)
+                worker.ReportProgress(0, "頂点読み込み中");
             foreach (var v in Pmx.Vertex)
             {
                 vertices[index] = new PmxVertexStruct(v);
                 VertexIndexDic.Add(v, index);
                 index++;
-                worker.ReportProgress(index * 100 / Pmx.Vertex.Count, "頂点読み込み中");
+                if (worker != null)
+                    worker.ReportProgress(index * 100 / Pmx.Vertex.Count, "頂点読み込み中");
             }
 
             using (DataStream vertexStream
@@ -66,7 +68,8 @@ namespace MyUVEditor.DirectX11
                 faceLength += m.Faces.Count;
             int[] vertexIndices = new int[faceLength * 3];
             int index = 0;
-            worker.ReportProgress(0, "面頂点読み込み中");
+            if (worker != null)
+                worker.ReportProgress(0, "面頂点読み込み中");
             foreach (var m in Pmx.Material)
             {
                 foreach (var f in m.Faces)
@@ -75,7 +78,8 @@ namespace MyUVEditor.DirectX11
                     vertexIndices[index + 1] = VertexIndexDic[f.Vertex2];
                     vertexIndices[index + 2] = VertexIndexDic[f.Vertex3];
                     index += 3;
-                    worker.ReportProgress(index*100/vertexIndices.Length, "面頂点読み込み中");
+                    if (worker != null)
+                        worker.ReportProgress(index*100/vertexIndices.Length, "面頂点読み込み中");
 
                 }
             }
@@ -98,7 +102,7 @@ namespace MyUVEditor.DirectX11
         {
             VertexLayout = new InputLayout(
                 device,
-                EffectManager11.Signature(effect),
+                EffectManager11.Signature(effect, 0, 0),
                 PmxVertexStruct.VertexElements);
         }
 
@@ -108,7 +112,7 @@ namespace MyUVEditor.DirectX11
             m_IsCommonEffectManager = isCommon;
         }
 
-        public void SetDrawablePmx(MyCommonContents common, BackgroundWorker worker)
+        public void SetDrawablePmx(ICommonContents common, BackgroundWorker worker)
         {
             if (VertexLayout != null)
                 VertexLayout.Dispose();
@@ -183,7 +187,7 @@ namespace MyUVEditor.DirectX11
             m_Materials[i].Draw(effectManager);
         }
 
-        public void Dispose()
+        public virtual void Dispose()
         {
             m_Materials.Clear();
             if(!VertexLayout.Disposed)

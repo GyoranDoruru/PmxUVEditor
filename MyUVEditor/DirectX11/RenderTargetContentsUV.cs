@@ -27,13 +27,13 @@ namespace MyUVEditor.DirectX11
         public override void LoadContent(ICommonContents commonContents)
         {
             base.LoadContent(commonContents);
-            //sprite = new DrawableSprite();
-            //sprite.SetDrawableSprite(commonContents); //error
+            sprite = new DrawableSprite(commonContents.Pmx);
+            sprite.SetDrawablePmx(commonContents, null);
         }
 
         public override void UnloadContent()
         {
-            //sprite.Dispose();
+            sprite.Dispose();
             base.UnloadContent();
         }
 
@@ -41,16 +41,16 @@ namespace MyUVEditor.DirectX11
 
 		protected override void DrawContents()
         {
-			// sprite
-			//DrawableList[0].ResetForDraw();
-			//DrawableList[0].Draw();
-			//Matrix spWorld = DrawableList[0].World;
+            // sprite
+            sprite.EffectManager.SetCamera(this.Camera);
+            sprite.ResetForDraw();
+            sprite.Draw(m_MaterialIndex, sprite.EffectManager, 2);
 
-			// uv triangles
-			var dpmx = (DrawablePmx)DrawableList[0];
+            // uv triangles
+            var dpmx = (DrawablePmx)DrawableList[0];
 			dpmx.ResetForDraw();
 			dpmx.EffectManager.SetCamera(this.Camera);
-			dpmx.Draw(m_MaterialIndex, dpmx.EffectManager, 3);
+            dpmx.Draw(m_MaterialIndex, dpmx.EffectManager, 3);
 
 		}
     }

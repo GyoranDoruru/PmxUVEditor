@@ -133,11 +133,12 @@ struct  SPRITE_OUTPUT{
 	float2 Tex		: TEXCOORD1;
 };
 
-SPRITE_OUTPUT SpriteVertexShader(float4 Pos : SV_POSITION)
+SPRITE_OUTPUT SpriteVertexShader(float4 Pos : SV_POSITION, float3 Normal : NORMAL, float2 Tex : TEXCOORD0)
+
 {
 	SPRITE_OUTPUT Out = (SPRITE_OUTPUT)0;
-	Out.Pos = mul(Pos, WorldViewProjMatrix);
-	Out.Tex = Pos.xy;
+	Out.Pos = mul(float4(Tex, 0.01f, 1), WorldViewProjMatrix);
+	Out.Tex = Tex;
 	return Out;
 }
 
@@ -145,16 +146,23 @@ float4 SpritePixelShader(SPRITE_OUTPUT IN) : SV_Target
 {
 	// material
 	float4 Color = float4(1,1,1,1);
-	//Color *= ObjectTexture.Sample(ObjTexSampler, IN.Tex);
+	Color *= ObjectTexture.Sample(ObjTexSampler, IN.Tex);
 	return Color;
 }
+
+RasterizerState RasterizerSprite
+{
+	FillMode					= SOLID;
+	CullMode                    = NONE;
+};
 
 technique10 SpriteTechnique
 {
 	pass DrawObject
 	{
-		SetRasterizerState(RasterizerDefault);
+		SetRasterizerState(RasterizerSprite);
 		SetVertexShader(CompileShader(vs_5_0, SpriteVertexShader()));
+		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, SpritePixelShader()));
 	}
 }
@@ -166,9 +174,8 @@ struct UVS_OUTPUT{
 UVS_OUTPUT UVVertexShader(float4 Pos : SV_POSITION, float3 Normal : NORMAL, float2 Tex : TEXCOORD0)
 {
 	UVS_OUTPUT Out = (UVS_OUTPUT)0;
-	Out.Pos = float4(Tex, 0,1);
+	Out.Pos = float4(Tex, 0, 1);
 	Out.Pos = mul(Out.Pos, WorldViewProjMatrix);
-
 	return Out;
 }
 
@@ -180,7 +187,7 @@ float4 UVPixelShader(UVS_OUTPUT IN) : SV_Target
 RasterizerState RasterizerWireFrame
 {
 	FillMode					= WIREFRAME;
-	CullMode					= None;
+	CullMode					= NONE;
 };
 
 technique10 UVTechnique

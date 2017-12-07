@@ -1,122 +1,56 @@
 ﻿using System.Collections.Generic;
 using SlimDX;
 using SlimDX.Direct3D11;
+using PEPlugin.Pmx;
+
 
 namespace MyUVEditor.DirectX11
 {
-    class DrawableSprite:IDrawable
+    class DrawableSprite : DrawablePmx
     {
-        private float m_ratio;  // width/height
-        public Matrix World
+        private float m_ratio = 1.0f;  // width/height
+
+        static IPXPmx SpritePmx(IPXPmx pmx)
         {
-            get { return Matrix.Scaling(m_ratio, -1, 1); }
-        }
-        public bool Visible { get; set; }
-        protected Device Device { get; private set; }
-        protected Buffer VertexBuffer { get; private set; }
-        protected InputLayout VertexLayout { get; set; }
-        private bool m_IsCommonEffectManager;
-        public EffectManager11 EffectManager { get; private set; }
-        public ShaderResourceView Texture { get; set; }
-
-        public DrawableSprite()
-        {
-        }
-
-        private void initVertexBuffer(Device device)
-        {
-            if (VertexBuffer != null && !VertexBuffer.Disposed)
-                VertexBuffer.Dispose();
-
-            var vertices = new Vector2[]{
-                Vector2.Zero,
-                Vector2.UnitX,
-                new Vector2(1,1),
-                Vector2.UnitY
-            };
-
-            using (DataStream vertexStream
-                = new DataStream(vertices, true, true))
+            var res = PEPlugin.PEStaticBuilder.Pmx.Pmx();
+            for (int i = 0; i < 4; ++i)
             {
-                VertexBuffer = new Buffer(
-                    device,
-                    vertexStream,
-                    new BufferDescription
-                    {
-                        SizeInBytes = (int)vertexStream.Length,
-                        BindFlags = BindFlags.VertexBuffer,
-                    });
+                res.Vertex.Add(PEPlugin.PEStaticBuilder.Pmx.Vertex());
             }
-        }
-        protected void initVertexLayout(Device device, Effect effect)
-        {
-            if (VertexLayout != null && !VertexLayout.Disposed)
-                VertexLayout.Dispose();
 
-            var elements = new InputElement[]{
-                new InputElement{
-                SemanticName = "SV_Position",
-                Format = SlimDX.DXGI.Format.R32G32_Float},
-            };
+            res.Vertex[1].Position.X = 1.0f;
+            res.Vertex[1].UV.U = 1.0f;
 
-            VertexLayout = new InputLayout(
-                device,
-                EffectManager11.Signature(effect),
-                elements);
-        }
-        public void SetEffectManager(EffectManager11 effectManager, bool isCommon)
-        {
-            EffectManager = effectManager;
-            m_IsCommonEffectManager = isCommon;
-        }
-        public void SetDrawableSprite(ICommonContents common)
-        {
-            Device = common.Effect.Device;
-            SetEffectManager(new EffectManager11(common.Effect), false);
-            initVertexLayout(Device, common.Effect);
-            initVertexBuffer(Device);
-        }
+            res.Vertex[2].Position.X = 1.0f;
+            res.Vertex[2].Position.Y = 1.0f;
+            res.Vertex[2].UV.U = 1.0f;
+            res.Vertex[2].UV.V = 1.0f;
 
-        public void ResetForDraw()
-        {
-            Device.ImmediateContext.InputAssembler.InputLayout
-                = VertexLayout;
-            Device.ImmediateContext.InputAssembler.SetVertexBuffers(
-                0, new VertexBufferBinding(VertexBuffer, PmxVertexStruct.SizeInBytes, 0));
-            Device.ImmediateContext.InputAssembler.PrimitiveTopology
-                 = PrimitiveTopology.TriangleStrip;
-            EffectManager.SetWorld(World);
+            res.Vertex[3].Position.Y = 1.0f;
+            res.Vertex[3].UV.V = 1.0f;
+
+            var f1 = PEPlugin.PEStaticBuilder.Pmx.Face();
+            var f2 = PEPlugin.PEStaticBuilder.Pmx.Face();
+            f1.Vertex1 = res.Vertex[0];
+            f1.Vertex2 = res.Vertex[1];
+            f1.Vertex3 = res.Vertex[2];
+            f2.Vertex1 = res.Vertex[0];
+            f2.Vertex2 = res.Vertex[2];
+            f2.Vertex3 = res.Vertex[3];
+            foreach (var m in pmx.Material)
+            {
+                var cm = (IPXMaterial)m.Clone();
+                cm.Faces.Clear();
+                cm.Faces.Add(f1);
+                cm.Faces.Add(f2);
+                res.Material.Add(cm);
+            }
+            res.Normalize();
+            return res;
         }
 
-        private void SetEffect()
-        {
-            EffectManager.SetObjectTexture(Texture);
-            EffectManager.SetTechAndPass(2, 0);
-        }
+        public DrawableSprite(IPXPmx pmx) : base(SpritePmx(pmx)) { }
 
-
-        public void Draw()
-        {
-            if (!Visible)
-                return;
-            Device.ImmediateContext.Draw(4, 0);
-        }
-
-
-        public void Dispose()
-        {
-            if (!VertexLayout.Disposed)
-                VertexLayout.Dispose();
-            if (!VertexBuffer.Disposed)
-                VertexBuffer.Dispose();
-            if (m_IsCommonEffectManager)
-                EffectManager = null;
-            else
-                EffectManager.Dispose();
-
-            Device = null;
-            Texture = null;
-        }
 
     }
 }

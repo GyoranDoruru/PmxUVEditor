@@ -53,7 +53,7 @@ namespace MyUVEditor.DirectX11
 
         }
 
-        public void SetTextures(MyCommonContents common)
+        public void SetTextures(ICommonContents common)
         {
             Textures[(int)TKind.OBJ] = common.GetTexture(OriginMaterial.Tex);
             Textures[(int)TKind.TOON] = common.GetTexture(OriginMaterial.Toon);
