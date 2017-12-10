@@ -232,7 +232,24 @@ namespace MyUVEditor.DirectX11
                     }
                 }
             }
+
+            semanDic = m_EffectValueDic[""];
+            var scr = camera.Screen;
+            foreach( var pair in semanDic)
+            {
+                switch (pair.Key)
+                {
+                    case "psize0":
+                        SetVariable(pair.Key, "", Math.Abs(pntSize * 2.0f / scr.M11));
+                        break;
+                    case "psize1":
+                        SetVariable(pair.Key, "", Math.Abs(pntSize * 2.0f / scr.M22));
+                        break;
+                }
+            }
         }
+
+        int pntSize = 3;
 
         public void SetObjectTexture(ShaderResourceView texture)
         {
