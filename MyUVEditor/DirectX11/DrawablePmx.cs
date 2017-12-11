@@ -181,11 +181,12 @@ namespace MyUVEditor.DirectX11
         }
 
 
-        public void Draw(int i, EffectManager11 effectManager, int technique)
+        public void Draw(int i, int technique)
         {
-            m_Materials[i].SetEffect(effectManager, technique);
-            m_Materials[i].Draw(effectManager);
+            m_Materials[i].SetEffect(EffectManager, technique);
+            m_Materials[i].Draw(EffectManager);
         }
+
 
         public virtual void Dispose()
         {

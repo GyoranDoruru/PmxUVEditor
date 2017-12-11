@@ -44,17 +44,17 @@ namespace MyUVEditor.DirectX11
             // sprite
             sprite.EffectManager.SetCamera(this.Camera);
             sprite.ResetForDraw();
-            sprite.Draw(m_MaterialIndex, sprite.EffectManager, 2);
+            sprite.Draw(m_MaterialIndex, 2);
 
             // uv triangles
             var dpmx = (DrawablePmx)DrawableList[0];
 			dpmx.ResetForDraw();
 			dpmx.EffectManager.SetCamera(this.Camera);
-            dpmx.Draw(m_MaterialIndex, dpmx.EffectManager, 3);
+            dpmx.Draw(m_MaterialIndex, 3);
 
             this.GraphicsDevice.ImmediateContext.InputAssembler.PrimitiveTopology
                 = PrimitiveTopology.PointList;
-            dpmx.Draw(m_MaterialIndex, dpmx.EffectManager, 4);
+            dpmx.Draw(m_MaterialIndex, 4);
         }
     }
 }
