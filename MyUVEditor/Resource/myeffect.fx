@@ -3,11 +3,16 @@ float4x4 ViewMatrix               : VIEW;
 float4x4 WorldViewProjMatrix      : WORLDVIEWPROJECTION;
 float4x4 LightWorldViewProjMatrix : WORLDVIEWPROJECTION < string Object = "Light"; >;
 
-float    PWidth				: PSIZE0;
-float    PHight				: PSIZE1;
-
 float3   LightDirection    : DIRECTION < string Object = "Light"; >;
 float3   CameraPosition    : POSITION  < string Object = "Camera"; >;
+float    VPWidth			: PSIZE0	< string Object = "Camera"; >;
+float    VPHeight			: PSIZE1    < string Object = "Camera"; >;
+
+
+float    PointSize			: PSIZE2	< string Object = "ViewStatus"; >;
+float4	 PColor				: COLOR0	< string Object = "ViewStatus"; >;
+static float PWidth = PointSize * 4.0f / VPWidth;
+static float PHight	= PointSize * 4.0f / VPHeight;
 
 
 // マテリアル色

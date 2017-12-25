@@ -134,6 +134,7 @@
     </Compile>
     <Compile Include="MyPlugin.cs" />
     <Compile Include="MyPMX.cs" />
+    <Compile Include="Selector\ISelector.cs" />
     <Compile Include="ViewControl\UVEditorMainForm.cs">
       <SubType>Form</SubType>
     </Compile>

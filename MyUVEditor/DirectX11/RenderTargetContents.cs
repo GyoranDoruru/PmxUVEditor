@@ -16,7 +16,7 @@ namespace MyUVEditor.DirectX11
         protected SlimDX.Direct3D11.Device GraphicsDevice { get; private set; }
         private EffectManager11 EffectManager { get; set; }
         protected Control Client { get; private set; }
-        protected IList<IDrawable> DrawableList { get; private set; }
+        protected DrawablePmx DrawablePmx { get; private set; }
         protected ICamera Camera { get; set; }
         protected ILight Light { get; private set; }
         protected SlimDX.Color4 m_backgroundColor = new SlimDX.Color4(1.0f, 0.39f, 0.58f, 0.93f);
@@ -24,7 +24,6 @@ namespace MyUVEditor.DirectX11
 
         public RenderTargetContents(SlimDX.Direct3D11.Device device, SwapChain swapChain, Control client)
         {
-            DrawableList = new List<IDrawable>();
             GraphicsDevice = device;
             SwapChain = swapChain;
             Client = client;
@@ -117,22 +116,19 @@ namespace MyUVEditor.DirectX11
 
         protected virtual void DrawContents()
         {
-            foreach (var d in DrawableList)
-            {
-                d.ResetForDraw();
-                d.Draw();
-            }
+            DrawablePmx.ResetForDraw();
+            DrawablePmx.Draw();
         }
 
         public virtual void LoadContent(ICommonContents commonContents) {
             EffectManager = new EffectManager11(commonContents.Effect);
             InitCamera();
             InitLight();
-            DrawableList.Add(commonContents.CommonDrawables[0]);
+            DrawablePmx = (DrawablePmx)commonContents.CommonDrawables[0];
 
         }
-        public virtual void UnloadContent() { 
-            foreach (var d in DrawableList)d.Dispose();
+        public virtual void UnloadContent() {
+            DrawablePmx.Dispose();
             EffectManager.Dispose();
         }
 

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using SlimDX;
 using SlimDX.Direct3D11;
 using SlimDX.D3DCompiler;
+using PEPlugin.View;
 using PEPlugin.Pmx;
 
 namespace MyUVEditor.DirectX11
@@ -170,6 +171,7 @@ namespace MyUVEditor.DirectX11
         {
             SetVariable("world", "camera", matrix);
         }
+
         public void SetCamera(Camera.ICamera camera){
             SemanticsDic semanDic = m_EffectValueDic["camera"];
             foreach (var pair in semanDic)
@@ -229,27 +231,35 @@ namespace MyUVEditor.DirectX11
                         case "direction":
                             SetVariable(semantics, "camera", camera.Direction);
                             break;
+                        case "psize0":
+                            SetVariable(pair.Key, "camera", Math.Abs(camera.Width));
+                            break;
+                        case "psize1":
+                            SetVariable(pair.Key, "camera", Math.Abs(camera.Height));
+                            break;
                     }
                 }
             }
 
-            semanDic = m_EffectValueDic[""];
+            semanDic = m_EffectValueDic["viewstatus"];
             var scr = camera.Screen;
             foreach( var pair in semanDic)
             {
                 switch (pair.Key)
                 {
-                    case "psize0":
-                        SetVariable(pair.Key, "", Math.Abs(pntSize * 2.0f / scr.M11));
-                        break;
-                    case "psize1":
-                        SetVariable(pair.Key, "", Math.Abs(pntSize * 2.0f / scr.M22));
+                    case "psize2":
+                        SetVariable(pair.Key, "viewstatus", pntSize);
                         break;
                 }
             }
         }
 
-        int pntSize = 3;
+        float pntSize = 3.0f;
+        public void SetViewStatus(IPEViewSettingConnector viewConnect)
+        {
+            pntSize = viewConnect.VertexPointSize;
+
+        }
 
         public void SetObjectTexture(ShaderResourceView texture)
         {

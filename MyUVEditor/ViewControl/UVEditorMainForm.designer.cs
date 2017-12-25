@@ -168,7 +168,6 @@
             // 
             this.splitContainer1.Panel1.Click += new System.EventHandler(this.viewpanel_Click);
             this.splitContainer1.Panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.viewpanel_MouseWheel);
-            this.splitContainer1.Panel1.Resize += new System.EventHandler(this.splitContainer1_Panel1_Resize);
             this.splitContainer1.Panel1MinSize = 1;
             // 
             // splitContainer1.Panel2
@@ -470,7 +469,7 @@
             this.trackBar1.Location = new System.Drawing.Point(6, 57);
             this.trackBar1.Maximum = 100;
             this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(143, 42);
+            this.trackBar1.Size = new System.Drawing.Size(143, 45);
             this.trackBar1.TabIndex = 3;
             this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar1.Value = 100;
@@ -594,7 +593,7 @@
             // 
             this.ファイルToolStripMenuItem.Enabled = false;
             this.ファイルToolStripMenuItem.Name = "ファイルToolStripMenuItem";
-            this.ファイルToolStripMenuItem.Size = new System.Drawing.Size(66, 20);
+            this.ファイルToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
             this.ファイルToolStripMenuItem.Text = "ファイル(&F)";
             // 
             // 編集ToolStripMenuItem
@@ -604,7 +603,7 @@
             this.redoToolStripMenuItem,
             this.selectAll_ToolStripMenuItem});
             this.編集ToolStripMenuItem.Name = "編集ToolStripMenuItem";
-            this.編集ToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
+            this.編集ToolStripMenuItem.Size = new System.Drawing.Size(57, 20);
             this.編集ToolStripMenuItem.Text = "編集(&E)";
             // 
             // _undoToolStripMenuItem
@@ -612,7 +611,7 @@
             this._undoToolStripMenuItem.Enabled = false;
             this._undoToolStripMenuItem.Name = "_undoToolStripMenuItem";
             this._undoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
-            this._undoToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this._undoToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this._undoToolStripMenuItem.Text = "元に戻す(&U)";
             this._undoToolStripMenuItem.Click += new System.EventHandler(this.undoToolStripMenuItem_Click);
             // 
@@ -621,7 +620,7 @@
             this.redoToolStripMenuItem.Enabled = false;
             this.redoToolStripMenuItem.Name = "redoToolStripMenuItem";
             this.redoToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
-            this.redoToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.redoToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.redoToolStripMenuItem.Text = "やりなおす(&R)";
             this.redoToolStripMenuItem.Click += new System.EventHandler(this.redoToolStripMenuItem_Click);
             // 
@@ -629,7 +628,7 @@
             // 
             this.selectAll_ToolStripMenuItem.Name = "selectAll_ToolStripMenuItem";
             this.selectAll_ToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.A)));
-            this.selectAll_ToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.selectAll_ToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.selectAll_ToolStripMenuItem.Text = "すべて選択(&A)";
             this.selectAll_ToolStripMenuItem.Click += new System.EventHandler(this.selectAll_ToolStripMenuItem_Click);
             // 

@@ -185,5 +185,20 @@ namespace MyUVEditor
         private void trackBar1_Scroll(object sender, EventArgs e) { }
         #endregion
 
+        public Selector.ISelector Selector
+        {
+            get { return m_selector; }
+            set { setSelector(value); }
+        }
+        private Selector.ISelector m_selector;
+        private void setSelector(Selector.ISelector selector)
+        {
+            if (m_selector != null)
+                m_selector.DisconnectControl(this);
+            selector.ConnectControl(this);
+            m_selector = selector;
+            m_selector.Clear();
+        }
+
     }
 }

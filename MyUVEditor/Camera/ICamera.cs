@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Forms;
 using SlimDX;
 using System.Drawing;
 
@@ -7,7 +6,8 @@ namespace MyUVEditor.Camera
 {
     public interface ICamera : IDisposable
     {
-        Control Client { get; }
+        int Width { get; }
+        int Height { get; }
         Vector3 Position { get; }
         Vector3 Direction { get; }
         Matrix WorldViewProjection { get; }

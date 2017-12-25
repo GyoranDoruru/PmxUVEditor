@@ -187,6 +187,45 @@ namespace MyUVEditor.DirectX11
             m_Materials[i].Draw(EffectManager);
         }
 
+        Buffer selectedIndices;
+        public void ResetSelectedIndicesBuffer(int[] indices)
+        {
+            if (!selectedIndices.Disposed)
+                selectedIndices.Dispose();
+
+            if(indices==null || indices.Length == 0)
+            {
+                selectedIndices = null;
+                return;
+            }
+
+            using (DataStream indexStream
+                = new DataStream(indices, true, true))
+            {
+                selectedIndices = new Buffer(
+                    this.Device,
+                    indexStream,
+                    new BufferDescription
+                    {
+                        SizeInBytes = (int)indexStream.Length,
+                        BindFlags = BindFlags.IndexBuffer,
+                    });
+            }
+
+        }
+
+        public void DrawSelectedVertices(int material, int technique)
+        {
+            if (selectedIndices == null)
+                return;
+            Device.ImmediateContext.InputAssembler.SetIndexBuffer(
+                selectedIndices, SlimDX.DXGI.Format.R32_UInt, 0);
+            Device.ImmediateContext.InputAssembler.PrimitiveTopology
+                = PrimitiveTopology.PointList;
+            m_Materials[material].Draw(this.EffectManager);
+
+        }
+
 
         public virtual void Dispose()
         {
