@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using SlimDX;
 using SlimDX.Direct3D9;
+using MyUVEditor.Camera;
 
 namespace MyUVEditor
 {
@@ -16,7 +17,7 @@ namespace MyUVEditor
         public DXViewUV()
         {
             InitializeComponent();
-            this.Camera = new CameraUV(this);
+            this.Camera = new Camera2D(this);
         }
 
         protected override void OnPaint(PaintEventArgs pe)

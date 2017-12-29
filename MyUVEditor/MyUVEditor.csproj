@@ -9,7 +9,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MyUVEditor</RootNamespace>
-    <AssemblyName>UVEditor0_139_10_2</AssemblyName>
+    <AssemblyName>UVEditor0_222c_12_0</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,10 +30,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
   <ItemGroup>
-    <Reference Include="PEPlugin, Version=0.0.5.4, Culture=neutral, processorArchitecture=x86">
+    <Reference Include="PEPlugin, Version=0.0.7.3, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\PmxEditor_0222c\Lib\PEPlugin\PEPlugin.dll</HintPath>
+      <HintPath>..\..\..\..\..\Download\PmxEditor_0254\Lib\PEPlugin\PEPlugin.dll</HintPath>
     </Reference>
     <Reference Include="SlimDX, Version=4.0.13.43, Culture=neutral, PublicKeyToken=b1b0c32fd1ffe4f9, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
@@ -48,12 +51,29 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TargaImage">
+      <HintPath>..\..\..\..\MMD\PmxEditor_0222c\_plugin\User\TargaImage.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Camera.cs" />
-    <Compile Include="CameraUV.cs" />
+    <Compile Include="Camera\Camera3D.cs" />
+    <Compile Include="Camera\Camera2D.cs" />
+    <Compile Include="Camera\IHasCameraConnection.cs" />
+    <Compile Include="Connector.cs" />
     <Compile Include="CustomVertex.cs" />
     <Compile Include="DeviceManager.cs" />
+    <Compile Include="DirectX11\BlendStateManager.cs" />
+    <Compile Include="DirectX11\DeviceManager11.cs" />
+    <Compile Include="DirectX11\DrawableMaterial.cs" />
+    <Compile Include="DirectX11\DrawablePmx.cs" />
+    <Compile Include="DirectX11\DrawableSprite.cs" />
+    <Compile Include="DirectX11\EffectManager11.cs" />
+    <Compile Include="DirectX11\IDrawable.cs" />
+    <Compile Include="DirectX11\MyCommonContents.cs" />
+    <Compile Include="DirectX11\ICommonContents.cs" />
+    <Compile Include="DirectX11\PmxVertexStruct.cs" />
+    <Compile Include="DirectX11\RenderTargetContentsUV.cs" />
+    <Compile Include="DirectX11\TextureUtility.cs" />
     <Compile Include="DrawingMode.cs" />
     <Compile Include="DrivingMode\Add.cs" />
     <Compile Include="DrivingMode\CameraMove.cs" />
@@ -92,9 +112,11 @@
     <Compile Include="Form1.designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="ICamera.cs" />
+    <Compile Include="Camera\ICamera.cs" />
     <Compile Include="IDXViewForm.cs" />
     <Compile Include="KeyBoardEvent.cs" />
+    <Compile Include="Light\ILight.cs" />
+    <Compile Include="Light\ParallelLight.cs" />
     <Compile Include="MakeUVMorph.cs" />
     <Compile Include="MaterialManager.cs" />
     <Compile Include="MessageForm.cs">
@@ -112,22 +134,35 @@
     </Compile>
     <Compile Include="MyPlugin.cs" />
     <Compile Include="MyPMX.cs" />
-    <Compile Include="ParentForm.cs">
+    <Compile Include="Selector\ISelector.cs" />
+    <Compile Include="ViewControl\UVEditorMainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="ParentForm.Designer.cs">
+    <Compile Include="ViewControl\UVEditorMainForm.designer.cs">
+      <DependentUpon>UVEditorMainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControl\ParentForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ViewControl\ParentForm.Designer.cs">
       <DependentUpon>ParentForm.cs</DependentUpon>
     </Compile>
     <Compile Include="PMXMesh.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="DirectX11\RenderTargetContents.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Shader.cs" />
-    <Compile Include="TextureInfo.cs" />
-    <Compile Include="UVEditorForm.cs">
+    <Compile Include="TestGame.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UVEditorForm.designer.cs">
-      <DependentUpon>UVEditorForm.cs</DependentUpon>
+    <Compile Include="TestGame.Designer.cs">
+      <DependentUpon>TestGame.cs</DependentUpon>
     </Compile>
+    <Compile Include="TextureInfo.cs" />
     <Compile Include="VertexSelect.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -144,17 +179,31 @@
     <EmbeddedResource Include="MessageForm.resx">
       <DependentUpon>MessageForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UVEditorForm.resx">
-      <DependentUpon>UVEditorForm.cs</DependentUpon>
+    <EmbeddedResource Include="ViewControl\ParentForm.resx">
+      <DependentUpon>ParentForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Resource\WhiteTex.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resource\BlackTex.bmp" />
+    <Content Include="Resource\myeffect.fx" />
     <None Include="basic.fx" />
     <Content Include="full.fx" />
     <None Include="test.fx" />
+    <EmbeddedResource Include="ViewControl\UVEditorMainForm.resx">
+      <DependentUpon>UVEditorMainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="WhiteTex.bmp" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy $(TargetFileName) D:\Download\PmxEditor_0254\_plugin\User</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

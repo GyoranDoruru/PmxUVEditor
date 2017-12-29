@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using SlimDX;
+﻿using SlimDX;
 using System.Drawing;
+using System.Windows.Forms;
 
-namespace MyUVEditor
+namespace MyUVEditor.Camera
 {
-    class CameraUV:Camera
+    class Camera2D : Camera3D
     {
         public override Matrix World
         {
@@ -24,18 +21,25 @@ namespace MyUVEditor
                 };
             }
         }
-        public CameraUV(DXView client):base(client,-1)
+
+        public Camera2D(Control client):base(client, -1)
         {
-            Position = new Vector3(0, 0, -10);
-            Target = new Vector3(0, 0, 0);
+            ResetCamera();
+        }
+
+        public override void ResetCamera()
+        {
+            Position = new Vector3(0.0f, 0.0f, -52);
+            Target = new Vector3(0.0f, 0.0f, 0);
             UpDir = new Vector3(0, 1, 0);
-            Client = client;
+            scale = 1.1f;
+            FOV = -1.0f;
             ResetWVPMatrix();
         }
 
-        protected override void CameraRotate(Point prev, Point tmp)
+        protected override void CameraRotate(Point tmp)
         {
-            CameraMove(prev, tmp);
+            CameraMove(tmp);
         }
 
 

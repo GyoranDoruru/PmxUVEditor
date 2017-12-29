@@ -11,17 +11,17 @@ namespace MyUVEditor.DrivingMode
         public void GetDrivingMode(MyGame sender,MouseEventArgs e)
         {
             Mode ret;
-            if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right) ret = CameraMove.GetInstance();
-            else if (sender.form.TabControll.SelectedIndex == 1) ret = Nothing.GetInstance();
+            //if (e.Button == MouseButtons.Middle || e.Button == MouseButtons.Right) ret = CameraMove.GetInstance();
+            if (sender.form.TabControll.SelectedIndex == 1) ret = Nothing.GetInstance();
             else if (sender.form.IsScaleState) ret = Scale.GetInstance();
             else if (sender.form.IsRotateState) ret = Rotate.GetInstance();
             else if (KeyBoardEvent.GetInstance().OnKeys[(int)Keys.ShiftKey]) ret = Add.GetInstance();
             else if (KeyBoardEvent.GetInstance().OnKeys[(int)Keys.ControlKey]) ret = Remove.GetInstance();
-            else if (sender.vS.GetNearSelected(sender.Device,sender.mypmx, sender.Camera, e.Location) != -1) ret = Move.GetInstance();
-            else if (sender.vS.GetNearUsed(sender.Device, sender.mypmx, sender.Camera, e.Location) != -1)
+            else if (sender.vS.GetNearSelected(sender.mypmx, sender.Camera, e.Location,4) != -1) ret = Move.GetInstance();
+            else if (sender.vS.GetNearUsed(sender.mypmx, sender.Camera, e.Location,4) != -1)
             {
                 sender.vS.selectedVertexIndex = new int[] {
-                    sender.vS.GetNearUsed(sender.Device,sender.mypmx, sender.Camera, e.Location)
+                    sender.vS.GetNearUsed(sender.mypmx, sender.Camera, e.Location,4)
                 };
                 ret = Move.GetInstance();
             }

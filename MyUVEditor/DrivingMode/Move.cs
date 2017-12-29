@@ -22,7 +22,8 @@ namespace MyUVEditor.DrivingMode
 
         public override void MouseMoved(MyGame sender, MouseEventArgs e)
         {
-            Vector3 vec = Camera.Screen2World(sender.Device, sender.Mouse.MouseAfterMoveP) - Camera.Screen2World(sender.Device, sender.Mouse.MouseBeforeMoveP);
+            Vector3 vec = sender.Camera.ScreenToWorldVec(sender.Mouse.MouseAfterMoveP, 0)
+                - sender.Camera.ScreenToWorldVec(sender.Mouse.MouseBeforeMoveP, 0);
             MoveMeshVertex(sender,vec);
         }
 

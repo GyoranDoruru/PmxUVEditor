@@ -5,6 +5,7 @@ using PEPlugin;
 using SlimDX;
 using SlimDX.Direct3D9;
 using System.Collections.Generic;
+using MyUVEditor.Camera;
 
 namespace MyUVEditor
 {
@@ -30,8 +31,8 @@ namespace MyUVEditor
         private Mesh mesh;
 
         /// <summary>視点関連</summary>
-        private Camera camera;
-        public Camera Camera { get { return this.camera; } }
+        private ICamera camera;
+        public ICamera Camera { get { return this.camera; } }
 
         private IPEPluginHost host;
         /// <summary>デバイスロスト判定用</summary>
@@ -260,7 +261,7 @@ namespace MyUVEditor
             }
             //mainSwap = device.GetSwapChain(0);
             //subSwap = new SwapChain(device, pps[1]);
-            this.camera = new Camera(form.ViewPanel,-1);
+            this.camera = new Camera3D(form.ViewPanel,-1);
             //高さと幅設定
 
             //Xファイルからmeshとtextures登録
@@ -288,7 +289,7 @@ namespace MyUVEditor
         {
             //ライト設定
             device.SetRenderState(RenderState.Lighting, true);
-            device.SetLight(0, new Light()
+            device.SetLight(0, new SlimDX.Direct3D9.Light()
             {
                 Type = LightType.Directional,
                 Diffuse = Color.White,
@@ -298,9 +299,9 @@ namespace MyUVEditor
             device.EnableLight(0, true);
 
             //射影変換
-            device.SetTransform(TransformState.Projection, this.camera.TransformProjection(device,1));
+            device.SetTransform(TransformState.Projection, this.camera.Projection);
             //ビュー
-            device.SetTransform(TransformState.View, camera.TransformView());
+            device.SetTransform(TransformState.View, camera.View);
 
             //マテリアル設定
             //device.Material = new Material() { Diffuse = new Color4(Color.GhostWhite) };
@@ -351,8 +352,8 @@ namespace MyUVEditor
             //    }
 
                 if (KeyBoardEvent.GetInstance().OnKeys[(int)Keys.Enter]) { this.camera.ResetCamera(); MessageBox.Show("called"); }
-                device.SetTransform(TransformState.View, this.camera.TransformView());
-                device.SetTransform(TransformState.Projection, this.camera.TransformProjection(device,this.textureinfoes[vS.SelectedMaterial].Aspect));
+                device.SetTransform(TransformState.View, this.camera.View);
+                device.SetTransform(TransformState.Projection, this.camera.Projection);
 
                 //描画を開始
                 device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, mmanage.BGColor, 1.0f, 0);

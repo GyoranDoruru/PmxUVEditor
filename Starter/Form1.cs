@@ -30,11 +30,10 @@ namespace Starter
         {
             IPXPmx pmx = new PMXImporter.PMX.ImpPmx();
             pmx.FromFile(((OpenFileDialog)sender).FileName);
-            //IPERunArgs runArgs = new DummyIPERunArgs();
-            //runArgs.Host.Connector.Pmx.Update(pmx);
-            //MyPlugin plugin = new MyPlugin();
-            //plugin.Run(runArgs);
-            ParentForm pf = new ParentForm(pmx);
-        }
+			IPERunArgs runArgs = new DummyIPERunArgs();
+			runArgs.Host.Connector.Pmx.Update(pmx);
+			MyPlugin plugin = new MyPlugin();
+			plugin.Run(runArgs);
+		}
     }
 }

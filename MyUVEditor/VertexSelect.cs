@@ -5,6 +5,7 @@ using System.Text;
 using SlimDX;
 using System.Drawing;
 using SlimDX.Direct3D9;
+using MyUVEditor.Camera;
 
 namespace MyUVEditor
 {
@@ -52,25 +53,24 @@ namespace MyUVEditor
             this.selectPoly[3].Position.Y = vec.Y;
         }
 
-        public int GetNearSelected(Device device, MyPMX target, Camera camera, Point p)
+        public int GetNearSelected(MyPMX target, ICamera camera, Point p, float rad)
         {
             for (int i = 0; i < this.selectedVertexIndex.Length; i++)
             {
-                if (camera.PointIsNear(device, p, target.VertexArray[this.selectedVertexIndex[i]].Position))
-                {
+                if (camera.IsNear(p,target.VertexArray[this.selectedVertexIndex[i]].Position,rad)){
                     return this.selectedVertexIndex[i];
                 }
             }
             return -1;
         }
-        public int GetNearUsed(Device device,MyPMX target, Camera camera, Point p)
+        public int GetNearUsed(MyPMX target, ICamera camera, Point p, float rad)
         {
             try
             {
                 for (int i = 0; i < target.VertexArray.Length; i++)
                 {
                     bool used = target.IsUsedinMat[this.SelectedMaterial, i];
-                    if (used && camera.PointIsNear(device, p, target.VertexArray[i].Position))
+                    if (used && camera.IsNear(p, target.VertexArray[i].Position,rad))
                     {
                         this.nearUsedIndex = i;
                         return i;

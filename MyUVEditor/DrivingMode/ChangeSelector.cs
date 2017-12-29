@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using SlimDX;
+using MyUVEditor.Camera;
 
 namespace MyUVEditor.DrivingMode
 {
@@ -15,7 +16,7 @@ namespace MyUVEditor.DrivingMode
 
         public override void MouseMoved(MyGame sender, System.Windows.Forms.MouseEventArgs e)
         {
-            Vector3 vec = Camera.Screen2World(sender.Device, e.Location);
+            Vector3 vec = sender.Camera.ScreenToWorldVec(e.Location, 0);
             sender.vS.ChangeSelectPoly(vec);
         }
 
@@ -38,7 +39,7 @@ namespace MyUVEditor.DrivingMode
         }
 
 
-        protected abstract bool Is2Add(int i,MyPMX pmx, VertexSelect vS,Camera camera);
+        protected abstract bool Is2Add(int i,MyPMX pmx, VertexSelect vS,ICamera camera);
 
         public override DrawingMode Type() { return DrawingMode.SELECT; }
 

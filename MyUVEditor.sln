@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.21005.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyUVEditor", "MyUVEditor\MyUVEditor.csproj", "{1455244B-25FE-41FD-A753-CC0709387D11}"
 EndProject
@@ -9,12 +9,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PMXImporter", "..\..\..\Vis
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starter", "Starter\Starter.csproj", "{048007B0-FDE7-4A35-8A14-EFF8AEAF1FBF}"
 EndProject
-Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "PmxEditor", "..\..\..\MMD\PmxEditor_0222\PmxEditor.exe", "{F40616A3-5444-4A2C-BDC0-26B957379948}"
+Project("{911E67C6-3D85-4FCE-B560-20A9C3E3FF48}") = "PmxEditor", "..\..\..\..\Download\PmxEditor_0254\PmxEditor.exe", "{614768D7-43EC-4967-91E9-7A9EA475A295}"
 	ProjectSection(DebuggerProjectSystem) = preProject
 		PortSupplier = 00000000-0000-0000-0000-000000000000
-		Executable = D:\Documents\MMD\PmxEditor_0222\PmxEditor.exe
+		Executable = D:\Download\PmxEditor_0254\PmxEditor.exe
 		RemoteMachine = YUSER-PC
-		StartingDirectory = D:\Documents\MMD\PmxEditor_0222
+		StartingDirectory = D:\Download\PmxEditor_0254
+		Arguments = "D:\Documents\MMD\Model\Tda式アペミクワンピース\Tda.pmx"
 		Environment = 既定
 		LaunchingEngine = 00000000-0000-0000-0000-000000000000
 		UseLegacyDebugEngines = No
@@ -62,14 +63,17 @@ Global
 		{048007B0-FDE7-4A35-8A14-EFF8AEAF1FBF}.Release|Mixed Platforms.Build.0 = Release|x86
 		{048007B0-FDE7-4A35-8A14-EFF8AEAF1FBF}.Release|x86.ActiveCfg = Release|x86
 		{048007B0-FDE7-4A35-8A14-EFF8AEAF1FBF}.Release|x86.Build.0 = Release|x86
-		{F40616A3-5444-4A2C-BDC0-26B957379948}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F40616A3-5444-4A2C-BDC0-26B957379948}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F40616A3-5444-4A2C-BDC0-26B957379948}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F40616A3-5444-4A2C-BDC0-26B957379948}.Release|Any CPU.ActiveCfg = Debug|Any CPU
-		{F40616A3-5444-4A2C-BDC0-26B957379948}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F40616A3-5444-4A2C-BDC0-26B957379948}.Release|x86.ActiveCfg = Debug|Any CPU
+		{614768D7-43EC-4967-91E9-7A9EA475A295}.Debug|Any CPU.ActiveCfg = Release|x86
+		{614768D7-43EC-4967-91E9-7A9EA475A295}.Debug|Mixed Platforms.ActiveCfg = Release|x86
+		{614768D7-43EC-4967-91E9-7A9EA475A295}.Debug|x86.ActiveCfg = Release|x86
+		{614768D7-43EC-4967-91E9-7A9EA475A295}.Release|Any CPU.ActiveCfg = Release|x86
+		{614768D7-43EC-4967-91E9-7A9EA475A295}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{614768D7-43EC-4967-91E9-7A9EA475A295}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FEDE4644-DC0D-4324-ACB9-40FC00E105A7}
 	EndGlobalSection
 EndGlobal

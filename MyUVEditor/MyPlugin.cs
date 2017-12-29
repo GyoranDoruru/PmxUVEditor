@@ -1,31 +1,30 @@
 ﻿using System;
 using System.Windows.Forms;
 using PEPlugin;
+using System.Threading;
 
 namespace MyUVEditor
 {
-    public class MyPlugin : PEPluginClass
+    public class MyPlugin : IPEPlugin
     {
-        //MyGame game;
-        const string ver = "0_139_10_2";
-        //Thread _thread;
+        const string ver = "0_222c_12_0";
         public MyPlugin()
             : base()
         {
-            // 起動オプション
-            // boot時実行(true/false), プラグインメニューへの登録(true/false), メニュー登録名("")
-            m_option = new PEPluginOption(false, true, "UVエディタ" + ver);
+            m_option = new PEPluginOption(false, true, "UVエディタ_" + Version);
         }
         // エントリポイント
-        public override void Run(IPERunArgs args)
+        public void Run(IPERunArgs args)
         {
             try
             {
-                //game = new MyGame(args.Host,ver);
-                //game.Run();
-                ParentForm PF = new ParentForm(args.Host.Connector.Pmx.GetCurrentState());
-                //_thread = new Thread(new ThreadStart(game.Run));
-                //_thread.Start();
+                if (!IsFairPmx(args))
+                    return;
+                Connector.Args = args;
+                ParentForm PF = new ParentForm(args,Version);
+                PF.Show();
+                PF.Worker.RunWorkerAsync();
+                PF.TopMost = true;
             }
             catch (Exception ex)
             {
@@ -34,5 +33,51 @@ namespace MyUVEditor
             }
 
         }
+
+        public string Description
+        {
+            get { return "どるる式UVエディタ"; }
+        }
+
+        public string Name
+        {
+            get { return Option.RegisterMenuText; }
+        }
+
+        private PEPluginOption m_option;
+        public IPEPluginOption Option
+        {
+            get { return m_option; }
+        }
+
+        public string Version
+        {
+            get { return "0_222c_12_0"; }
+        }
+
+        public void Dispose()
+        {
+        }
+
+        private bool IsFairPmx(IPERunArgs args)
+        {
+            var pmx = args.Host.Connector.Pmx.GetCurrentState();
+            if (pmx.Vertex.Count == 0 || pmx.Material.Count == 0)
+            {
+                MessageBox.Show("モデルが読み込まれてないかも？");
+                return false;
+            }
+
+            foreach (var m in pmx.Material)
+            {
+                if (m.Faces.Count == 0)
+                {
+                    MessageBox.Show("材質: " + m.Name + "の面の数が0なので中断します");
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
 }

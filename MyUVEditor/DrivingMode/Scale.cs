@@ -21,7 +21,7 @@ namespace MyUVEditor.DrivingMode
             sender.form.PushUndo(new UnDoRedoRecord(sender.vS.selectedVertexIndex, sender.mypmx));
             this.savedPos = new Vector3[sender.mypmx.VertexArray.Length];
             foreach (int i in sender.vS.selectedVertexIndex) this.savedPos[i] = sender.mypmx.VertexArray[i].Position;
-            center = Camera.Screen2World(sender.Device, sender.Mouse.MouseDowendP);
+            center = sender.Camera.ScreenToWorldVec(sender.Mouse.MouseDowendP);
         }
 
         public override void MouseMoved(MyGame sender, MouseEventArgs e) { ScaleMeshVertex(sender); }

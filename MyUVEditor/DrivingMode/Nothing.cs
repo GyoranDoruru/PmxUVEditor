@@ -22,7 +22,7 @@ namespace MyUVEditor.DrivingMode
 
         public override void MouseMoved(MyGame sender, System.Windows.Forms.MouseEventArgs e)
         {
-            sender.vS.GetNearUsed(sender.Device, sender.mypmx, sender.Camera, e.Location);
+            sender.vS.GetNearUsed(sender.mypmx, sender.Camera, e.Location, 4);
         }
 
         public override void MouseUpped(MyGame sender, System.Windows.Forms.MouseEventArgs e)

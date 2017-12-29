@@ -17,9 +17,12 @@ D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Star
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\Starter.exe
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\Starter.pdb
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\PMXImporter.dll
-D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\UVEditor0_139_10_2.dll
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\PMXImporter.pdb
-D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\UVEditor0_139_10_2.pdb
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Starter.csprojResolveAssemblyReference.cache
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Starter.Form1.resources
 D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Starter.csproj.GenerateResource.Cache
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\UVEditor0_222c_12_0.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\UVEditor0_222c_12_0.pdb
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\TargaImage.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\bin\Release\SlimDX.dll
+D:\Documents\Visual Studio 2010\Projects\MyUVEditor\Starter\obj\x86\Release\Starter.csproj.CoreCompileInputs.cache

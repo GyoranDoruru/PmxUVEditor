@@ -5,6 +5,7 @@ using System.Text;
 using MyUVEditor.DrivingMode;
 using System.Windows.Forms;
 using SlimDX;
+using MyUVEditor.Camera;
 
 namespace MyUVEditor.DrivingMode
 {
@@ -16,7 +17,7 @@ namespace MyUVEditor.DrivingMode
 
         public override DrawingMode Type() { return DrawingMode.REMOVE; }
 
-        protected override bool Is2Add(int i, MyPMX pmx, VertexSelect vS, Camera camera)
+        protected override bool Is2Add(int i, MyPMX pmx, VertexSelect vS, ICamera camera)
         {
             bool isUsed = pmx.IsUsedinMat[vS.SelectedMaterial, i];
             bool isSelected = camera.IsContainIt(vS.SelectPoly[0].Position, vS.SelectPoly[3].Position, pmx.VertexArray[i].Position);
