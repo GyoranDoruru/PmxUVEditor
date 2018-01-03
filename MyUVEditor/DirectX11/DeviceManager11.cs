@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
+using System.Windows.Forms;
+using PEPlugin;
 using SlimDX.Direct3D11;
 using SlimDX.DXGI;
-using PEPlugin;
 
 
 namespace MyUVEditor.DirectX11
@@ -16,6 +13,11 @@ namespace MyUVEditor.DirectX11
         private SlimDX.Direct3D11.Device m_Device;
         private RenderTargetContents[] m_RenderTargets;
         private ICommonContents m_CommonContents;
+
+        public DeviceManager11()
+        {
+            CheckSamplingQuality();
+        }
 
         private void CreateDeviceAndSwapChain(Control control, out SwapChain swapChain)
         {
@@ -53,8 +55,8 @@ namespace MyUVEditor.DirectX11
                 IsWindowed = true,
                 SampleDescription = new SampleDescription
                 {
-                    Count = 4,
-                    Quality = 16
+                    Count = SampleCount,
+                    Quality = SampleQuality
                 },
                 ModeDescription = new ModeDescription
                 {
@@ -66,6 +68,26 @@ namespace MyUVEditor.DirectX11
                 Usage = Usage.RenderTargetOutput
             };
         }
+        static public int SampleCount { get; private set; }
+        static public int SampleQuality { get; private set; }
+        static public void CheckSamplingQuality()
+        {
+            var device = new SlimDX.Direct3D11.Device(DriverType.Hardware, DeviceCreationFlags.None);
+            for(SampleCount = 4; SampleCount >= 0; --SampleCount)
+            {
+                SampleQuality = device.CheckMultisampleQualityLevels(
+                    SlimDX.DXGI.Format.R8G8B8A8_UNorm, SampleCount) - 1;
+                if (SampleQuality >= 0)
+                    break;
+      
+            }
+            if (SampleQuality > 16)
+                SampleQuality = 16;
+            device.Dispose();
+
+        }
+
+
 
         private void LoadCommonContent(BackgroundWorker worker) { m_CommonContents.Load(m_Device, worker); }
         private void UnloadCommonContent() { m_CommonContents.Unload(); }
