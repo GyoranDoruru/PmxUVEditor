@@ -62,10 +62,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Visual Studio 2013\Projects\MyPMDViewer\PMXImporter\PMXImporter.csproj">
-      <Project>{1D96E92C-8690-4998-A315-44860AA9DF3D}</Project>
-      <Name>PMXImporter</Name>
-    </ProjectReference>
     <ProjectReference Include="..\MyUVEditor\MyUVEditor.csproj">
       <Project>{1455244B-25FE-41FD-A753-CC0709387D11}</Project>
       <Name>MyUVEditor</Name>
