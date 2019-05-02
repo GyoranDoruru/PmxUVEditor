@@ -35,9 +35,9 @@ namespace MyUVEditor.DrivingMode
             float k = 0.01f;
             int dpx = mouse.MouseAfterMoveP.X - mouse.MouseDowendP.X;
             int dpy = mouse.MouseAfterMoveP.Y - mouse.MouseDowendP.Y;
-            double result = Math.Sign(dpx) * Math.Pow((dpx * dpx + dpy * dpy), 0.5) * k;
+            double result = System.Math.Sign(dpx) * System.Math.Pow((dpx * dpx + dpy * dpy), 0.5) * k;
             if (KeyBoardEvent.GetInstance().IsShift) result *= 0.1;
-            if (KeyBoardEvent.GetInstance().IsCtrl) result = ((int)(result * 4 / Math.PI)) * Math.PI / 4;
+            if (KeyBoardEvent.GetInstance().IsCtrl) result = ((int)(result * 4 / System.Math.PI)) * System.Math.PI / 4;
             return (float)result;
         }
 

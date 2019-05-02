@@ -28,15 +28,18 @@ namespace MyUVEditor
         {
             using (DirectX11.DeviceManager11 deviceManager = new DirectX11.DeviceManager11())
             {
-            Control[] controls = new Control[2];
+                Control[] controls = new Control[2];
                 UVEditorMainForm mainForm = new UVEditorMainForm(m_version);
                 controls[0] = mainForm.ViewPanel;
                 Form subForm = new Form();
                 controls[1] = subForm;
-                mainForm.Show();
-                subForm.Show();
 
                 deviceManager.SetCommonContents(new DirectX11.MyCommonContents(),PERunArgs);
+                mainForm.SelectedMaterial.SelectedIndexChanged += deviceManager.RedrawEventHandler;
+                mainForm.CommonContents = deviceManager.CommonContents;
+                mainForm.SetList();
+                mainForm.Show();
+                subForm.Show();
                 deviceManager.Run(controls, backgroundWorker1);
             }
         }

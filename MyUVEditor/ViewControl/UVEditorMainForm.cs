@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using MyUVEditor.Camera;
 using SlimDX;
+using PEPlugin.Pmx;
 
 namespace MyUVEditor
 {
@@ -31,7 +32,7 @@ namespace MyUVEditor
         public Button ScaleButton { get { return this.button_scale; } }
         public Vector2 ScaleValue { get { return this.TextBox2Number(this.ScaleX, this.ScaleY); } }
         public Button RotButton { get { return this.button_rot; } }
-        public float RotValue { get { return (float)(this.TextBox2Number(this.Angle)*Math.PI/180); } }
+        public float RotValue { get { return (float)(this.TextBox2Number(this.Angle)*System.Math.PI/180); } }
         public Vector2 CenterValue { get { return this.TextBox2Number(this.CenterX, this.CenterY); } }
         public ToolStripMenuItem UnDo { get { return _undoToolStripMenuItem; } }
         public ToolStripMenuItem ReDo { get { return redoToolStripMenuItem; } }
@@ -52,7 +53,7 @@ namespace MyUVEditor
                 case (int)Keys.R: this.radioButton3.Checked = true; break;
             }
         }
-        private string drivingState = "";
+
         private string version;
 
         //UVモーフ用コントロールプロパティ
@@ -86,20 +87,39 @@ namespace MyUVEditor
             this.morphPanel_comboBox.SelectedIndex = 1;
         }
 
-        public void AddMaterial(string name)
+        internal DirectX11.ICommonContents CommonContents { get; set; }
+
+        public void SetList()
         {
-            string tag = this._materialSelectbox.Items.Count + ": " + name;
-            this._materialSelectbox.Items.Add(tag);
+            var pmx = CommonContents.Pmx;
+            this._materialSelectbox.Items.Clear();
+            foreach(var m in pmx.Material)
+            {
+                string tag = this._materialSelectbox.Items.Count + ": " + m.Name;
+                this._materialSelectbox.Items.Add(tag);
+
+            }
+            this._materialSelectbox.SelectedIndex = 0;
+
+            this.morph_comboBox.Items.Clear();
+            foreach(var m in pmx.Morph)
+            {
+                if (!m.IsUV)
+                    continue;
+                string tag = this.morph_comboBox.Items.Count + ": " + m.Name;
+                this.morph_comboBox.Items.Add(m.Name);
+            }
+
+            if (morph_comboBox.Items.Count < 1)
+                this.morph_comboBox.Enabled = false;
+            else
+                this.morph_comboBox.SelectedIndex = 0;
         }
 
         public void ListUpUVMorph(string[] names)
         {
             this.morph_comboBox.Items.Clear();
             foreach (var name in names) this.morph_comboBox.Items.Add(name);
-        }
-        public void SetDriveState(string s)
-        {
-            drivingState = s;
         }
 
         public void Undo(MyPMX mypmx)
@@ -176,7 +196,7 @@ namespace MyUVEditor
         private void redoToolStripMenuItem_Click(object sender, EventArgs e) { }
         private void undoToolStripMenuItem_Click(object sender, EventArgs e) { }
         private void selectAll_ToolStripMenuItem_Click(object sender, EventArgs e) { }
-        private void infoIToolStripMenuItem_Click(object sender, EventArgs e) { MessageBox.Show(version + "\r\n動作状況: " + drivingState); }
+        private void infoIToolStripMenuItem_Click(object sender, EventArgs e) { MessageBox.Show(GetInfo()); }
         private void button_move_Click(object sender, EventArgs e) { }
         private void button_scale_Click(object sender, EventArgs e) { }
         private void button_rot_Click(object sender, EventArgs e) { }
@@ -197,8 +217,16 @@ namespace MyUVEditor
                 m_selector.DisconnectControl(this);
             selector.ConnectControl(this);
             m_selector = selector;
-            m_selector.Clear();
         }
+
+        private string GetInfo()
+        {
+            string info = "Version: " + version + "\r\n";
+            info += "Sampling Count: " + DirectX11.DeviceManager11.SampleCount + "\r\n";
+            info += "Sampling Quality: " + DirectX11.DeviceManager11.SampleQuality + "\r\n";
+            return info;
+        }
+
 
     }
 }

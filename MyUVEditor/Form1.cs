@@ -30,7 +30,7 @@ namespace MyUVEditor
         public Button ScaleButton { get { return this.button_scale; } }
         public Vector2 ScaleValue { get { return this.TextBox2Number(this.ScaleX, this.ScaleY); } }
         public Button RotButton { get { return this.button_rot; } }
-        public float RotValue { get { return (float)(this.TextBox2Number(this.Angle)*Math.PI/180); } }
+        public float RotValue { get { return (float)(this.TextBox2Number(this.Angle)*System.Math.PI/180); } }
         public Vector2 CenterValue { get { return this.TextBox2Number(this.CenterX, this.CenterY); } }
         public ToolStripMenuItem UnDo { get { return _undoToolStripMenuItem; } }
         public ToolStripMenuItem ReDo { get { return redoToolStripMenuItem; } }

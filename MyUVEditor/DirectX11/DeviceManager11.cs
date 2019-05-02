@@ -12,7 +12,7 @@ namespace MyUVEditor.DirectX11
     {
         private SlimDX.Direct3D11.Device m_Device;
         private RenderTargetContents[] m_RenderTargets;
-        private ICommonContents m_CommonContents;
+        public ICommonContents CommonContents { get; private set; }
 
         public DeviceManager11()
         {
@@ -89,8 +89,8 @@ namespace MyUVEditor.DirectX11
 
 
 
-        private void LoadCommonContent(BackgroundWorker worker) { m_CommonContents.Load(m_Device, worker); }
-        private void UnloadCommonContent() { m_CommonContents.Unload(); }
+        private void LoadCommonContent(BackgroundWorker worker) { CommonContents.Load(m_Device, worker); }
+        private void UnloadCommonContent() { CommonContents.Unload(); }
 
         public void Run(Control[] clients, BackgroundWorker worker)
         {
@@ -98,7 +98,7 @@ namespace MyUVEditor.DirectX11
             LoadCommonContent(worker);
             foreach (var rt in m_RenderTargets)
             {
-                rt.LoadContent(m_CommonContents);
+                rt.LoadContent(CommonContents);
             }
             m_parentWorker = worker;
             SlimDX.Windows.MessagePump.Run(RenderTargetContents.GetParentForm(clients[0]), Draw);
@@ -108,13 +108,19 @@ namespace MyUVEditor.DirectX11
 
         public void SetCommonContents(ICommonContents commonContents, IPERunArgs args)
         {
-            m_CommonContents = commonContents;
-            m_CommonContents.SetRunArgsAndPmx(args);
+            CommonContents = commonContents;
+            CommonContents.SetRunArgsAndPmx(args);
         }
         private BackgroundWorker m_parentWorker;
         private int m_PrevTime = 0;
         private int m_FrameCount = 0;
         private const int m_Interval = 3000;
+        private bool RedrawRequested { get; set; }
+        public void RedrawEventHandler(object sendor, EventArgs e)
+        {
+            this.RedrawRequested = true;
+        }
+
         private void Draw()
         {
             bool isEnd = true;
@@ -124,8 +130,9 @@ namespace MyUVEditor.DirectX11
                 isFocused = isFocused || rt.IsFocused();
             }
 
-            if (!isFocused)
+            if (!isFocused&&!RedrawRequested)
                 return;
+            RedrawRequested = false;
             foreach (var rt in m_RenderTargets)
             {
                 isEnd &= rt.ClientIsDisposed;

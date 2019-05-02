@@ -51,7 +51,7 @@ namespace MyUVEditor
             {
                 Vector3 morphPosI = mypmx.VertexArray[i].Position;
                 Vector3 basePosI = new Vector3( pmx.Vertex[i].UV.U,pmx.Vertex[i].UV.V,0);
-                if (Math.Abs(basePosI.X - morphPosI.X) > diff || Math.Abs(basePosI.Y - morphPosI.Y) > diff) { basePos.Add(i, basePosI); morphedPos.Add(i, morphPosI); }
+                if (System.Math.Abs(basePosI.X - morphPosI.X) > diff || System.Math.Abs(basePosI.Y - morphPosI.Y) > diff) { basePos.Add(i, basePosI); morphedPos.Add(i, morphPosI); }
             }
             form.SetMorphedCount(basePos.Count);
             vs.selectedVertexIndex = this.GetMorphTargetIndex();

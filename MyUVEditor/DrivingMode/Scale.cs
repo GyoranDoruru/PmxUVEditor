@@ -34,7 +34,7 @@ namespace MyUVEditor.DrivingMode
             float k = 0.01f;
             int dpx = mouse.MouseAfterMoveP.X - mouse.MouseDowendP.X;
             int dpy = mouse.MouseAfterMoveP.Y - mouse.MouseDowendP.Y;
-            bool strongX = Math.Abs(dpx) > Math.Abs(dpy);
+            bool strongX = System.Math.Abs(dpx) > System.Math.Abs(dpy);
 
             float dx, dy;
             if (KeyBoardEvent.GetInstance().IsShift)

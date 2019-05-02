@@ -14,6 +14,5 @@ namespace MyUVEditor.Selector
         IPXPmx Pmx { get; set; }
         void ConnectControl(Control control);
         void DisconnectControl(Control control);
-        void Clear();
     }
 }

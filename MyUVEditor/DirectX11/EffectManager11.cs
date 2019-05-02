@@ -232,10 +232,10 @@ namespace MyUVEditor.DirectX11
                             SetVariable(semantics, "camera", camera.Direction);
                             break;
                         case "psize0":
-                            SetVariable(pair.Key, "camera", Math.Abs(camera.Width));
+                            SetVariable(pair.Key, "camera", System.Math.Abs(camera.Width));
                             break;
                         case "psize1":
-                            SetVariable(pair.Key, "camera", Math.Abs(camera.Height));
+                            SetVariable(pair.Key, "camera", System.Math.Abs(camera.Height));
                             break;
                     }
                 }

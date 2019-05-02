@@ -52,7 +52,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="TargaImage">
-      <HintPath>..\..\..\..\MMD\PmxEditor_0222c\_plugin\User\TargaImage.dll</HintPath>
+      <HintPath>..\..\uve_depends\TargaImage.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -119,6 +119,8 @@
     <Compile Include="Light\ParallelLight.cs" />
     <Compile Include="MakeUVMorph.cs" />
     <Compile Include="MaterialManager.cs" />
+    <Compile Include="Math\GBDTree.cs" />
+    <Compile Include="Math\UVRTree.cs" />
     <Compile Include="MessageForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -135,6 +137,7 @@
     <Compile Include="MyPlugin.cs" />
     <Compile Include="MyPMX.cs" />
     <Compile Include="Selector\ISelector.cs" />
+    <Compile Include="Selector\RectSelector.cs" />
     <Compile Include="ViewControl\UVEditorMainForm.cs">
       <SubType>Form</SubType>
     </Compile>

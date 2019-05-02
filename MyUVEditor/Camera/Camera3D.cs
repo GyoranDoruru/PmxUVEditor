@@ -169,7 +169,7 @@ namespace MyUVEditor.Camera
         {
             if (FOV > 0)
             {
-                Vector3 tmpTtoP = (Position - Target) * (float)Math.Pow(1.001, -delta);
+                Vector3 tmpTtoP = (Position - Target) * (float)System.Math.Pow(1.001, -delta);
                 float lsq = tmpTtoP.LengthSquared();
                 if (lsq < 1e-6 || lsq > 1e+12)
                 {
@@ -179,7 +179,7 @@ namespace MyUVEditor.Camera
             }
             else
             {
-                this.scale *= (float)Math.Pow(0.999f, delta);
+                this.scale *= (float)System.Math.Pow(0.999f, delta);
             }
             ResetWVPMatrix();
         }

@@ -15,7 +15,21 @@ namespace MyUVEditor.DirectX11
     {
         int m_MaterialIndex = 0;
 		public RenderTargetContentsUV(SlimDX.Direct3D11.Device device, SwapChain swapChain, Control client)
-			: base(device, swapChain, client) { }
+			: base(device, swapChain, client)
+        {
+            UVEditorMainForm form = null;
+            for(var c = client;c!=null;c = c.Parent)
+            {
+                form = c as UVEditorMainForm;
+                if (form != null)
+                    break;
+            }
+            if (form == null)
+                return;
+
+            form.SelectedMaterial.SelectedIndexChanged
+                += (o, args) => { m_MaterialIndex = ((ComboBox)o).SelectedIndex; };
+        }
 
 		protected override void InitCamera()
 		{
@@ -47,7 +61,7 @@ namespace MyUVEditor.DirectX11
             sprite.Draw(m_MaterialIndex, 2);
 
             // uv triangles
-			DrawablePmx.ResetForDraw();
+            DrawablePmx.ResetForDraw();
             DrawablePmx.EffectManager.SetCamera(this.Camera);
             DrawablePmx.Draw(m_MaterialIndex, 3);
 
