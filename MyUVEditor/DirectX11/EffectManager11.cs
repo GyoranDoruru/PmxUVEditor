@@ -262,7 +262,7 @@ namespace MyUVEditor.DirectX11
 
         public void setPointColor(Vector4 color)
         {
-            SetVariable("pcolor", "viewstatus", color);// viewConnect.VertexPointColor
+            SetVariable("color0", "viewstatus", color);// viewConnect.VertexPointColor
         }
 
         public void SetObjectTexture(ShaderResourceView texture)

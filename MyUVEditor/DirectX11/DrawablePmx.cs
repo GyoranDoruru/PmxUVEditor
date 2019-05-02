@@ -190,7 +190,7 @@ namespace MyUVEditor.DirectX11
         Buffer selectedIndices;
         public void ResetSelectedIndicesBuffer(int[] indices)
         {
-            if (!selectedIndices.Disposed)
+            if (selectedIndices != null && !selectedIndices.Disposed)
                 selectedIndices.Dispose();
 
             if(indices==null || indices.Length == 0)
@@ -214,7 +214,7 @@ namespace MyUVEditor.DirectX11
 
         }
 
-        public void DrawSelectedVertices(int material, int technique)
+        public void DrawSelectedVertices(int count)
         {
             if (selectedIndices == null)
                 return;
@@ -222,8 +222,8 @@ namespace MyUVEditor.DirectX11
                 selectedIndices, SlimDX.DXGI.Format.R32_UInt, 0);
             Device.ImmediateContext.InputAssembler.PrimitiveTopology
                 = PrimitiveTopology.PointList;
-            m_Materials[material].Draw(this.EffectManager);
-
+            EffectManager.Effect.Device.ImmediateContext.DrawIndexed
+                (count, 0, 0);
         }
 
 

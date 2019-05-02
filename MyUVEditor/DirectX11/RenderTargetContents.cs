@@ -12,7 +12,7 @@ namespace MyUVEditor.DirectX11
     {
         private SwapChain SwapChain { get; set; }
         private RenderTargetView RenderTarget { get; set; }
-        private DepthStencilView DepthStencil { get; set; }
+        protected DepthStencilView DepthStencil { get; set; }
         protected SlimDX.Direct3D11.Device GraphicsDevice { get; private set; }
         private EffectManager11 EffectManager { get; set; }
         protected Control Client { get; private set; }

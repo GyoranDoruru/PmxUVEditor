@@ -8,12 +8,15 @@ using System.Windows.Forms;
 using PEPlugin.Pmx;
 namespace MyUVEditor.Selector
 {
-    public interface ISelector
+    internal interface ISelector
     {
         int[] Selected { get; }
+        bool IsChanged { get; set; }
         IPXPmx Pmx { get; set; }
         void ConnectControl(Control control);
         void DisconnectControl(Control control);
         Camera.ICamera Camera { get; set; }
+        void setFilter(IEnumerable<int> filter);
+
     }
 }
