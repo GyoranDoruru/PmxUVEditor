@@ -247,7 +247,7 @@ PSGSIn PointSpriteVertexShader(float4 Pos : SV_POSITION, float3 Normal : NORMAL,
 	PSGSIn Out = (PSGSIn)0;
 	Out.Pos = float4(Tex, -0.01f, 1);
 	Out.Pos = mul(Out.Pos, WorldViewProjMatrix);
-	Out.Color = float4(0,1,0,1);
+	Out.Color = float4(PColor.xyz, 1);
 	return Out;
 }
 

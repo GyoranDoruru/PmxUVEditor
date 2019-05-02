@@ -14,5 +14,6 @@ namespace MyUVEditor.Selector
         IPXPmx Pmx { get; set; }
         void ConnectControl(Control control);
         void DisconnectControl(Control control);
+        Camera.ICamera Camera { get; set; }
     }
 }

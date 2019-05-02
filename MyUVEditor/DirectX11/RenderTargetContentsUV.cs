@@ -43,6 +43,7 @@ namespace MyUVEditor.DirectX11
             base.LoadContent(commonContents);
             sprite = new DrawableSprite(commonContents.Pmx);
             sprite.SetDrawablePmx(commonContents, null);
+            initSelector(commonContents.Pmx);
         }
 
         public override void UnloadContent()
@@ -70,5 +71,27 @@ namespace MyUVEditor.DirectX11
                 = PrimitiveTopology.PointList;
             DrawablePmx.Draw(m_MaterialIndex, 4);
         }
+
+        private void initSelector(PEPlugin.Pmx.IPXPmx pmx)
+        {
+            Selector = new Selector.RectSelector(pmx, Camera);
+        }
+
+        public Selector.ISelector Selector
+        {
+            get { return m_selector; }
+            set { setSelector(value); }
+        }
+        private Selector.ISelector m_selector;
+        private void setSelector(Selector.ISelector selector)
+        {
+            if (m_selector != null)
+                m_selector.DisconnectControl(Client);
+            m_selector = selector;
+            m_selector.ConnectControl(Client);
+            m_selector.Camera = Camera;
+        }
+
+
     }
 }

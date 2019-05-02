@@ -7,7 +7,7 @@ using PEPlugin.Pmx;
 
 namespace MyUVEditor
 {
-    public partial class UVEditorMainForm : Form, Camera.IHasCameraConnection
+    public partial class UVEditorMainForm : Form
     {
         public Panel ViewPanel { get { return splitContainer1.Panel1; } }
         public ComboBox SelectedMaterial { get { return _materialSelectbox; } }
@@ -204,20 +204,6 @@ namespace MyUVEditor
         private void setMorph_button_Click(object sender, EventArgs e) { }
         private void trackBar1_Scroll(object sender, EventArgs e) { }
         #endregion
-
-        public Selector.ISelector Selector
-        {
-            get { return m_selector; }
-            set { setSelector(value); }
-        }
-        private Selector.ISelector m_selector;
-        private void setSelector(Selector.ISelector selector)
-        {
-            if (m_selector != null)
-                m_selector.DisconnectControl(this);
-            selector.ConnectControl(this);
-            m_selector = selector;
-        }
 
         private string GetInfo()
         {

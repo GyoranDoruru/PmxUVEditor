@@ -258,7 +258,11 @@ namespace MyUVEditor.DirectX11
         public void SetViewStatus(IPEViewSettingConnector viewConnect)
         {
             pntSize = viewConnect.VertexPointSize;
+        }
 
+        public void setPointColor(Vector4 color)
+        {
+            SetVariable("pcolor", "viewstatus", color);// viewConnect.VertexPointColor
         }
 
         public void SetObjectTexture(ShaderResourceView texture)

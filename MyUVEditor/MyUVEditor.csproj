@@ -58,7 +58,6 @@
   <ItemGroup>
     <Compile Include="Camera\Camera3D.cs" />
     <Compile Include="Camera\Camera2D.cs" />
-    <Compile Include="Camera\IHasCameraConnection.cs" />
     <Compile Include="Connector.cs" />
     <Compile Include="CustomVertex.cs" />
     <Compile Include="DeviceManager.cs" />

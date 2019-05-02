@@ -75,7 +75,6 @@ namespace MyUVEditor.Camera
 
         public Camera3D(Control client, float f = 0.43633194f)
         {
-            SetCameraIsThis(client);
             Position = new Vector3(0, 18, -52);
             Target = new Vector3(0, 10, 0);
             UpDir = new Vector3(0, 1, 0);
@@ -252,16 +251,6 @@ namespace MyUVEditor.Camera
                 ScreenToWorldRay(screenPoint),
                 new BoundingSphere(worldPos, rad),
                 out dis);
-        }
-
-        private void SetCameraIsThis(Control client)
-        {
-            for(Control c = client; c!=null; c = c.Parent)
-            {
-                var hasC = c as IHasCameraConnection;
-                if (hasC != null)
-                    hasC.Camera = this;
-            }
         }
 
     }

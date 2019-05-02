@@ -17,7 +17,7 @@ namespace MyUVEditor.DirectX11
         private EffectManager11 EffectManager { get; set; }
         protected Control Client { get; private set; }
         protected DrawablePmx DrawablePmx { get; private set; }
-        protected ICamera Camera { get; set; }
+        public ICamera Camera { get; protected set; }
         protected ILight Light { get; private set; }
         protected SlimDX.Color4 m_backgroundColor = new SlimDX.Color4(1.0f, 0.39f, 0.58f, 0.93f);
         public bool ClientIsDisposed { get { return Client.IsDisposed; } }
@@ -125,7 +125,6 @@ namespace MyUVEditor.DirectX11
             InitCamera();
             InitLight();
             DrawablePmx = (DrawablePmx)commonContents.CommonDrawables[0];
-
         }
         public virtual void UnloadContent() {
             DrawablePmx.Dispose();

@@ -13,6 +13,7 @@ namespace MyUVEditor.DirectX11
         private SlimDX.Direct3D11.Device m_Device;
         private RenderTargetContents[] m_RenderTargets;
         public ICommonContents CommonContents { get; private set; }
+        public RenderTargetContentsUV UVRenderTargetContents { get; private set; }
 
         public DeviceManager11()
         {
@@ -35,8 +36,8 @@ namespace MyUVEditor.DirectX11
             m_RenderTargets = new RenderTargetContents[controls.Length];
             SwapChain tmp_Swap;
             CreateDeviceAndSwapChain(controls[0], out tmp_Swap);
-			//m_RenderTargets[0] = new RenderTargetContents(m_Device, tmp_Swap, controls[0]);
-			m_RenderTargets[0] = new RenderTargetContentsUV(m_Device, tmp_Swap, controls[0]);
+            UVRenderTargetContents = new RenderTargetContentsUV(m_Device, tmp_Swap, controls[0]);
+            m_RenderTargets[0] = UVRenderTargetContents;
             Factory factory = m_Device.Factory;
             for (int i = 1; i < controls.Length; i++)
             {
@@ -92,7 +93,7 @@ namespace MyUVEditor.DirectX11
         private void LoadCommonContent(BackgroundWorker worker) { CommonContents.Load(m_Device, worker); }
         private void UnloadCommonContent() { CommonContents.Unload(); }
 
-        public void Run(Control[] clients, BackgroundWorker worker)
+        public void Run(UVEditorMainForm mainform, Control[] clients, BackgroundWorker worker)
         {
             CreateDeviceAndMultiSwapChain(clients);
             LoadCommonContent(worker);
@@ -101,6 +102,7 @@ namespace MyUVEditor.DirectX11
                 rt.LoadContent(CommonContents);
             }
             m_parentWorker = worker;
+            mainform.Camera = UVRenderTargetContents.Camera;
             SlimDX.Windows.MessagePump.Run(RenderTargetContents.GetParentForm(clients[0]), Draw);
             m_parentWorker = null;
             Dispose();

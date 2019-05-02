@@ -38,9 +38,10 @@ namespace MyUVEditor
                 mainForm.SelectedMaterial.SelectedIndexChanged += deviceManager.RedrawEventHandler;
                 mainForm.CommonContents = deviceManager.CommonContents;
                 mainForm.SetList();
+
                 mainForm.Show();
                 subForm.Show();
-                deviceManager.Run(controls, backgroundWorker1);
+                deviceManager.Run(mainForm, controls, backgroundWorker1);
             }
         }
 
